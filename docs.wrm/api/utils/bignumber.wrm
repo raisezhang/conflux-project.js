@@ -4,7 +4,7 @@ Many operations in Ethereum operation on numbers which are
 [outside the range of safe values](BigNumber--notes-safenumbers) to use
 in JavaScript.
 
-A **BigNumber** is an object which safely allows mathematic operations
+A **BigNumber** is an object which safely allows mathematical operations
 on numbers of any magnitude.
 
 Most operations which need to return a value will return a **BigNumber**
@@ -17,7 +17,7 @@ _heading: BigNumberish @<BigNumberish>
 
 Many functions and methods in this library take in values which
 can be non-ambiguously and safely converted to a BigNumber. These
-values can be sepcified as:
+values can be specified as:
 
 _definition: **//string//**
 A [[HexString]] or a decimal string, either of which may
@@ -122,18 +122,18 @@ Returns a BigNumber with the value of //BigNumber// with bits beyond
 the //bitcount// least significant bits set to zero.
 
 
-_heading: Two's Compliment
+_heading: Two's Complement
 
-[Two's Complicment](link-wiki-twoscomplement)
+[Two's Complement](link-wiki-twoscomplement)
 is an elegant method used to encode and decode fixed-width signed values
-while efficiently preserving mathematic operations.
+while efficiently preserving mathematical operations.
 Most users will not need to interact with these.
 
 _property: BigNumber.fromTwos(bitwidth) => [[BigNumber]]  @SRC<bignumber>
-Returns a BigNumber with the value of //BigNumber// converted from twos-compliment with //bitwidth//.
+Returns a BigNumber with the value of //BigNumber// converted from twos-complement with //bitwidth//.
 
 _property: BigNumber.toTwos(bitwidth) => [[BigNumber]]  @SRC<bignumber>
-Returns a BigNumber with the value of //BigNumber// converted to twos-compliment with //bitwidth//.
+Returns a BigNumber with the value of //BigNumber// converted to twos-complement with //bitwidth//.
 
 
 _heading: Comparison and Equivalence
@@ -175,7 +175,7 @@ Returns the value of //BigNumber// as a base-16, ``0x``-prefixed [[DataHexString
 
 _heading: Inspection
 
-_property: ethers.BigNumnber.isBigNumber(object) => boolean  @SRC<bignumber>
+_property: ethers.BigNumber.isBigNumber(object) => boolean  @SRC<bignumber>
 Returns true if and only if the //object// is a BigNumber object.
 
 
@@ -232,7 +232,7 @@ mathematical operations handled safely.
 _heading: Why not BigNumber.js, BN.js, BigDecimal, etc?
 
 Everyone has their own favourite Big Number library, and once someone
-has choosen one, it becomes part of their identity, like their editor,
+has chosen one, it becomes part of their identity, like their editor,
 vi vs emacs. There are over 100 Big Number libraries on [npm](link-npm-query-bignumber).
 
 One of the biggest differences between the Ethers [[BigNumber]] object and
@@ -246,7 +246,7 @@ low-level library's objects which supports myriad in-place operations.
 Second, the Ethers [[BigNumber]] provides all the functionality required
 internally and should generally be sufficient for most developers while
 not exposing some of the more advanced and rare functionality. So it will
-be eaiser to swap out the underlying library without impacting consumers.
+be easier to swap out the underlying library without impacting consumers.
 
 For example, if [[link-npm-bnjs]] was exposed, someone may use the
 greatest-common-denominator functions, which would then be functionality
@@ -270,7 +270,7 @@ various purposes.
 
 _heading: Allow us to set a global Big Number library?
 
-Another comment that comes up frequently is tha desire to specify a
+Another comment that comes up frequently is the desire to specify a
 global user-defined Big Number library, which all functions would
 return.
 

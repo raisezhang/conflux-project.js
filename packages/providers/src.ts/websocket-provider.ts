@@ -1,13 +1,12 @@
 "use strict";
 
-import WebSocket from "ws";
-
 import { BigNumber } from "@ethersproject/bignumber";
-import { Networkish } from "@ethersproject/networks";
+import { Network, Networkish } from "@ethersproject/networks";
 import { defineReadOnly } from "@ethersproject/properties";
 
 import { Event } from "./base-provider";
 import { JsonRpcProvider } from "./json-rpc-provider";
+import { WebSocket } from "./ws";
 
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
@@ -47,6 +46,7 @@ export type Subscription = {
 export class WebSocketProvider extends JsonRpcProvider {
     readonly _websocket: any;
     readonly _requests: { [ name: string ]: InflightRequest };
+    readonly _detectNetwork: Promise<Network>;
 
     // Maps event tag to subscription ID (we dedupe identical events)
     readonly _subIds: { [ tag: string ]: Promise<string> };
@@ -67,13 +67,15 @@ export class WebSocketProvider extends JsonRpcProvider {
         super(url, network);
         this._pollingInterval = -1;
 
+        this._wsReady = false;
+
         defineReadOnly(this, "_websocket", new WebSocket(this.connection.url));
         defineReadOnly(this, "_requests", { });
         defineReadOnly(this, "_subs", { });
         defineReadOnly(this, "_subIds", { });
+        defineReadOnly(this, "_detectNetwork", super.detectNetwork());
 
         // Stall sending requests until the socket is open...
-        this._wsReady = false;
         this._websocket.onopen = () => {
             this._wsReady = true;
             Object.keys(this._requests).forEach((id) => {
@@ -92,15 +94,32 @@ export class WebSocketProvider extends JsonRpcProvider {
                 if (result.result !== undefined) {
                     request.callback(null, result.result);
 
+                    this.emit("debug", {
+                        action: "response",
+                        request: JSON.parse(request.payload),
+                        response: result.result,
+                        provider: this
+                    });
+
                 } else {
+                    let error: Error = null;
                     if (result.error) {
-                        const error: any = new Error(result.error.message || "unknown error");
-                        defineReadOnly(error, "code", result.error.code || null);
-                        defineReadOnly(error, "response", data);
-                        request.callback(error, undefined);
+                        error = new Error(result.error.message || "unknown error");
+                        defineReadOnly(<any>error, "code", result.error.code || null);
+                        defineReadOnly(<any>error, "response", data);
                     } else {
-                        request.callback(new Error("unknown error"), undefined);
+                        error = new Error("unknown error");
                     }
+
+                    request.callback(error, undefined);
+
+                    this.emit("debug", {
+                        action: "response",
+                        error: error,
+                        request: JSON.parse(request.payload),
+                        provider: this
+                    });
+
                 }
 
             } else if (result.method === "eth_subscription") {
@@ -123,6 +142,10 @@ export class WebSocketProvider extends JsonRpcProvider {
             this.emit("poll");
         }, 1000);
         if (fauxPoll.unref) { fauxPoll.unref(); }
+    }
+
+    detectNetwork(): Promise<Network> {
+        return this._detectNetwork;
     }
 
     get pollingInterval(): number {
@@ -167,6 +190,12 @@ export class WebSocketProvider extends JsonRpcProvider {
                 params: params,
                 id: rid,
                 jsonrpc: "2.0"
+            });
+
+            this.emit("debug", {
+                action: "request",
+                request: JSON.parse(payload),
+                provider: this
             });
 
             this._requests[String(rid)] = { callback, payload };

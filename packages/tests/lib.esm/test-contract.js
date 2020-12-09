@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import assert from "assert";
 import { ethers } from "ethers";
 import contractData from "./test-contract.json";
-const provider = new ethers.providers.InfuraProvider('rinkeby');
+const provider = new ethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
 //const provider = ethers.getDefaultProvider("rinkeby");
 const TIMEOUT_PERIOD = 120000;
 const contract = (function () {
@@ -42,7 +42,7 @@ function equals(name, actual, expected) {
 function TestContractEvents() {
     return __awaiter(this, void 0, void 0, function* () {
         const data = yield ethers.utils.fetchJson('https://api.ethers.io/api/v1/?action=triggerTest&address=' + contract.address);
-        console.log('  *** Triggered Transaction Hash: ' + data.hash);
+        console.log('*** Triggered Transaction Hash: ' + data.hash);
         contract.on("error", (error) => {
             console.log(error);
             assert(false);

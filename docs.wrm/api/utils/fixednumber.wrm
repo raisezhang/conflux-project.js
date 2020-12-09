@@ -81,7 +81,7 @@ _subsection: FixedFormat @<FixedFormat>
 
 A **FixedFormat** is a simple object which represents a decimal
 (base-10) Fixed-Point data representation. Usually using this
-class directly is uneccessary, as passing in a [[FixedFormat--strings]]
+class directly is unnecessary, as passing in a [[FixedFormat--strings]]
 directly into the [[FixedNumber]] will automatically create this.
 
 _heading: Format Strings  @<FixedFormat--strings>
@@ -93,7 +93,7 @@ A signed format string begins with ``fixed``, which an unsigned format
 string begins with ``ufixed``, followed by the width (in bits) and the
 number of decimals.
 
-The width must be conguent to 0 mod 8 (i.e. ``(width % 8) == 0``) and no
+The width must be congruent to 0 mod 8 (i.e. ``(width % 8) == 0``) and no
 larger than 256 bits and the number of decimals must be no larger than 80.
 
 For example:

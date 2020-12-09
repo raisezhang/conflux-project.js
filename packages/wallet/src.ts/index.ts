@@ -2,9 +2,9 @@
 
 import { getAddress } from "@ethersproject/address";
 import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { ExternallyOwnedAccount, Signer } from "@ethersproject/abstract-signer";
+import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
 import { arrayify, Bytes, BytesLike, concat, hexDataSlice, isHexString, joinSignature, SignatureLike } from "@ethersproject/bytes";
-import { hashMessage } from "@ethersproject/hash";
+import { hashMessage, _TypedDataEncoder } from "@ethersproject/hash";
 import { defaultPath, HDNode, entropyToMnemonic, Mnemonic } from "@ethersproject/hdnode";
 import { keccak256 } from "@ethersproject/keccak256";
 import { defineReadOnly, resolveProperties } from "@ethersproject/properties";
@@ -27,7 +27,7 @@ function hasMnemonic(value: any): value is { mnemonic: Mnemonic } {
     return (mnemonic && mnemonic.phrase);
 }
 
-export class Wallet extends Signer implements ExternallyOwnedAccount {
+export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataSigner {
 
     readonly address: string;
     readonly provider: Provider;
@@ -76,11 +76,20 @@ export class Wallet extends Signer implements ExternallyOwnedAccount {
                 if (privateKey.curve !== "secp256k1") {
                     logger.throwArgumentError("unsupported curve; must be secp256k1", "privateKey", "[REDACTED]");
                 }
-                defineReadOnly(this, "_signingKey", () => privateKey);
+                defineReadOnly(this, "_signingKey", () => (<SigningKey>privateKey));
+
             } else {
+                // A lot of common tools do not prefix private keys with a 0x (see: #1166)
+                if (typeof(privateKey) === "string") {
+                    if (privateKey.match(/^[0-9a-f]*$/i) && privateKey.length === 64) {
+                        privateKey = "0x" + privateKey;
+                    }
+                }
+
                 const signingKey = new SigningKey(privateKey);
                 defineReadOnly(this, "_signingKey", () => signingKey);
             }
+
             defineReadOnly(this, "_mnemonic", (): Mnemonic => null);
             defineReadOnly(this, "address", computeAddress(this.publicKey));
         }
@@ -119,8 +128,23 @@ export class Wallet extends Signer implements ExternallyOwnedAccount {
         });
     }
 
-    signMessage(message: Bytes | string): Promise<string> {
-        return Promise.resolve(joinSignature(this._signingKey().signDigest(hashMessage(message))));
+    async signMessage(message: Bytes | string): Promise<string> {
+        return joinSignature(this._signingKey().signDigest(hashMessage(message)));
+    }
+
+    async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
+        // Populate any ENS names
+        const populated = await _TypedDataEncoder.resolveNames(domain, types, value, (name: string) => {
+            if (this.provider == null) {
+                logger.throwError("cannot resolve ENS names without a provider", Logger.errors.UNSUPPORTED_OPERATION, {
+                    operation: "resolveName",
+                    value: name
+                });
+            }
+            return this.provider.resolveName(name);
+        });
+
+        return joinSignature(this._signingKey().signDigest(_TypedDataEncoder.hash(populated.domain, types, populated.value)));
     }
 
     encrypt(password: Bytes | string, options?: any, progressCallback?: ProgressCallback): Promise<string> {
@@ -173,4 +197,8 @@ export class Wallet extends Signer implements ExternallyOwnedAccount {
 
 export function verifyMessage(message: Bytes | string, signature: SignatureLike): string {
     return recoverAddress(hashMessage(message), signature);
+}
+
+export function verifyTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>, signature: SignatureLike): string {
+    return recoverAddress(_TypedDataEncoder.hash(domain, types, value), signature);
 }

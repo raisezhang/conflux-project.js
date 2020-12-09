@@ -4,11 +4,12 @@
  *  BigNumber
  *
  *  A wrapper around the BN.js object. We use the BN.js library
- *  because it is used by elliptic, so it is required regardles.
+ *  because it is used by elliptic, so it is required regardless.
  *
  */
 
-import { BN } from "bn.js";
+import _BN from "bn.js";
+import BN = _BN.BN;
 
 import { Bytes, Hexable, hexlify, isBytes, isHexString } from "@ethersproject/bytes";
 
@@ -33,6 +34,9 @@ export function isBigNumberish(value: any): value is BigNumberish {
         isBytes(value)
     );
 }
+
+// Only warn about passing 10 into radix once
+let _warnedToStringRadix = false;
 
 export class BigNumber implements Hexable {
     readonly _hex: string;
@@ -187,9 +191,18 @@ export class BigNumber implements Hexable {
     }
 
     toString(): string {
-        // Lots of people expect this, which we do not support, so check
-        if (arguments.length !== 0) {
-            logger.throwError("bigNumber.toString does not accept parameters", Logger.errors.UNEXPECTED_ARGUMENT, { });
+        // Lots of people expect this, which we do not support, so check (See: #889)
+        if (arguments.length > 0) {
+            if (arguments[0] === 10) {
+                if (!_warnedToStringRadix) {
+                    _warnedToStringRadix = true;
+                    logger.warn("BigNumber.toString does not accept any parameters; base-10 is assumed");
+                }
+            } else if (arguments[0] === 16) {
+                logger.throwError("BigNumber.toString does not accept any parameters; use bigNumber.toHexString()", Logger.errors.UNEXPECTED_ARGUMENT, { });
+            } else {
+                logger.throwError("BigNumber.toString does not accept parameters", Logger.errors.UNEXPECTED_ARGUMENT, { });
+            }
         }
         return toBN(this).toString(10);
     }
@@ -333,4 +346,14 @@ function throwFault(fault: string, operation: string, value?: any): never {
     if (value != null) { params.value = value; }
 
     return logger.throwError(fault, Logger.errors.NUMERIC_FAULT, params);
+}
+
+// value should have no prefix
+export function _base36To16(value: string): string {
+    return (new BN(value, 36)).toString(16);
+}
+
+// value should have no prefix
+export function _base16To36(value: string): string {
+    return (new BN(value, 16)).toString(36);
 }

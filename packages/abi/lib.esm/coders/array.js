@@ -59,8 +59,8 @@ export function pack(writer, coders, values) {
     });
     // Backfill all the dynamic offsets, now that we know the static length
     updateFuncs.forEach((func) => { func(staticWriter.length); });
-    let length = writer.writeBytes(staticWriter.data);
-    length += writer.writeBytes(dynamicWriter.data);
+    let length = writer.appendWriter(staticWriter);
+    length += writer.appendWriter(dynamicWriter);
     return length;
 }
 export function unpack(reader, coders) {
@@ -155,6 +155,15 @@ export class ArrayCoder extends Coder {
         super("array", type, localName, dynamic);
         this.coder = coder;
         this.length = length;
+    }
+    defaultValue() {
+        // Verifies the child coder is valid (even if the array is dynamic or 0-length)
+        const defaultChild = this.coder.defaultValue();
+        const result = [];
+        for (let i = 0; i < this.length; i++) {
+            result.push(defaultChild);
+        }
+        return result;
     }
     encode(writer, value) {
         if (!Array.isArray(value)) {

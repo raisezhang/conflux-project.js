@@ -4,8 +4,8 @@ import { AbiCoder, checkResultErrors, defaultAbiCoder, EventFragment, FormatType
 import { getAddress, getCreate2Address, getContractAddress, getIcapAddress, isAddress } from "@ethersproject/address";
 import * as base64 from "@ethersproject/base64";
 import { Base58 as base58 } from "@ethersproject/basex";
-import { arrayify, concat, hexDataSlice, hexDataLength, hexlify, hexStripZeros, hexValue, hexZeroPad, isBytes, isBytesLike, isHexString, joinSignature, zeroPad, splitSignature, stripZeros } from "@ethersproject/bytes";
-import { hashMessage, id, isValidName, namehash } from "@ethersproject/hash";
+import { arrayify, concat, hexConcat, hexDataSlice, hexDataLength, hexlify, hexStripZeros, hexValue, hexZeroPad, isBytes, isBytesLike, isHexString, joinSignature, zeroPad, splitSignature, stripZeros } from "@ethersproject/bytes";
+import { _TypedDataEncoder, hashMessage, id, isValidName, namehash } from "@ethersproject/hash";
 import { defaultPath, entropyToMnemonic, HDNode, isValidMnemonic, mnemonicToEntropy, mnemonicToSeed } from "@ethersproject/hdnode";
 import { getJsonWalletAddress } from "@ethersproject/json-wallets";
 import { keccak256 } from "@ethersproject/keccak256";
@@ -19,7 +19,7 @@ import { computePublicKey, recoverPublicKey, SigningKey } from "@ethersproject/s
 import { formatBytes32String, nameprep, parseBytes32String, _toEscapedUtf8String, toUtf8Bytes, toUtf8CodePoints, toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
 import { computeAddress, parse as parseTransaction, recoverAddress, serialize as serializeTransaction } from "@ethersproject/transactions";
 import { commify, formatEther, parseEther, formatUnits, parseUnits } from "@ethersproject/units";
-import { verifyMessage } from "@ethersproject/wallet";
+import { verifyMessage, verifyTypedData } from "@ethersproject/wallet";
 import { _fetchData, fetchJson, poll } from "@ethersproject/web";
 
 ////////////////////////
@@ -94,6 +94,7 @@ export {
 
     hexlify,
     isHexString,
+    hexConcat,
     hexStripZeros,
     hexValue,
     hexZeroPad,
@@ -114,6 +115,8 @@ export {
     namehash,
     isValidName,
     id,
+
+    _TypedDataEncoder,
 
     getAddress,
     getIcapAddress,
@@ -157,6 +160,7 @@ export {
     recoverPublicKey,
 
     verifyMessage,
+    verifyTypedData,
 
     mnemonicToEntropy,
     entropyToMnemonic,

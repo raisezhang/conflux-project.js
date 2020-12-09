@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
 var ethers_1 = require("ethers");
 var test_contract_json_1 = __importDefault(require("./test-contract.json"));
-var provider = new ethers_1.ethers.providers.InfuraProvider('rinkeby');
+var provider = new ethers_1.ethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
 //const provider = ethers.getDefaultProvider("rinkeby");
 var TIMEOUT_PERIOD = 120000;
 var contract = (function () {
@@ -105,7 +105,7 @@ function TestContractEvents() {
                 case 0: return [4 /*yield*/, ethers_1.ethers.utils.fetchJson('https://api.ethers.io/api/v1/?action=triggerTest&address=' + contract.address)];
                 case 1:
                     data = _a.sent();
-                    console.log('  *** Triggered Transaction Hash: ' + data.hash);
+                    console.log('*** Triggered Transaction Hash: ' + data.hash);
                     contract.on("error", function (error) {
                         console.log(error);
                         assert_1.default(false);

@@ -1,4 +1,13 @@
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import assert from 'assert';
 import { ethers } from "ethers";
 import { loadTests } from "@ethersproject/testcases";
@@ -375,7 +384,7 @@ describe('Test UTF-8 coder', function () {
             let bytes = ethers.utils.toUtf8Bytes(str);
             let str2 = ethers.utils.toUtf8String(bytes);
             let escaped = JSON.parse(ethers.utils._toEscapedUtf8String(bytes));
-            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes);
+            //            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes)
             assert.equal(str2, str, 'conversion not reflexive - ' + bytes);
             assert.equal(escaped, str, 'conversion not reflexive - ' + bytes);
         }
@@ -392,7 +401,7 @@ describe('Test Bytes32String coder', function () {
     });
 });
 function getHex(value) {
-    return "0x" + Buffer.from(value).toString("hex");
+    return ethers.utils.hexlify(ethers.utils.toUtf8Bytes(value));
 }
 describe("Test nameprep", function () {
     const Tests = loadTests("nameprep");
@@ -500,6 +509,16 @@ describe("BigNumber", function () {
             assert.ok(value.abs().eq(expected));
         });
     });
+    // Fails to create from BN (or any junk with a length) (See: #1172)
+    it("Fails on junk with a length property", function () {
+        const junk = { negative: 0, words: [1000], length: 1, red: null };
+        assert.throws(() => {
+            const value = ethers.BigNumber.from("100").add(junk);
+            console.log("ERROR", value);
+        }, (error) => {
+            return true;
+        });
+    });
     // @TODO: Add more tests here
 });
 describe("FixedNumber", function () {
@@ -591,6 +610,47 @@ describe("Logger", function () {
             logger.checkArgumentCount(3, 1);
         }, (error) => {
             return error.code === ethers.utils.Logger.errors.UNEXPECTED_ARGUMENT;
+        });
+    });
+});
+describe("Base58 Coder", function () {
+    it("decodes", function () {
+        assert.equal(ethers.utils.toUtf8String(ethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
+    });
+    it("encodes", function () {
+        assert.equal(ethers.utils.base58.encode(ethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
+    });
+});
+/*
+describe("Web Fetch", function() {
+    it("fetches JSON", async function() {
+        const url = "https:/\/api.etherscan.io/api?module=stats&action=ethprice&apikey=9D13ZE7XSBTJ94N9BNJ2MA33VMAY2YPIRB";
+        const getData = ethers.utils.fetchJson(url)
+    });
+});
+*/
+describe("EIP-712", function () {
+    const tests = loadTests("eip712");
+    tests.forEach((test) => {
+        it(`encoding ${test.name}`, function () {
+            const encoder = ethers.utils._TypedDataEncoder.from(test.types);
+            assert.equal(encoder.primaryType, test.primaryType, "instance.primaryType");
+            assert.equal(encoder.encode(test.data), test.encoded, "instance.encode()");
+            //console.log(test);
+            assert.equal(ethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
+            assert.equal(ethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
+        });
+    });
+    tests.forEach((test) => {
+        if (!test.privateKey) {
+            return;
+        }
+        it(`signing ${test.name}`, function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                const wallet = new ethers.Wallet(test.privateKey);
+                const signature = yield wallet._signTypedData(test.domain, test.types, test.data);
+                assert.equal(signature, test.signature, "signature");
+            });
         });
     });
 });

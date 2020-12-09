@@ -1,12 +1,9 @@
 {
+  "_ethers.alias": {
+    "geturl.js": "browser-geturl.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
   "browser": {
-    "./lib/geturl": "./lib/browser-geturl.js"
-  },
-  "browser.esm": {
-    "./lib.esm/geturl": "./lib.esm/browser-geturl.js"
-  },
-  "browser.umd": {
     "./lib/geturl": "./lib/browser-geturl.js"
   },
   "dependencies": {
@@ -18,6 +15,16 @@
   },
   "description": "Utility fucntions for managing web requests for ethers.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -30,13 +37,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/web",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x15cf7ac63d44623bbad9c1aa766639af3008658cea3bc6b9309bd0eb3f7f3e85",
+  "sideEffects": false,
+  "tarballHash": "0x7de77f0ace641d8867db27d73e04c9166fa9ff1517dab66393b9e00aeed720a2",
   "types": "./lib/index.d.ts",
-  "version": "5.0.6"
+  "version": "5.0.11"
 }

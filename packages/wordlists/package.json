@@ -1,8 +1,11 @@
 {
+  "_browser-all": {
+    "./lib/wordlists": "./lib/wordlists.js"
+  },
+  "_ethers.alias": {
+    "dead-wordlists.js": "dead-browser-wordlists.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
-  "browser": "./lib/browser.js",
-  "browser.esm": "./lib.esm/browser.js",
-  "browser.umd": "./lib/browser.js",
   "dependencies": {
     "@ethersproject/bytes": "^5.0.4",
     "@ethersproject/hash": "^5.0.4",
@@ -12,6 +15,16 @@
   },
   "description": "Word lists for BIP39 wallets.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -24,13 +37,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/wordlists",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0xe3b21a8c5de06fb202e8fd076d709691bb066b303a5978bf9d459e8f4264efe7",
+  "sideEffects": false,
+  "tarballHash": "0x24ff13ad968fa0820463de3ca244565d674295ae12e20370ecd1d4b835dbc322",
   "types": "./lib/index.d.ts",
-  "version": "5.0.4"
+  "version": "5.0.7"
 }

@@ -1,14 +1,27 @@
 {
+  "_ethers.alias": {
+    "pbkdf2.js": "browser-pbkdf2.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
-  "browser": "./lib/browser.js",
-  "browser.esm": "./lib.esm/browser.js",
-  "browser.umd": "./lib/browser.js",
+  "browser": {
+    "./lib/pbkdf2": "./lib/browser-pbkdf2.js"
+  },
   "dependencies": {
     "@ethersproject/bytes": "^5.0.4",
     "@ethersproject/sha2": "^5.0.3"
   },
   "description": "The PBKDF2 password-pbased key derivation function for ethers.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers",
@@ -22,13 +35,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/pbkdf2",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x8c46f9e051013b8c652e065d03c7c92afd02fd33cdc87b106b8e4bfe35dff605",
+  "sideEffects": false,
+  "tarballHash": "0x8b2c2a44858cc3d1798c0b2d56a3af2295ca91f887b1940efdc1bff966c1836e",
   "types": "./lib/index.d.ts",
-  "version": "5.0.3"
+  "version": "5.0.6"
 }

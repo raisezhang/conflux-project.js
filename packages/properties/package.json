@@ -5,6 +5,16 @@
   },
   "description": "Properties utility functions for ethers.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -17,6 +27,7 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/properties",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
@@ -25,7 +36,8 @@
     "build": "tsc -p ./tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x6e95b217c1c9b2a9436b5a3e9fe049d74bc90ebc2cd5b913d2f4104cecde1056",
+  "sideEffects": false,
+  "tarballHash": "0x5ba1d6f10ec9f22f5390fb18112ed02612628c5fea67991a40e106d94503b935",
   "types": "./lib/index.d.ts",
-  "version": "5.0.3"
+  "version": "5.0.6"
 }

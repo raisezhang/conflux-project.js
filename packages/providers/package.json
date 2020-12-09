@@ -1,19 +1,16 @@
 {
+  "_ethers.alias": {
+    "browser-net.d.ts": "",
+    "browser-net.js": "",
+    "browser-net.js.map": "",
+    "ipc-provider.js": "browser-ipc-provider.js",
+    "ws.js": "browser-ws.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
   "browser": {
     "./lib/ipc-provider": "./lib/browser-ipc-provider.js",
-    "net": "./lib/browser-net.js",
-    "ws": "./lib/browser-ws.js"
-  },
-  "browser.esm": {
-    "./lib.esm/ipc-provider": "./lib.esm/browser-ipc-provider.js",
-    "net": "./lib.esm/browser-net.js",
-    "ws": "./lib/browser-ws.js"
-  },
-  "browser.umd": {
-    "./lib/ipc-provider": "./lib/browser-ipc-provider.js",
-    "net": "./lib/browser-net.js",
-    "ws": "./lib/browser-ws.js"
+    "./lib/ws": "./lib/browser-ws.js",
+    "net": "./lib/browser-net.js"
   },
   "dependencies": {
     "@ethersproject/abstract-provider": "^5.0.4",
@@ -37,10 +34,17 @@
     "ws": "7.2.3"
   },
   "description": "Ethereum Providers for ethers.",
-  "devDependencies": {
-    "@types/node": "^12.7.4"
-  },
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -53,13 +57,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/providers",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x6497c83c317c075e1d3ec251abbafb15b297694697fe000fd9642f71c5b44350",
+  "sideEffects": false,
+  "tarballHash": "0xee60faa5694b163be934b5998c15e53fe50963d6ab645d135062d04c851041a3",
   "types": "./lib/index.d.ts",
-  "version": "5.0.8"
+  "version": "5.0.17"
 }

@@ -57,7 +57,7 @@ function bodyify(value, type) {
         return value;
     }
     if (bytes_1.isBytesLike(value)) {
-        if (type && (type.split("/")[0] === "text" || type === "application/json")) {
+        if (type && (type.split("/")[0] === "text" || type.split(";")[0].trim() === "application/json")) {
             try {
                 return strings_1.toUtf8String(value);
             }
@@ -108,6 +108,7 @@ function _fetchData(connection, body, processFunc) {
                 }
             }
         }
+        options.allowGzip = !!connection.allowGzip;
         if (connection.user != null && connection.password != null) {
             if (url.substring(0, 6) !== "https:" && connection.allowInsecureAuthentication !== true) {
                 logger.throwError("basic authentication requires a secure https url", logger_1.Logger.errors.INVALID_ARGUMENT, { argument: "url", url: url, user: connection.user, password: "[REDACTED]" });

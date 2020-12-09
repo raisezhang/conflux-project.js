@@ -3,9 +3,10 @@
 // See: https://github.com/ethereum/wiki/wiki/JSON-RPC
 
 import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { Signer } from "@ethersproject/abstract-signer";
+import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Bytes, hexlify, hexValue } from "@ethersproject/bytes";
+import { Bytes, hexlify, hexValue, isHexString } from "@ethersproject/bytes";
+import { _TypedDataEncoder } from "@ethersproject/hash";
 import { Network, Networkish } from "@ethersproject/networks";
 import { checkProperties, deepCopy, Deferrable, defineReadOnly, getStatic, resolveProperties, shallowCopy } from "@ethersproject/properties";
 import { toUtf8Bytes } from "@ethersproject/strings";
@@ -18,16 +19,58 @@ const logger = new Logger(version);
 import { BaseProvider, Event } from "./base-provider";
 
 
-const ErrorGas = [ "call", "estimateGas" ];
+const errorGas = [ "call", "estimateGas" ];
 
-function getMessage(error: any): string {
+function checkError(method: string, error: any, params: any): any {
+    // Undo the "convenience" some nodes are attempting to prevent backwards
+    // incompatibility; maybe for v6 consider forwarding reverts as errors
+    if (method === "call" && error.code === Logger.errors.SERVER_ERROR) {
+        const e = error.error;
+        if (e && e.message.match("reverted") && isHexString(e.data)) {
+            return e.data;
+        }
+    }
+
     let message = error.message;
     if (error.code === Logger.errors.SERVER_ERROR && error.error && typeof(error.error.message) === "string") {
         message = error.error.message;
+    } else if (typeof(error.body) === "string") {
+        message = error.body;
     } else if (typeof(error.responseText) === "string") {
         message = error.responseText;
     }
-    return message || "";
+    message = (message || "").toLowerCase();
+
+    const transaction = params.transaction || params.signedTransaction;
+
+    // "insufficient funds for gas * price + value + cost(data)"
+    if (message.match(/insufficient funds/)) {
+        logger.throwError("insufficient funds for intrinsic transaction cost", Logger.errors.INSUFFICIENT_FUNDS, {
+            error, method, transaction
+        });
+    }
+
+    // "nonce too low"
+    if (message.match(/nonce too low/)) {
+        logger.throwError("nonce has already been used", Logger.errors.NONCE_EXPIRED, {
+            error, method, transaction
+        });
+    }
+
+    // "replacement transaction underpriced"
+    if (message.match(/replacement transaction underpriced/)) {
+        logger.throwError("replacement fee too low", Logger.errors.REPLACEMENT_UNDERPRICED, {
+            error, method, transaction
+        });
+    }
+
+    if (errorGas.indexOf(method) >= 0 && message.match(/gas required exceeds allowance|always failing transaction|execution reverted/)) {
+        logger.throwError("cannot estimate gas; transaction may fail or may require manual gas limit", Logger.errors.UNPREDICTABLE_GAS_LIMIT, {
+            error, method, transaction
+        });
+    }
+
+    throw error;
 }
 
 function timer(timeout: number): Promise<any> {
@@ -55,7 +98,7 @@ function getLowerCase(value: string): string {
 
 const _constructorGuard = {};
 
-export class JsonRpcSigner extends Signer {
+export class JsonRpcSigner extends Signer implements TypedDataSigner {
     readonly provider: JsonRpcProvider;
     _index: number;
     _address: string;
@@ -145,25 +188,7 @@ export class JsonRpcSigner extends Signer {
             return this.provider.send("eth_sendTransaction", [ hexTx ]).then((hash) => {
                 return hash;
             }, (error) => {
-                if (error.responseText) {
-                    // See: JsonRpcProvider.sendTransaction (@TODO: Expose a ._throwError??)
-                    if (error.responseText.indexOf("insufficient funds") >= 0) {
-                        logger.throwError("insufficient funds", Logger.errors.INSUFFICIENT_FUNDS, {
-                            transaction: tx
-                        });
-                    }
-                    if (error.responseText.indexOf("nonce too low") >= 0) {
-                        logger.throwError("nonce has already been used", Logger.errors.NONCE_EXPIRED, {
-                            transaction: tx
-                        });
-                    }
-                    if (error.responseText.indexOf("replacement transaction underpriced") >= 0) {
-                        logger.throwError("replacement fee too low", Logger.errors.REPLACEMENT_UNDERPRICED, {
-                            transaction: tx
-                        });
-                    }
-                }
-                throw error;
+                return checkError("sendTransaction", error, hexTx);
             });
         });
     }
@@ -188,21 +213,34 @@ export class JsonRpcSigner extends Signer {
         });
     }
 
-    signMessage(message: Bytes | string): Promise<string> {
+    async signMessage(message: Bytes | string): Promise<string> {
         const data = ((typeof(message) === "string") ? toUtf8Bytes(message): message);
-        return this.getAddress().then((address) => {
+        const address = await this.getAddress();
 
-            // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
-            return this.provider.send("eth_sign", [ address.toLowerCase(), hexlify(data) ]);
-        });
+        // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
+        return await this.provider.send("eth_sign", [ address.toLowerCase(), hexlify(data) ]);
     }
 
-    unlock(password: string): Promise<boolean> {
+    async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
+        // Populate any ENS names (in-place)
+        const populated = await _TypedDataEncoder.resolveNames(domain, types, value, (name: string) => {
+            return this.provider.resolveName(name);
+        });
+
+        const address = await this.getAddress();
+
+        return await this.provider.send("eth_signTypedData_v4", [
+            address.toLowerCase(),
+            JSON.stringify(_TypedDataEncoder.getPayload(populated.domain, types, populated.value))
+        ]);
+    }
+
+    async unlock(password: string): Promise<boolean> {
         const provider = this.provider;
 
-        return this.getAddress().then(function(address) {
-            return provider.send("personal_unlockAccount", [ address.toLowerCase(), password, null ]);
-        });
+        const address = await this.getAddress();
+
+        return provider.send("personal_unlockAccount", [ address.toLowerCase(), password, null ]);
     }
 }
 
@@ -419,43 +457,10 @@ export class JsonRpcProvider extends BaseProvider {
         if (args == null) {
             logger.throwError(method + " not implemented", Logger.errors.NOT_IMPLEMENTED, { operation: method });
         }
-
-        // We need a little extra logic to process errors from sendTransaction
-        if (method === "sendTransaction") {
-            try {
-                return await this.send(args[0], args[1]);
-            } catch (error) {
-                const message = getMessage(error);
-
-                // "insufficient funds for gas * price + value"
-                if (message.match(/insufficient funds/)) {
-                    logger.throwError("insufficient funds", Logger.errors.INSUFFICIENT_FUNDS, { });
-                }
-
-                // "nonce too low"
-                if (message.match(/nonce too low/)) {
-                    logger.throwError("nonce has already been used", Logger.errors.NONCE_EXPIRED, { });
-                }
-
-                // "replacement transaction underpriced"
-                if (message.match(/replacement transaction underpriced/)) {
-                    logger.throwError("replacement fee too low", Logger.errors.REPLACEMENT_UNDERPRICED, { });
-                }
-
-                throw error;
-            }
-        }
-
         try {
             return await this.send(args[0], args[1])
         } catch (error) {
-            if (ErrorGas.indexOf(method) >= 0 && getMessage(error).match(/gas required exceeds allowance|always failing transaction|execution reverted/)) {
-                logger.throwError("cannot estimate gas; transaction may fail or may require manual gas limit", Logger.errors.UNPREDICTABLE_GAS_LIMIT, {
-                    transaction: params.transaction,
-                    error: error
-                });
-            }
-            throw error;
+            return checkError(method, error, params);
         }
     }
 

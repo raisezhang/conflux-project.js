@@ -96,7 +96,7 @@ var blockchainData = {
                 s: "0x269c3e5b3558267ad91b0a887d51f9f10098771c67b82ea6cb74f29638754f54",
                 v: 38,
                 creates: null,
-                raw: "0xf8d2808504a817c8008303d090946fc21092da55b392b045ed78f4732bff3c580e2c880186cc6acd4b0000b864f2c298be000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000067269636d6f6f000000000000000000000000000000000000000000000000000026a01e5605197a03e3f0a168f14749168dfeefc44c9228312dacbffdcbbb13263265a0269c3e5b3558267ad91b0a887d51f9f10098771c67b82ea6cb74f29638754f54",
+                //raw: "0xf8d2808504a817c8008303d090946fc21092da55b392b045ed78f4732bff3c580e2c880186cc6acd4b0000b864f2c298be000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000067269636d6f6f000000000000000000000000000000000000000000000000000026a01e5605197a03e3f0a168f14749168dfeefc44c9228312dacbffdcbbb13263265a0269c3e5b3558267ad91b0a887d51f9f10098771c67b82ea6cb74f29638754f54",
                 chainId: 1
             }
         ],
@@ -395,6 +395,8 @@ function equals(name, actual, expected) {
         if (actual == null) {
             assert_1.default.ok(false, name + " - actual big number null");
         }
+        expected = ethers_1.ethers.BigNumber.from(expected);
+        actual = ethers_1.ethers.BigNumber.from(actual);
         assert_1.default.ok(expected.eq(actual), name + " matches");
     }
     else if (Array.isArray(expected)) {
@@ -429,172 +431,482 @@ function equals(name, actual, expected) {
 }
 function waiter(duration) {
     return new Promise(function (resolve) {
-        setTimeout(resolve, duration);
+        var timer = setTimeout(resolve, duration);
+        if (timer.unref) {
+            timer.unref();
+        }
     });
 }
-function testProvider(providerName, networkName) {
-    // Delay (ms) after each test case to prevent the backends from throttling
-    var delay = 1000;
-    describe(("Read-Only " + providerName + " (" + networkName + ")"), function () {
-        this.retries(3);
-        // Get the Provider based on the name of the provider we are testing and the network
-        var provider = null;
-        if (networkName === "default") {
-            if (providerName === "getDefaultProvider") {
-                provider = ethers_1.ethers.getDefaultProvider();
+var allNetworks = ["default", "homestead", "ropsten", "rinkeby", "kovan", "goerli"];
+var ApiKeys = {
+    alchemy: "YrPw6SWb20vJDRFkhWq8aKnTQ8JRNRHM",
+    etherscan: "FPFGK6JSW2UHJJ2666FG93KP7WC999MNW7",
+    infura: "49a0efa3aaee4fd99797bfa94d8ce2f1",
+    pocket: "5f7f8547b90218002e9ce9dd",
+};
+var providerFunctions = [
+    {
+        name: "getDefaultProvider",
+        networks: allNetworks,
+        create: function (network) {
+            if (network == "default") {
+                return ethers_1.ethers.getDefaultProvider(null, ApiKeys);
             }
-            else {
-                provider = new (ethers_1.ethers.providers)[providerName]();
-            }
+            return ethers_1.ethers.getDefaultProvider(network, ApiKeys);
         }
-        else {
-            if (providerName === "getDefaultProvider") {
-                provider = ethers_1.ethers.getDefaultProvider(networkName);
+    },
+    {
+        name: "AlchemyProvider",
+        networks: allNetworks,
+        create: function (network) {
+            if (network == "default") {
+                return new ethers_1.ethers.providers.AlchemyProvider(null, ApiKeys.alchemy);
             }
-            else {
-                provider = new (ethers_1.ethers.providers)[providerName](networkName);
-            }
+            return new ethers_1.ethers.providers.AlchemyProvider(network, ApiKeys.alchemy);
         }
-        var tests = blockchainData[networkName];
-        // And address test case can have any of the following:
-        // - balance
-        // - code
-        // - storage
-        // - ENS name
-        tests.addresses.forEach(function (test) {
-            if (test.balance) {
-                it("fetches address balance: " + test.address, function () {
-                    // Note: These tests could be fiddled with if someone sends ether
-                    // to our address; we just have to live with jerks sending us
-                    // money. *smile emoji*
-                    this.timeout(60000);
-                    return provider.getBalance(test.address).then(function (balance) {
-                        equals("Balance", test.balance, balance);
-                        return waiter(delay);
-                    });
-                });
+    },
+    /*
+    {
+        name: "CloudflareProvider",
+        networks: [ "default", "homestead" ],
+        create: (network: string) => {
+            return new ethers.providers.CloudflareProvider(network);
+        }
+    },
+    */
+    {
+        name: "InfuraProvider",
+        networks: allNetworks,
+        create: function (network) {
+            if (network == "default") {
+                return new ethers_1.ethers.providers.InfuraProvider(null, ApiKeys.infura);
             }
-            if (test.code) {
-                it("fetches address code: " + test.address, function () {
-                    this.timeout(60000);
-                    return provider.getCode(test.address).then(function (code) {
-                        equals("Code", test.code, code);
-                        return waiter(delay);
-                    });
-                });
+            return new ethers_1.ethers.providers.InfuraProvider(network, ApiKeys.infura);
+        }
+    },
+    {
+        name: "EtherscanProvider",
+        networks: allNetworks,
+        create: function (network) {
+            if (network == "default") {
+                return new ethers_1.ethers.providers.EtherscanProvider(null, ApiKeys.etherscan);
             }
-            if (test.storage) {
-                Object.keys(test.storage).forEach(function (position) {
-                    it("fetches storage: " + test.address + ":" + position, function () {
-                        this.timeout(60000);
-                        return provider.getStorageAt(test.address, bnify(position)).then(function (value) {
-                            equals("Storage", test.storage[position], value);
-                            return waiter(delay);
+            return new ethers_1.ethers.providers.EtherscanProvider(network, ApiKeys.etherscan);
+        }
+    },
+    {
+        name: "NodesmithProvider",
+        networks: [],
+        create: function (network) {
+            throw new Error("not tested");
+        }
+    },
+    {
+        name: "PocketProvider",
+        networks: ["default", "homestead"],
+        create: function (network) {
+            if (network == "default") {
+                return new ethers_1.ethers.providers.PocketProvider(null, ApiKeys.pocket);
+            }
+            return new ethers_1.ethers.providers.PocketProvider(network, ApiKeys.pocket);
+        }
+    },
+    {
+        name: "Web3Provider",
+        networks: [],
+        create: function (network) {
+            throw new Error("not tested");
+        }
+    }
+];
+// This wallet can be funded and used for various test cases
+var fundWallet = ethers_1.ethers.Wallet.createRandom();
+var testFunctions = [];
+Object.keys(blockchainData).forEach(function (network) {
+    function addSimpleTest(name, func, expected) {
+        var _this = this;
+        testFunctions.push({
+            name: name,
+            networks: [network],
+            execute: function (provider) { return __awaiter(_this, void 0, void 0, function () {
+                var value;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, func(provider)];
+                        case 1:
+                            value = _a.sent();
+                            equals(name, expected, value);
+                            return [2 /*return*/];
+                    }
+                });
+            }); }
+        });
+    }
+    function addObjectTest(name, func, expected, checkSkip) {
+        var _this = this;
+        testFunctions.push({
+            name: name,
+            networks: [network],
+            checkSkip: checkSkip,
+            execute: function (provider) { return __awaiter(_this, void 0, void 0, function () {
+                var value;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, func(provider)];
+                        case 1:
+                            value = _a.sent();
+                            Object.keys(expected).forEach(function (key) {
+                                equals(name + "." + key, value[key], expected[key]);
+                            });
+                            return [2 /*return*/];
+                    }
+                });
+            }); }
+        });
+    }
+    var tests = blockchainData[network];
+    // And address test case can have any of the following:
+    // - balance
+    // - code
+    // - storage
+    // - ENS name
+    tests.addresses.forEach(function (test) {
+        if (test.balance) {
+            addSimpleTest("fetches account balance: " + test.address, function (provider) {
+                return provider.getBalance(test.address);
+            }, test.balance);
+        }
+        if (test.code) {
+            addSimpleTest("fetches account code: " + test.address, function (provider) {
+                return provider.getCode(test.address);
+            }, test.code);
+        }
+        if (test.storage) {
+            Object.keys(test.storage).forEach(function (position) {
+                addSimpleTest("fetches storage: " + test.address + ":" + position, function (provider) {
+                    return provider.getStorageAt(test.address, bnify(position));
+                }, test.storage[position]);
+            });
+        }
+        if (test.name) {
+            addSimpleTest("fetches ENS name: " + test.address, function (provider) {
+                return provider.resolveName(test.name);
+            }, test.address);
+        }
+    });
+    tests.blocks.forEach(function (test) {
+        addObjectTest("fetches block (by number) #" + test.number, function (provider) {
+            return provider.getBlock(test.number);
+        }, test);
+    });
+    tests.blocks.forEach(function (test) {
+        addObjectTest("fetches block (by hash) " + test.hash, function (provider) {
+            return provider.getBlock(test.hash);
+        }, test, function (provider, network, test) {
+            return (provider === "EtherscanProvider");
+        });
+    });
+    tests.transactions.forEach(function (test) {
+        addObjectTest("fetches transaction " + test.hash, function (provider) { return __awaiter(void 0, void 0, void 0, function () {
+            var tx;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, provider.getTransaction(test.hash)];
+                    case 1:
+                        tx = _a.sent();
+                        // This changes with every block
+                        assert_1.default.equal(typeof (tx.confirmations), "number", "confirmations is a number");
+                        delete tx.confirmations;
+                        assert_1.default.equal(typeof (tx.wait), "function", "wait is a function");
+                        delete tx.wait;
+                        return [2 /*return*/, tx];
+                }
+            });
+        }); }, test, function (provider, network, test) {
+            return (provider === "EtherscanProvider");
+        });
+    });
+    tests.transactionReceipts.forEach(function (test) {
+        addObjectTest("fetches transaction receipt " + test.transactionHash, function (provider) { return __awaiter(void 0, void 0, void 0, function () {
+            var receipt;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, provider.getTransactionReceipt(test.transactionHash)];
+                    case 1:
+                        receipt = _a.sent();
+                        if (test.status === null) {
+                            assert_1.default.ok(receipt.status === undefined, "no status");
+                            receipt.status = null;
+                        }
+                        // This changes with every block; so just make sure it is a number
+                        assert_1.default.equal(typeof (receipt.confirmations), "number", "confirmations is a number");
+                        delete receipt.confirmations;
+                        return [2 /*return*/, receipt];
+                }
+            });
+        }); }, test);
+    });
+});
+(function () {
+    var _this = this;
+    function addErrorTest(code, func) {
+        var _this = this;
+        testFunctions.push({
+            name: "throws correct " + code + " error",
+            networks: ["ropsten"],
+            execute: function (provider) { return __awaiter(_this, void 0, void 0, function () {
+                var value, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 2, , 3]);
+                            return [4 /*yield*/, func(provider)];
+                        case 1:
+                            value = _a.sent();
+                            console.log(value);
+                            assert_1.default.ok(false, "did not throw");
+                            return [3 /*break*/, 3];
+                        case 2:
+                            error_1 = _a.sent();
+                            assert_1.default.equal(error_1.code, code, "incorrect error thrown");
+                            return [3 /*break*/, 3];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            }); }
+        });
+    }
+    addErrorTest(ethers_1.ethers.utils.Logger.errors.NONCE_EXPIRED, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, provider.sendTransaction("0xf86480850218711a0082520894000000000000000000000000000000000000000002801ba038aaddcaaae7d3fa066dfd6f196c8348e1bb210f2c121d36cb2c24ef20cea1fba008ae378075d3cd75aae99ab75a70da82161dffb2c8263dabc5d8adecfa9447fa")];
+        });
+    }); });
+    addErrorTest(ethers_1.ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+        var txProps, wallet, tx;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    txProps = {
+                        to: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
+                        gasPrice: 9000000000,
+                        gasLimit: 21000,
+                        value: 1
+                    };
+                    wallet = ethers_1.ethers.Wallet.createRandom();
+                    return [4 /*yield*/, wallet.signTransaction(txProps)];
+                case 1:
+                    tx = _a.sent();
+                    return [2 /*return*/, provider.sendTransaction(tx)];
+            }
+        });
+    }); });
+    addErrorTest(ethers_1.ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+        var txProps, wallet;
+        return __generator(this, function (_a) {
+            txProps = {
+                to: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
+                gasPrice: 9000000000,
+                gasLimit: 21000,
+                value: 1
+            };
+            wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+            return [2 /*return*/, wallet.sendTransaction(txProps)];
+        });
+    }); });
+    addErrorTest(ethers_1.ethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, provider.estimateGas({
+                    to: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" // ENS contract
+                })];
+        });
+    }); });
+})();
+testFunctions.push({
+    name: "sends a transaction",
+    extras: ["funding"],
+    timeout: 300,
+    networks: ["ropsten"],
+    execute: function (provider) { return __awaiter(void 0, void 0, void 0, function () {
+        var wallet, addr, b0, tx, b1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    wallet = fundWallet.connect(provider);
+                    addr = "0x8210357f377E901f18E45294e86a2A32215Cc3C9";
+                    return [4 /*yield*/, provider.getBalance(wallet.address)];
+                case 1:
+                    b0 = _a.sent();
+                    assert_1.default.ok(b0.gt(ethers_1.ethers.constants.Zero), "balance is non-zero");
+                    return [4 /*yield*/, wallet.sendTransaction({
+                            to: addr,
+                            value: 123
+                        })];
+                case 2:
+                    tx = _a.sent();
+                    return [4 /*yield*/, tx.wait()];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, provider.getBalance(wallet.address)];
+                case 4:
+                    b1 = _a.sent();
+                    assert_1.default.ok(b0.gt(b1), "balance is decreased");
+                    return [2 /*return*/];
+            }
+        });
+    }); }
+});
+describe("Test Provider Methods", function () {
+    var fundReceipt = null;
+    var faucet = "0x8210357f377E901f18E45294e86a2A32215Cc3C9";
+    before(function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var provider, funder;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(300000);
+                        provider = new ethers_1.ethers.providers.InfuraProvider("ropsten", ApiKeys.infura);
+                        return [4 /*yield*/, ethers_1.ethers.utils.fetchJson("https://api.ethers.io/api/v1/?action=fundAccount&address=" + fundWallet.address.toLowerCase())];
+                    case 1:
+                        funder = _a.sent();
+                        fundReceipt = provider.waitForTransaction(funder.hash);
+                        fundReceipt.then(function (receipt) {
+                            console.log("*** Funded: " + fundWallet.address);
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    });
+    after(function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var provider, gasPrice, balance, tx;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(300000);
+                        // Wait until the funding is complete
+                        return [4 /*yield*/, fundReceipt];
+                    case 1:
+                        // Wait until the funding is complete
+                        _a.sent();
+                        provider = new ethers_1.ethers.providers.InfuraProvider("ropsten", ApiKeys.infura);
+                        return [4 /*yield*/, provider.getGasPrice()];
+                    case 2:
+                        gasPrice = _a.sent();
+                        return [4 /*yield*/, provider.getBalance(fundWallet.address)];
+                    case 3:
+                        balance = _a.sent();
+                        return [4 /*yield*/, fundWallet.connect(provider).sendTransaction({
+                                to: faucet,
+                                gasLimit: 21000,
+                                gasPrice: gasPrice,
+                                value: balance.sub(gasPrice.mul(21000))
+                            })];
+                    case 4:
+                        tx = _a.sent();
+                        console.log("*** Sweep Transaction:", tx.hash);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    });
+    providerFunctions.forEach(function (_a) {
+        var name = _a.name, networks = _a.networks, create = _a.create;
+        networks.forEach(function (network) {
+            var provider = create(network);
+            testFunctions.forEach(function (test) {
+                // Skip tests not supported on this network
+                if (test.networks.indexOf(network) === -1) {
+                    return;
+                }
+                if (test.checkSkip && test.checkSkip(name, network, test)) {
+                    return;
+                }
+                // How many attempts to try?
+                var attempts = (test.attempts != null) ? test.attempts : 3;
+                var timeout = (test.timeout != null) ? test.timeout : 60;
+                var extras = (test.extras || []).reduce(function (accum, key) {
+                    accum[key] = true;
+                    return accum;
+                }, {});
+                it(name + "." + (network ? network : "default") + " " + test.name, function () {
+                    return __awaiter(this, void 0, void 0, function () {
+                        var error, attempt, result, attemptError_1;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    // Multiply by 2 to make sure this never happens; we want our
+                                    // timeout logic to success, not allow a done() called multiple
+                                    // times because our logic returns after the timeout has occurred.
+                                    this.timeout(2 * (1000 + timeout * 1000 * attempts));
+                                    if (!extras.funding) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, fundReceipt];
+                                case 1:
+                                    _a.sent();
+                                    _a.label = 2;
+                                case 2:
+                                    if (!!extras.nowait) return [3 /*break*/, 4];
+                                    return [4 /*yield*/, waiter(1000)];
+                                case 3:
+                                    _a.sent();
+                                    _a.label = 4;
+                                case 4:
+                                    error = null;
+                                    attempt = 0;
+                                    _a.label = 5;
+                                case 5:
+                                    if (!(attempt < attempts)) return [3 /*break*/, 10];
+                                    _a.label = 6;
+                                case 6:
+                                    _a.trys.push([6, 8, , 9]);
+                                    return [4 /*yield*/, Promise.race([
+                                            test.execute(provider),
+                                            waiter(timeout * 1000).then(function (result) { throw new Error("timeout"); })
+                                        ])];
+                                case 7:
+                                    result = _a.sent();
+                                    return [2 /*return*/, result];
+                                case 8:
+                                    attemptError_1 = _a.sent();
+                                    console.log("*** Failed attempt " + (attempt + 1) + ": " + attemptError_1.message);
+                                    error = attemptError_1;
+                                    return [3 /*break*/, 9];
+                                case 9:
+                                    attempt++;
+                                    return [3 /*break*/, 5];
+                                case 10: throw error;
+                            }
                         });
                     });
                 });
-            }
-            if (test.name) {
-                it("fetches the ENS name: " + test.name, function () {
-                    this.timeout(60000);
-                    return provider.resolveName(test.name).then(function (address) {
-                        equals("ENS Name", test.address, address);
-                        return waiter(delay);
-                    });
-                });
-            }
-        });
-        tests.blocks.forEach(function (test) {
-            function checkBlock(promise) {
-                return promise.then(function (block) {
-                    for (var key in test) {
-                        equals("Block " + key, block[key], test[key]);
-                    }
-                    return waiter(delay);
-                });
-            }
-            it("fetches block (by number) #" + test.number, function () {
-                this.timeout(60000);
-                return checkBlock(provider.getBlock(test.number));
-            });
-            // Etherscan does not support getBlockByBlockhash... *sad emoji*
-            if (providerName === "EtherscanProvider") {
-                return;
-            }
-            it("fetches block (by hash) " + test.hash, function () {
-                this.timeout(60000);
-                return checkBlock(provider.getBlock(test.hash));
             });
         });
-        tests.transactions.forEach(function (test) {
-            function testTransaction(expected) {
-                var title = ("Transaction " + expected.hash.substring(0, 10) + " - ");
-                return provider.getTransaction(expected.hash).then(function (tx) {
-                    // This changes with every block
-                    assert_1.default.equal(typeof (tx.confirmations), "number", "confirmations is a number");
-                    delete tx.confirmations;
-                    assert_1.default.equal(typeof (tx.wait), "function", "wait is a function");
-                    delete tx.wait;
-                    for (var key in tx) {
-                        equals((title + key), tx[key], expected[key]);
-                    }
-                    return waiter(delay);
-                });
-            }
-            it("fetches transaction: " + test.hash, function () {
-                this.timeout(60000);
-                return testTransaction(test);
-            });
-        });
-        tests.transactionReceipts.forEach(function (test) {
-            function testTransactionReceipt(expected) {
-                var title = ("Receipt " + expected.transactionHash.substring(0, 10) + " - ");
-                return provider.getTransactionReceipt(expected.transactionHash).then(function (receipt) {
-                    // This changes with every block; so just make sure it is a number
-                    assert_1.default.equal(typeof (receipt.confirmations), "number", "confirmations is a number");
-                    delete receipt.confirmations;
-                    for (var key in receipt) {
-                        equals((title + key), receipt[key], expected[key]);
-                    }
-                    //equals(("Receipt " + expected.transactionHash.substring(0, 10)), receipt, expected);
-                    return waiter(delay);
-                });
-            }
-            it("fetches transaction receipt: " + test.transactionHash, function () {
-                this.timeout(60000);
-                return testTransactionReceipt(test);
-            });
-        });
-        // Obviously many more cases to add here
-        // - getTransactionCount
-        // - getBlockNumber
-        // - getGasPrice
-        // - estimateGas
-        // - sendTransaction
-        // - call
-        // - getLogs
-        //
-        //  Many of these are tLegacyParametersested in run-providers, which uses nodeunit, but
-        //  also creates a local private key which must then be funded to
-        //  execute the tests. I am working on a better test contract to deploy
-        //  to all the networks to help test these.
     });
-}
-["default", "homestead", "ropsten", "rinkeby", "kovan", "goerli"].forEach(function (networkName) {
-    ["getDefaultProvider", "AlchemyProvider", "CloudflareProvider", "InfuraProvider", "EtherscanProvider", "NodesmithProvider", "Web3Provider"].forEach(function (providerName) {
-        if (providerName === "NodesmithProvider") {
-            return;
-        }
-        if (providerName === "CloudflareProvider") {
-            return;
-        }
-        if (providerName === "Web3Provider") {
-            return;
-        }
-        if ((networkName !== "homestead" && networkName !== "default") && providerName === "CloudflareProvider") {
-            return;
-        }
-        testProvider(providerName, networkName);
+});
+describe("Extra tests", function () {
+    it("etherscan long-request #1093", function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var provider, value;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(60000);
+                        return [4 /*yield*/, waiter(2000)];
+                    case 1:
+                        _a.sent();
+                        provider = new ethers_1.ethers.providers.EtherscanProvider(null, ApiKeys.etherscan);
+                        return [4 /*yield*/, provider.call({
+                                to: "0xbf320b8336b131e0270295c15478d91741f9fc11",
+                                data: "0x3ad206cc000000000000000000000000f6e914d07d12636759868a61e52973d17ed7111b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000006400000000000000000000000022b3faaa8df978f6bafe18aade18dc2e3dfa0e0c000000000000000000000000998b3b82bc9dba173990be7afb772788b5acb8bd000000000000000000000000ba11d00c5f74255f56a5e366f4f77f5a186d7f55000000000000000000000000c7579bb99af590ec71c316e1ac4436c5350395940000000000000000000000002a05d22db079bc40c2f77a1d1ff703a56e631cc10000000000000000000000000d8775f648430679a709e98d2b0cb6250d2887ef0000000000000000000000009a0242b7a33dacbe40edb927834f96eb39f8fbcb000000000000000000000000c78593c17482ea5de44fdd84896ffd903972878e000000000000000000000000e7d3e4413e29ae35b0893140f4500965c74365e500000000000000000000000037d40510a2f5bc98aa7a0f7bf4b3453bcfb90ac10000000000000000000000004a6058666cf1057eac3cd3a5a614620547559fc900000000000000000000000035a69642857083ba2f30bfab735dacc7f0bac96900000000000000000000000084f7c44b6fed1080f647e354d552595be2cc602f0000000000000000000000001500205f50bf3fd976466d0662905c9ff254fc9c000000000000000000000000660b612ec57754d949ac1a09d0c2937a010dee05000000000000000000000000acfa209fb73bf3dd5bbfb1101b9bc999c49062a5000000000000000000000000865d176351f287fe1b0010805b110d08699c200a000000000000000000000000633a8f8e557702039463f9f2eb20b7936fff8c050000000000000000000000001961b3331969ed52770751fc718ef530838b6dee0000000000000000000000002fb12bccf6f5dd338b76be784a93ade0724256900000000000000000000000004d8fc1453a0f359e99c9675954e656d80d996fbf0000000000000000000000006aeb95f06cda84ca345c2de0f3b7f96923a44f4c0000000000000000000000008aa33a7899fcc8ea5fbe6a608a109c3893a1b8b200000000000000000000000014c926f2290044b647e1bf2072e67b495eff1905000000000000000000000000763186eb8d4856d536ed4478302971214febc6a90000000000000000000000008a1e3930fde1f151471c368fdbb39f3f63a65b55000000000000000000000000a8daa52ded91f7c82b4bb02b4b87c6a841db1fd500000000000000000000000033803edf44a71b9579f54cd429b53b06c0eeab83000000000000000000000000026e62dded1a6ad07d93d39f96b9eabd59665e0d00000000000000000000000047da42696a866cdc61a4c809a515500a242909c100000000000000000000000008b4c866ae9d1be56a06e0c302054b4ffe067b43000000000000000000000000420335d3deef2d5b87524ff9d0fb441f71ea621f000000000000000000000000983f7cc12d0b5d512b0f91f51a4aa478ac4def46000000000000000000000000b2bfeb70b903f1baac7f2ba2c62934c7e5b974c40000000000000000000000009b11b1b271a224a271619f3419b1b080fdec5b4a0000000000000000000000007b1309c1522afd4e66c31e1e6d0ec1319e1eba5e000000000000000000000000959529102cfde07b1196bd27adedc196d75f84f6000000000000000000000000107c4504cd79c5d2696ea0030a8dd4e92601b82e000000000000000000000000539efe69bcdd21a83efd9122571a64cc25e0282b000000000000000000000000e5a7c12972f3bbfe70ed29521c8949b8af6a0970000000000000000000000000f8ad7dfe656188a23e89da09506adf7ad9290d5d0000000000000000000000005732046a883704404f284ce41ffadd5b007fd668000000000000000000000000df6ef343350780bf8c3410bf062e0c015b1dd671000000000000000000000000f028adee51533b1b47beaa890feb54a457f51e89000000000000000000000000dd6bf56ca2ada24c683fac50e37783e55b57af9f000000000000000000000000ef51c9377feb29856e61625caf9390bd0b67ea18000000000000000000000000c80c5e40220172b36adee2c951f26f2a577810c50000000000000000000000001f573d6fb3f13d689ff844b4ce37794d79a7ff1c000000000000000000000000d2d6158683aee4cc838067727209a0aaf4359de30000000000000000000000007cdec53fe4770729dac314756c10e2f37b8d2b2f000000000000000000000000cc34366e3842ca1bd36c1f324d15257960fcc8010000000000000000000000006b01c3170ae1efebee1a3159172cb3f7a5ecf9e5000000000000000000000000139d9397274bb9e2c29a9aa8aa0b5874d30d62e300000000000000000000000063f584fa56e60e4d0fe8802b27c7e6e3b33e007f000000000000000000000000780116d91e5592e58a3b3c76a351571b39abcec60000000000000000000000000e511aa1a137aad267dfe3a6bfca0b856c1a3682000000000000000000000000327682779bab2bf4d1337e8974ab9de8275a7ca80000000000000000000000001b80eeeadcc590f305945bcc258cfa770bbe18900000000000000000000000005af2be193a6abca9c8817001f45744777db307560000000000000000000000009e77d5a1251b6f7d456722a6eac6d2d5980bd891000000000000000000000000e25f0974fea47682f6a7386e4217da70512ec997000000000000000000000000558ec3152e2eb2174905cd19aea4e34a23de9ad6000000000000000000000000b736ba66aad83adb2322d1f199bfa32b3962f13c000000000000000000000000509a38b7a1cc0dcd83aa9d06214663d9ec7c7f4a0000000000000000000000000327112423f3a68efdf1fcf402f6c5cb9f7c33fd0000000000000000000000005acd19b9c91e596b1f062f18e3d02da7ed8d1e5000000000000000000000000003df4c372a29376d2c8df33a1b5f001cd8d68b0e0000000000000000000000006aac8cb9861e42bf8259f5abdc6ae3ae89909e11000000000000000000000000d96b9fd7586d9ea24c950d24399be4fb65372fdd00000000000000000000000073dd069c299a5d691e9836243bcaec9c8c1d87340000000000000000000000005ecd84482176db90bb741ddc8c2f9ccc290e29ce000000000000000000000000fa456cf55250a839088b27ee32a424d7dacb54ff000000000000000000000000b683d83a532e2cb7dfa5275eed3698436371cc9f000000000000000000000000ccbf21ba6ef00802ab06637896b799f7101f54a20000000000000000000000007b123f53421b1bf8533339bfbdc7c98aa94163db0000000000000000000000006ecccf7ebc3497a9334f4fe957a7d5fa933c5bcc0000000000000000000000004fabb145d64652a948d72533023f6e7a623c7c53000000000000000000000000e1aee98495365fc179699c1bb3e761fa716bee6200000000000000000000000056d811088235f11c8920698a204a5010a788f4b300000000000000000000000026e75307fc0c021472feb8f727839531f112f3170000000000000000000000007d4b8cce0591c9044a22ee543533b72e976e36c30000000000000000000000003c6a7ab47b5f058be0e7c7fe1a4b7925b8aca40e0000000000000000000000001d462414fe14cf489c7a21cac78509f4bf8cd7c000000000000000000000000043044f861ec040db59a7e324c40507addb67314200000000000000000000000004f2e7221fdb1b52a68169b25793e51478ff0329000000000000000000000000954b890704693af242613edef1b603825afcd708000000000000000000000000a8f93faee440644f89059a2c88bdc9bf3be5e2ea0000000000000000000000001234567461d3f8db7496581774bd869c83d51c9300000000000000000000000056ba2ee7890461f463f7be02aac3099f6d5811a80000000000000000000000006c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e000000000000000000000000f444cd92e09cc8b2a23cd2eecb3c1e4cc8da6958000000000000000000000000cf8f9555d55ce45a3a33a81d6ef99a2a2e71dee2000000000000000000000000076c97e1c869072ee22f8c91978c99b4bcb0259100000000000000000000000017b26400621695c2d8c2d8869f6259e82d7544c4000000000000000000000000679badc551626e01b23ceecefbc9b877ea18fc46000000000000000000000000336f646f87d9f6bc6ed42dd46e8b3fd9dbd15c220000000000000000000000005d3a536e4d6dbd6114cc1ead35777bab948e3643000000000000000000000000f5dce57282a584d2746faf1593d3121fcac444dc0000000000000000000000001d9e20e581a5468644fe74ccb6a46278ef377f9e000000000000000000000000177d39ac676ed1c67a2b268ad7f1e58826e5b0af"
+                            })];
+                    case 2:
+                        value = _a.sent();
+                        assert_1.default.ok(!!value);
+                        return [2 /*return*/];
+                }
+            });
+        });
     });
 });
 /*
@@ -617,7 +929,7 @@ describe("Test extra Etherscan operations", function() {
 });
 */
 describe("Test Basic Authentication", function () {
-    this.retries(3);
+    //this.retries(3);
     function test(name, url) {
         it("tests " + name, function () {
             this.timeout(60000);
@@ -710,6 +1022,63 @@ describe("Test API Key Formatting", function () {
         // Attempt an unsupported network
         assert_1.default.throws(function () {
             var provider = new ethers_1.ethers.providers.InfuraProvider("imaginary");
+            console.log(provider);
+        }, function (error) {
+            return (error.argument === "network" && error.reason === "unsupported network");
+        });
+    });
+    it("Pocket API key", function () {
+        var applicationId = "someApplicationId";
+        var applicationSecretKey = "someApplicationSecret";
+        // Test simple applicationId
+        var apiKeyString = ethers_1.ethers.providers.PocketProvider.getApiKey(applicationId);
+        assert_1.default.equal(apiKeyString.applicationId, applicationId);
+        assert_1.default.ok(apiKeyString.applicationSecretKey == null);
+        // Test complex API key with applicationId
+        var apiKeyObject = ethers_1.ethers.providers.PocketProvider.getApiKey({
+            applicationId: applicationId
+        });
+        assert_1.default.equal(apiKeyObject.applicationId, applicationId);
+        assert_1.default.ok(apiKeyObject.applicationSecretKey == null);
+        // Test complex API key with applicationId and applicationSecretKey
+        var apiKeyObject2 = ethers_1.ethers.providers.PocketProvider.getApiKey({
+            applicationId: applicationId,
+            applicationSecretKey: applicationSecretKey
+        });
+        assert_1.default.equal(apiKeyObject2.applicationId, applicationId);
+        assert_1.default.equal(apiKeyObject2.applicationSecretKey, applicationSecretKey);
+        // Fails on invalid applicationId type
+        assert_1.default.throws(function () {
+            var apiKey = ethers_1.ethers.providers.PocketProvider.getApiKey({
+                applicationId: 1234,
+                applicationSecretKey: applicationSecretKey
+            });
+            console.log(apiKey);
+        }, function (error) {
+            return (error.argument === "applicationId" && error.reason === "applicationSecretKey requires an applicationId");
+        });
+        // Fails on invalid projectSecret type
+        assert_1.default.throws(function () {
+            var apiKey = ethers_1.ethers.providers.PocketProvider.getApiKey({
+                applicationId: applicationId,
+                applicationSecretKey: 1234
+            });
+            console.log(apiKey);
+        }, function (error) {
+            return (error.argument === "applicationSecretKey" && error.reason === "invalid applicationSecretKey");
+        });
+        {
+            var provider = new ethers_1.ethers.providers.PocketProvider("homestead", {
+                applicationId: applicationId,
+                applicationSecretKey: applicationSecretKey
+            });
+            assert_1.default.equal(provider.network.name, "homestead");
+            assert_1.default.equal(provider.applicationId, applicationId);
+            assert_1.default.equal(provider.applicationSecretKey, applicationSecretKey);
+        }
+        // Attempt an unsupported network
+        assert_1.default.throws(function () {
+            var provider = new ethers_1.ethers.providers.PocketProvider("imaginary");
             console.log(provider);
         }, function (error) {
             return (error.argument === "network" && error.reason === "unsupported network");

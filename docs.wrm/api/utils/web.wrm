@@ -3,7 +3,7 @@ _section: Web Utilities  @<web>
 
 _property: ethers.utils.fetchJson(urlOrConnectionInfo [, json [ , processFunc ] ]) => Promise<any> @<utils-fetchJson>
 Fetch and parse the JSON content from //urlOrConnectionInfo//, with the
-optiona body //json// and optionally processing the result with //processFun//
+optional body //json// and optionally processing the result with //processFun//
 before returning it.
 
 _property: ethers.utils.poll(pollFunc [, options ]) => Promise<any> @<utils-poll>
@@ -37,7 +37,7 @@ Additional headers to include in the connection.
 _heading: PollOptions @<PollOptions>
 
 _property: options.timeout => number
-The amount of time allowed to ellapse before triggering a timeout
+The amount of time allowed to elapse before triggering a timeout
 error.
 
 _property: options.floor => number

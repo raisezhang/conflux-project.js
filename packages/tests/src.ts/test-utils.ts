@@ -484,7 +484,7 @@ describe('Test UTF-8 coder', function() {
             let str2 = ethers.utils.toUtf8String(bytes);
             let escaped = JSON.parse(ethers.utils._toEscapedUtf8String(bytes));
 
-            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes)
+//            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes)
             assert.equal(str2, str, 'conversion not reflexive - ' + bytes);
             assert.equal(escaped, str, 'conversion not reflexive - ' + bytes);
         }
@@ -504,7 +504,7 @@ describe('Test Bytes32String coder', function() {
 
 
 function getHex(value: string): string {
-    return "0x" + Buffer.from(value).toString("hex");
+    return ethers.utils.hexlify(ethers.utils.toUtf8Bytes(value));
 }
 
 describe("Test nameprep", function() {
@@ -616,6 +616,17 @@ describe("BigNumber", function() {
             const value = ethers.BigNumber.from(test.value);
             const expected = ethers.BigNumber.from(test.expected);
             assert.ok(value.abs().eq(expected));
+        });
+    });
+
+    // Fails to create from BN (or any junk with a length) (See: #1172)
+    it("Fails on junk with a length property", function() {
+        const junk: any = { negative: 0, words: [ 1000 ], length: 1, red: null };
+        assert.throws(() => {
+            const value = ethers.BigNumber.from("100").add(junk);
+            console.log("ERROR", value);
+        }, (error: Error) => {
+            return true;
         });
     });
 
@@ -732,17 +743,17 @@ describe("Logger", function() {
     });
 });
 
-/*
 describe("Base58 Coder", function() {
     it("decodes", function() {
-        assert.equal(ethers.utils.Base58.decode("JxF12TrwUP45BMd"), "Hello World");
+        assert.equal(ethers.utils.toUtf8String(ethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
     });
 
     it("encodes", function() {
-        assert.equal(ethers.utils.Base58.encode("Hello World"), "JxF12TrwUP45BMd");
+        assert.equal(ethers.utils.base58.encode(ethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
     });
 });
 
+/*
 describe("Web Fetch", function() {
     it("fetches JSON", async function() {
         const url = "https:/\/api.etherscan.io/api?module=stats&action=ethprice&apikey=9D13ZE7XSBTJ94N9BNJ2MA33VMAY2YPIRB";
@@ -750,3 +761,29 @@ describe("Web Fetch", function() {
     });
 });
 */
+
+describe("EIP-712", function() {
+    const tests = loadTests<Array<TestCase.Eip712>>("eip712");
+
+    tests.forEach((test) => {
+        it(`encoding ${ test.name }`, function() {
+            const encoder = ethers.utils._TypedDataEncoder.from(test.types);
+            assert.equal(encoder.primaryType, test.primaryType, "instance.primaryType");
+            assert.equal(encoder.encode(test.data), test.encoded, "instance.encode()");
+
+            //console.log(test);
+            assert.equal(ethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
+            assert.equal(ethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
+        });
+    });
+
+    tests.forEach((test) => {
+        if (!test.privateKey) { return; }
+        it(`signing ${ test.name }`, async function() {
+            const wallet = new ethers.Wallet(test.privateKey);
+            const signature = await wallet._signTypedData(test.domain, test.types, test.data);
+            assert.equal(signature, test.signature, "signature");
+        });
+    });
+});
+

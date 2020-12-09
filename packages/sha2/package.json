@@ -1,8 +1,11 @@
 {
+  "_ethers.alias": {
+    "sha2.js": "browser-sha2.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
-  "browser": "./lib/browser.js",
-  "browser.esm": "./lib/browser.js",
-  "browser.umd": "./lib/browser.js",
+  "browser": {
+    "./lib/sha2": "./lib/browser-sha2.js"
+  },
   "dependencies": {
     "@ethersproject/bytes": "^5.0.4",
     "@ethersproject/logger": "^5.0.5",
@@ -10,6 +13,16 @@
   },
   "description": "The SHA2 family hash functions and HMAC functions for ethers.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -22,13 +35,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/sha2",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0xfd6d1d0ad5c5632c4c56da5a3a153572498495e406f8067fd411b1e4089946ae",
+  "sideEffects": false,
+  "tarballHash": "0x4d71b6b24d20756f3b1ec76d76d0e34155a3bad2debdc7579f3bf91be04f8de3",
   "types": "./lib/index.d.ts",
-  "version": "5.0.3"
+  "version": "5.0.6"
 }

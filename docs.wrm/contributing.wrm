@@ -21,7 +21,7 @@ So, pull requests are always welcome, but please keep a few points in mind:
   may not be accepted
 
 In general, **please start an issue //before// beginning a pull request**, so we can
-have a public discussion and figure out the best way to address to problem/feature.
+have a public discussion and figure out the best way to address the problem/feature.
 **:)**
 
 
@@ -94,7 +94,7 @@ Style Guide (this section will have much more coming):
 - Avoid inline links in the source; use the ``externalLinks`` field in the config.js
 - Prefix external links with ``link-``
 - Changing an anchor name must be well justified, as it will break all existing links
-  to that section; flatworm will support symblinks in the future
+  to that section; flatworm will support symlinks in the future
 - In general, I aim for xonsistency; look to similar situations throughout the documentation
 
 

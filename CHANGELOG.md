@@ -3,6 +3,91 @@ Changelog
 
 This change log is managed by `admin/cmds/update-versions` but may be manually updated.
 
+ethers/v5.0.24 (2020-12-08 01:43)
+---------------------------------
+
+  - Fixed EIP-712 getPayload dropping EIP712Domain from types for JSON-RPC calls. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [d3b1ac0](https://github.com/ethers-io/ethers.js/commit/d3b1ac046aaf2a46f6c3efbd93c55adb0cb8f16d))
+  - Remvoed dead files. ([70c2b1b](https://github.com/ethers-io/ethers.js/commit/70c2b1b3002f44c39f4fd87fc2cfc3f5dc6555ed))
+
+ethers/v5.0.23 (2020-11-25 15:25)
+---------------------------------
+
+  - Fix BigNumber when passed something with a length property. ([#1172](https://github.com/ethers-io/ethers.js/issues/1172); [45a2902](https://github.com/ethers-io/ethers.js/commit/45a2902874e828a16396a253548bcb00bceccf95))
+
+ethers/v5.0.22 (2020-11-23 19:16)
+---------------------------------
+
+  - Added directory to repo field for each package. ([799896a](https://github.com/ethers-io/ethers.js/commit/799896ac13cce857ce0124d2fb480f5d1eed114c))
+  - Add ABI coder function to compute default values. ([#1101](https://github.com/ethers-io/ethers.js/issues/1101); [a8e3380](https://github.com/ethers-io/ethers.js/commit/a8e3380ed547b6368be5fe40b48be6e31b5cdd93))
+  - Fix for new versions of Geth which return formatted data on revert rather than standard data. ([#949](https://github.com/ethers-io/ethers.js/issues/949); [4a8d579](https://github.com/ethers-io/ethers.js/commit/4a8d579dcaf026d0c232e20176605d34cba4767d))
+  - Addd missing sideEffects flag to some packages. ([20defec](https://github.com/ethers-io/ethers.js/commit/20defec9f1683487b6ea9c8730d2ab7b3745bfa5))
+  - Allow base-10 to be passed into BigNumbner.toString and improve errors for other radices. ([#1164](https://github.com/ethers-io/ethers.js/issues/1164); [c8bb77d](https://github.com/ethers-io/ethers.js/commit/c8bb77d8af85d2f9f9df82f1afbe7516ab296e98), [fbbe4ad](https://github.com/ethers-io/ethers.js/commit/fbbe4ad638e06089cdd976a7f4ffd51b85a31558))
+  - Allow private keys to Wallet to omit the 0x prefix. ([#1166](https://github.com/ethers-io/ethers.js/issues/1166); [29f6c34](https://github.com/ethers-io/ethers.js/commit/29f6c34343d75fa42023bdcd07632f49a450570c))
+
+ethers/v5.0.21 (2020-11-19 18:52)
+---------------------------------
+
+  - Force address to use bignumber package with base36 private functions. ([#1163](https://github.com/ethers-io/ethers.js/issues/1163); [c9e5480](https://github.com/ethers-io/ethers.js/commit/c9e548071e9ed03e3b12f40f0be779c16422a73f))
+  - Remove stray console.log in hardware wallets. ([#1136](https://github.com/ethers-io/ethers.js/issues/1136); [cc63e61](https://github.com/ethers-io/ethers.js/commit/cc63e61f73d530c28655f9421506a25fc0a49df0))
+  - Added some funding links for the sponsor button. ([2816850](https://github.com/ethers-io/ethers.js/commit/2816850716d4bf2b458f1db4e0c7a5dc09fb14f7))
+  - Remove invalid pkg.module reference. ([#1133](https://github.com/ethers-io/ethers.js/issues/1133); [cddc258](https://github.com/ethers-io/ethers.js/commit/cddc258c963ab63de426b89ef190b83aefe6f6cd))
+
+ethers/v5.0.20 (2020-11-17 20:32)
+---------------------------------
+
+  - Fix browser ws alias for WebSockets. ([02546b9](https://github.com/ethers-io/ethers.js/commit/02546b9401d8066135b4453da917f7ef49c95ad8))
+  - Fixing React Native tests. ([f10977a](https://github.com/ethers-io/ethers.js/commit/f10977ab35f953c3148d99b61799788f47d2a5a2), [fff72ef](https://github.com/ethers-io/ethers.js/commit/fff72ef369f5420bf8283b0808e8fec71f26dd2b))
+  - Refactoring dist build process. ([4809325](https://github.com/ethers-io/ethers.js/commit/4809325bee9cbdd269b099d7b12b218f441ac840), [22bd0c7](https://github.com/ethers-io/ethers.js/commit/22bd0c76dddef7134618ec70ac1b084a054e616e), [8933467](https://github.com/ethers-io/ethers.js/commit/8933467c01b64ead547d7c136f22f3c05c85ca1f))
+
+ethers/v5.0.19 (2020-10-22 21:55)
+---------------------------------
+
+  - Allow 0x as a numeric value for 0 in Provider formatter. ([#1104](https://github.com/ethers-io/ethers.js/issues/1104); [fe17a29](https://github.com/ethers-io/ethers.js/commit/fe17a295816214d063f3d6bd4f3273e0ce0c3eac))
+  - Use POST for long requests in EtherscanProvider. ([#1093](https://github.com/ethers-io/ethers.js/issues/1093); [28f60d5](https://github.com/ethers-io/ethers.js/commit/28f60d5ef83665541c8c1b432f8e173d73cb8227))
+  - Added verifyTypedData for EIP-712 typed data. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [550ecf2](https://github.com/ethers-io/ethers.js/commit/550ecf2f25b90f6d8996583489a218dbf2306ebc), [a21202c](https://github.com/ethers-io/ethers.js/commit/a21202c66b392ec6f91296d66551dffca742cf0a))
+
+ethers/v5.0.18 (2020-10-19 01:26)
+---------------------------------
+
+  - Fix signTypedData call for JsonRpcSigner. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [15a90af](https://github.com/ethers-io/ethers.js/commit/15a90af5be75806e26f589f0a3f3687c0fb1c672))
+  - Added EIP-712 test cases. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [1589353](https://github.com/ethers-io/ethers.js/commit/15893537c3d9c92fe8748a3e9617d133d1d5d6a7))
+  - Initial Signer support for EIP-712 signed typed data. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [be4e216](https://github.com/ethers-io/ethers.js/commit/be4e2164e64dfa0697561763e8079120a485a566))
+  - Split hash library files up. ([3e676f2](https://github.com/ethers-io/ethers.js/commit/3e676f21b00931ed966f4561e4f28792a1f8f154))
+  - Added EIP-712 multi-dimensional array support. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [5a4dd5a](https://github.com/ethers-io/ethers.js/commit/5a4dd5a70377d3e86823d279d6ff466d03767644))
+  - Consolidated TypedDataEncoder methods. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [345a830](https://github.com/ethers-io/ethers.js/commit/345a830dc4bc869d5f3edfdc27465797e7663055))
+  - Initial EIP-712 utilities. ([#687](https://github.com/ethers-io/ethers.js/issues/687); [cfa6dec](https://github.com/ethers-io/ethers.js/commit/cfa6dec29314fe485df283974612d40550bc4179))
+  - Added initial PocketProvider. ([#1052](https://github.com/ethers-io/ethers.js/issues/1052); [a62d20d](https://github.com/ethers-io/ethers.js/commit/a62d20d86f2d545b9a7bcda5418993790b7db91c))
+
+ethers/v5.0.17 (2020-10-07 20:08)
+---------------------------------
+
+  - Better error message for parseUnits of non-strings. ([#981](https://github.com/ethers-io/ethers.js/issues/981); [5abc2f3](https://github.com/ethers-io/ethers.js/commit/5abc2f36e20eef79a935961f3dd8133b5528d9e5))
+  - Add gzip support to AlchemyProivder and InfuraProvider fetching. ([#1085](https://github.com/ethers-io/ethers.js/issues/1085); [38a068b](https://github.com/ethers-io/ethers.js/commit/38a068bcea3f251c8f3a349a90fcb077a39d23ad))
+  - Add gzip support to getUrl in node. ([#1085](https://github.com/ethers-io/ethers.js/issues/1085); [65772a8](https://github.com/ethers-io/ethers.js/commit/65772a8e1a55d663bdb67e3a2b160fecc9f986ef))
+  - Added CommunityResourcable to mark Providers as highly throttled. ([a022093](https://github.com/ethers-io/ethers.js/commit/a022093ce03f55db7ba2cac36e365d1af39ac45b))
+  - Added debug event info to WebSocketProvider. ([#1018](https://github.com/ethers-io/ethers.js/issues/1018); [8e682cc](https://github.com/ethers-io/ethers.js/commit/8e682cc8481c6051a6f8115b29d78f4996120ccd))
+
+ethers/v5.0.16 (2020-10-05 15:44)
+---------------------------------
+
+  - ABI encoding performance additions. ([#1012](https://github.com/ethers-io/ethers.js/issues/1012); [f3e5b0d](https://github.com/ethers-io/ethers.js/commit/f3e5b0ded1b227a377fd4799507653c95c76e353))
+  - Export hexConcat in utils. ([#1079](https://github.com/ethers-io/ethers.js/issues/1079); [3d051e4](https://github.com/ethers-io/ethers.js/commit/3d051e454db978f58c7b38ff4484096c3eb85b94))
+  - Cache chain ID for WebSocketProvider. ([#1054](https://github.com/ethers-io/ethers.js/issues/1054); [40264ff](https://github.com/ethers-io/ethers.js/commit/40264ff9006156ba8441e6101e5a7149a5cf03f6))
+
+ethers/v5.0.15 (2020-09-26 03:22)
+---------------------------------
+
+  - Add more accurate intrinsic gas cost to ABI calls with specified gas property. ([#1058](https://github.com/ethers-io/ethers.js/issues/1058); [f0a5869](https://github.com/ethers-io/ethers.js/commit/f0a5869c53475e55a5f47d8651f609fff45dc9a7))
+  - Better errors for unconfigured ENS names. ([#1066](https://github.com/ethers-io/ethers.js/issues/1066); [5cd1668](https://github.com/ethers-io/ethers.js/commit/5cd1668e0d29099c5b7ce1fdc1d0e8a41af1a249))
+  - Updated CLI solc to versin 0.7.1. ([4306b35](https://github.com/ethers-io/ethers.js/commit/4306b3563a171baa9d7bf4872475a13c3434f834))
+
+ethers/v5.0.14 (2020-09-16 02:39)
+---------------------------------
+
+  - More robust blockchain error detection ([#1047](https://github.com/ethers-io/ethers.js/issues/1047); [49f7157](https://github.com/ethers-io/ethers.js/commit/49f71574f4799d685a5ae8fd24fe1134f752d70a))
+  - Forward blockchain errors from Signer during gas estimation. ([#1047](https://github.com/ethers-io/ethers.js/issues/1047); [9ee685d](https://github.com/ethers-io/ethers.js/commit/9ee685df46753c46cbbde12d05d6ea04f2b5ea3f))
+  - Improve fetch errors with looser mime-type detection. ([#1047](https://github.com/ethers-io/ethers.js/issues/1047); [263bfe5](https://github.com/ethers-io/ethers.js/commit/263bfe5ce632790e0399d06a0ab660a501997998))
+
 ethers/v5.0.13 (2020-09-11 02:10)
 ---------------------------------
 
@@ -115,4 +200,3 @@ ethers/v5.0.0 (2020-06-12 19:58)
 
   - Preserve config canary string. ([7157816](https://github.com/ethers-io/ethers.js/commit/7157816fa53f660d750811b293e3b1d5a2f70bd4))
   - Updated docs. ([9e4c7e6](https://github.com/ethers-io/ethers.js/commit/9e4c7e609d9eeb5f2a11d6a90bfa9d32ee696431))
-

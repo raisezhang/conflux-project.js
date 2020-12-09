@@ -3,31 +3,36 @@
   "author": "Richard Moore <me@ricmoo.com>",
   "browser": "./dist/index.min.js",
   "description": "Shims required for ethers in constrained environments.",
-  "devDependencies": {
-    "browserify": "16.2.3",
-    "uglify-es": "3.3.9"
-  },
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
   ],
   "license": "MIT",
-  "main": "./lib/index.js",
-  "module": "./lib.esm/index.js",
+  "main": "./src/index.js",
   "name": "@ethersproject/shims",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
+    "directory": "packages/shims",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
-    "dist": "browserify ./src/index.js -o ./dist/index.js && uglifyjs --compress --mangle --output ./dist/index.min.js -- ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0xc6ad91462bf8be9bb6077a5e22f43ff35e82a815dbd91bbd6d709c945f8e03e2",
+  "tarballHash": "0x533d308926d3d1946b4d41c8902cc203cc06ac205f1b4df68314fb0402a5b50d",
   "types": "./lib/index.d.ts",
-  "version": "5.0.5"
+  "version": "5.0.10"
 }

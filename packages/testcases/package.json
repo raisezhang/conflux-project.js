@@ -8,20 +8,33 @@
     "ethereumjs-tx": "^1.3.5",
     "ethereumjs-util": "^5.2.0"
   },
+  "_ethers.alias": {
+    "disk-utils.js": "browser-disk-utils.js"
+  },
   "author": "Richard Moore <me@ricmoo.com>",
-  "browser": "./lib/browser.js",
-  "browser.esm": "./lib.esm/browser.js",
-  "browser.umd": "./lib/browser.js",
+  "browser": {
+    "./lib/disk-utils": "./lib/browser-disk-utils.js"
+  },
   "dependencies": {
     "@ethersproject/bignumber": "^5.0.7",
     "@ethersproject/bytes": "^5.0.4",
     "@ethersproject/keccak256": "^5.0.3",
     "@ethersproject/strings": "^5.0.4",
-    "browserify-zlib": "^0.2.0",
-    "ethers": "^5.0.13"
+    "ethers": "^5.0.13",
+    "tiny-inflate": "1.0.3"
   },
   "description": "Testcases for Ethereum and scripts to generate testcases.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers"
@@ -34,13 +47,14 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/testcases",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x0e1c35db603fc8cb62d397afed08d258ed9749c146ab85b3f5406d238a905d7e",
+  "tarballHash": "0xf6be1d8706aaaa5dc99e651c117a9927224f5cc16105443e450e6cfd85bfecac",
   "types": "./lib/index.d.ts",
-  "version": "5.0.5"
+  "version": "5.0.9"
 }

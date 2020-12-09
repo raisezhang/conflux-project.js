@@ -1,8 +1,8 @@
 "use strict";
 
 import { BlockTag, Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { BigNumber } from "@ethersproject/bignumber";
-import { Bytes } from "@ethersproject/bytes";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { Bytes, BytesLike } from "@ethersproject/bytes";
 import { Deferrable, defineReadOnly, resolveProperties, shallowCopy } from "@ethersproject/properties";
 
 import { Logger } from "@ethersproject/logger";
@@ -12,6 +12,28 @@ const logger = new Logger(version);
 const allowedTransactionKeys: Array<string> = [
     "chainId", "data", "from", "gasLimit", "gasPrice", "nonce", "to", "value"
 ];
+
+const forwardErrors = [
+    Logger.errors.INSUFFICIENT_FUNDS,
+    Logger.errors.NONCE_EXPIRED,
+    Logger.errors.REPLACEMENT_UNDERPRICED,
+];
+
+// EIP-712 Typed Data
+// See: https://eips.ethereum.org/EIPS/eip-712
+
+export interface TypedDataDomain {
+    name?: string;
+    version?: string;
+    chainId?: BigNumberish;
+    verifyingContract?: string;
+    salt?: BytesLike;
+};
+
+export interface TypedDataField {
+    name: string;
+    type: string;
+};
 
 // Sub-classes of Signer may optionally extend this interface to indicate
 // they have a private key available synchronously
@@ -26,6 +48,12 @@ export interface ExternallyOwnedAccount {
 //  - A Signer SHOULD always wrap private information (such as a private
 //    key or mnemonic) in a function, so that console.log does not leak
 //    the data
+
+// @TODO: This is a temporary measure to preserse backwards compatibility
+//        In v6, the method on TypedDataSigner will be added to Signer
+export interface TypedDataSigner {
+    _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string>;
+}
 
 export abstract class Signer {
     readonly provider?: Provider;
@@ -169,6 +197,10 @@ export abstract class Signer {
 
         if (tx.gasLimit == null) {
             tx.gasLimit = this.estimateGas(tx).catch((error) => {
+                if (forwardErrors.indexOf(error.code) >= 0) {
+                    throw error;
+                }
+
                 return logger.throwError("cannot estimate gas; transaction may fail or may require manual gas limit", Logger.errors.UNPREDICTABLE_GAS_LIMIT, {
                     error: error,
                     tx: tx
@@ -208,7 +240,7 @@ export abstract class Signer {
     }
 }
 
-export class VoidSigner extends Signer {
+export class VoidSigner extends Signer implements TypedDataSigner {
     readonly address: string;
 
     constructor(address: string, provider?: Provider) {
@@ -234,6 +266,10 @@ export class VoidSigner extends Signer {
 
     signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
         return this._fail("VoidSigner cannot sign transactions", "signTransaction");
+    }
+
+    _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
+        return this._fail("VoidSigner cannot sign typed data", "signTypedData");
     }
 
     connect(provider: Provider): VoidSigner {

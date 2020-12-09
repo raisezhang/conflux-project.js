@@ -164,6 +164,7 @@ export class Formatter {
     // Requires a BigNumberish that is within the IEEE754 safe integer range; returns a number
     // Strict! Used on input.
     number(number: any): number {
+        if (number === "0x") { return 0; }
         return BigNumber.from(number).toNumber();
     }
 
@@ -453,6 +454,18 @@ export class Formatter {
             return result;
         });
     }
+}
+
+export interface CommunityResourcable {
+    isCommunityResource(): boolean;
+}
+
+export function isCommunityResourcable(value: any): value is CommunityResourcable {
+    return (value && typeof(value.isCommunityResource) === "function");
+}
+
+export function isCommunityResource(value: any): boolean {
+    return (isCommunityResourcable(value) && value.isCommunityResource());
 }
 
 // Show the throttle message only once

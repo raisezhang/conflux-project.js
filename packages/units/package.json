@@ -7,6 +7,16 @@
   },
   "description": "Unit conversion functions for Ethereum.",
   "ethereum": "donations.ethers.eth",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/ricmoo"
+    }
+  ],
   "keywords": [
     "Ethereum",
     "ethers",
@@ -21,13 +31,15 @@
     "access": "public"
   },
   "repository": {
+    "directory": "packages/units",
     "type": "git",
     "url": "git://github.com/ethers-io/ethers.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0xb0351ffc264f52db595cee49c502638ffe9c11d55f3047612107feebf5d8701c",
+  "sideEffects": false,
+  "tarballHash": "0x0e97134b16933789136b7597531d2facd2cdbbaf79f25452a6fdac3d72d65b3a",
   "types": "./lib/index.d.ts",
-  "version": "5.0.4"
+  "version": "5.0.8"
 }

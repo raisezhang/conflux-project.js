@@ -8,11 +8,11 @@ The private key for this Signing Key.
 
 _property: signingKey.publicKey => string<[[DataHexString]]<65>>
 The uncompressed public key for this Signing Key. It will always be
-65 bytes (130 nibbles) and begine with ``0x04``.
+65 bytes (130 nibbles) and begins with ``0x04``.
 
 _property: signingKey.compressedPublicKey => string<[[DataHexString]]<33>>
 The compressed public key for this Signing Key. It will always be
-33 bytes (66 nibbles) and begine with either ``0x02`` or ``0x03``.
+33 bytes (66 nibbles) and begins with either ``0x02`` or ``0x03``.
 
 _property: signingKey.signDigest(digest) => [[Signature]]
 Sign the //digest// and return the signature.
@@ -39,7 +39,13 @@ will then be used to compute the address; this allows systems which use
 the v to encode additional data (such as [EIP-155](link-eip-155))
 to be used since the v parameter is still completely non-ambiguous.
 
+_property: ethers.utils.verifyTypedData(domain, types, value, signature) => string<[[address]]>  @<utils-verifyTypedData> @SRC<wallet>
+Returns the address that signed the [[link-eip-712]] //value// for the //domain//
+and //types// to produce the signature.
+
 _property: ethers.utils.recoverPublicKey(digest, signature) => string<[[DataHexString]]<65>> @<utils-recoverPublicKey>
+Returns the uncompressed public key (i.e. the first byte will be ``0x04``)
+of the private key that was used to sign //digest// which gave the //signature//.
 
 _property: ethers.utils.computePublicKey(key [, compressed = false ]) => string<[[DataHexString]]> @<utils-computePublicKey>
 Computes the public key of //key//, optionally compressing it. The //key//
