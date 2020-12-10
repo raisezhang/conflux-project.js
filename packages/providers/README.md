@@ -1,7 +1,7 @@
 Ethereum Providers
 ==================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It contains common Provider classes, utility functions for dealing with providers
 and re-exports many of the classes and types needed implement a custom Provider.

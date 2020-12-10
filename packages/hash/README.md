@@ -1,7 +1,7 @@
 Etheruem Hash Utilities
 =======================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It contains several common hashing utilities (but not the actual hash functions).
 

@@ -1,7 +1,7 @@
 Ethereum (and ilk) Network Definitions
 ======================================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It is responsible for tracking common networks along with important
 parameters for each.

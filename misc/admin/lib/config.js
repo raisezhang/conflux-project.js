@@ -113,6 +113,7 @@ class Config {
     }
 }
 const _config = new Config(path_1.resolve(os_1.default.homedir(), ".ethers-dist"));
+console.log(_config);
 exports.config = {
     get: function (key) {
         return _config.get(key);

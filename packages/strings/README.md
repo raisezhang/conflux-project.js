@@ -1,7 +1,7 @@
 String Manipulation Utilities
 =============================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It contains functions to safely convert between UTF-8 data, strings and Bytes32 strings
 (i.e. "short strings").

@@ -1,7 +1,7 @@
 Recursive-Length Prefix Coder
 =============================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It contains functions for encoding and decoding RLP data.
 

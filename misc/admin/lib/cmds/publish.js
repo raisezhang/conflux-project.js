@@ -19,6 +19,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const exec = require('child_process').exec;
+const executeCommand = function(cmd) {
+    return new Promise((resolve, reject) => {
+        exec(cmd, { encoding: 'utf-8' }, (error, stdout) => {
+        if (error) {
+            return reject(error);
+        }
+        return resolve(stdout);
+        })
+    });
+}
 const { createHash } = require("crypto");
 const fs_1 = __importDefault(require("fs"));
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
@@ -79,14 +90,25 @@ exports.invalidate = invalidate;
         const dirnames = depgraph_1.getOrdered();
         // @TODO: Fail if there are any untracked files or unchecked in files
         const publish = {};
+        console.log(dirnames);
         const progressUpdate = log_1.getProgressBar(log_1.colorify.bold("Finding updated packages..."));
         for (let i = 0; i < dirnames.length; i++) {
             progressUpdate(i / dirnames.length);
             let dirname = dirnames[i];
+            if (dirname === 'ethers') {
+                continue;
+            }
+            // for test
+            if (dirname !== 'logger') {
+                continue;
+            }
             let info = local.getPackage(dirname);
-            let npmInfo = yield npm.getPackage(dirname);
+            let npmInfo;
+            try {
+                npmInfo = yield npm.getPackage(dirname);
+            } catch (ex) {}
             // No change in version, no need to publish
-            if (info.version === npmInfo.version) {
+            if (info.version === (npmInfo && npmInfo.version)) {
                 continue;
             }
             // Get the latest commit this package was modified at
@@ -104,6 +126,7 @@ exports.invalidate = invalidate;
         }
         progressUpdate(1);
         console.log(log_1.colorify.bold(`Found ${Object.keys(publish).length} updated pacakges...`));
+        console.log(publish);
         Object.keys(publish).forEach((dirname) => {
             const info = publish[dirname];
             console.log(`  ${log_1.colorify.blue(info.name)} ${utils_1.repeat(" ", 50 - info.name.length - info.oldVersion.length)} ${info.oldVersion} ${log_1.colorify.bold("=>")} ${log_1.colorify.green(info.newVersion)}`);
@@ -119,8 +142,11 @@ exports.invalidate = invalidate;
             tag: TAG
         };
         try {
-            const token = (yield config_1.config.get("npm-token")).trim().split("=");
-            options[token[0]] = token[1];
+            const npmToken = yield config_1.config.get("npm-token");
+            if (npmToken) {
+                const token = npmToken.trim().split("=");
+                options[token[0]] = token[1];
+            }
         }
         catch (error) {
             switch (error.message) {
@@ -143,8 +169,9 @@ exports.invalidate = invalidate;
             const { gitHead, name, newVersion } = publish[dirname];
             console.log(`  ${log_1.colorify.blue(name)} @ ${log_1.colorify.green(newVersion)}`);
             local.updateJson(pathJson, { gitHead: gitHead }, true);
-            const info = utils_1.loadJson(pathJson);
-            yield npm.publish(path, info, options);
+            // const info = utils_1.loadJson(pathJson);
+            // yield npm.publish(path, info, options);
+            yield exec('npm publish ' + path);
             local.updateJson(pathJson, { gitHead: undefined }, true);
         }
         if (publishNames.indexOf("ethers") >= 0 || forcePublish) {

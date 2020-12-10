@@ -1,7 +1,7 @@
 Signing Key
 ===========
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It is responsible for secp256-k1 signing, verifying and recovery operations.
 

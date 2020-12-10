@@ -1,7 +1,7 @@
 Solidity Packed-Encoding Utilities
 ==================================
 
-This sub-module is part of the [ethers project](https://github.com/ethers-io/ethers.js).
+This sub-module is part of the [conflux project](https://github.com/raisezhang/conflux-project.js).
 
 It contains functions to perform Solidity-specific packed (i.e. non-standard)
 encoding operations.
