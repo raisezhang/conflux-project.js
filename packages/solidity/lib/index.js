@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bignumber_1 = require("@ethersproject/bignumber");
-var bytes_1 = require("@ethersproject/bytes");
-var keccak256_1 = require("@ethersproject/keccak256");
-var sha2_1 = require("@ethersproject/sha2");
-var strings_1 = require("@ethersproject/strings");
+var bignumber_1 = require("@confluxproject/bignumber");
+var bytes_1 = require("@confluxproject/bytes");
+var keccak256_1 = require("@confluxproject/keccak256");
+var sha2_1 = require("@confluxproject/sha2");
+var strings_1 = require("@confluxproject/strings");
 var regexBytes = new RegExp("^bytes([0-9]+)$");
 var regexNumber = new RegExp("^(u?int)([0-9]*)$");
 var regexArray = new RegExp("^(.*)\\[([0-9]*)\\]$");

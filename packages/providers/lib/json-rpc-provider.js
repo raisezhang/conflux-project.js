@@ -49,14 +49,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstract_signer_1 = require("@ethersproject/abstract-signer");
-var bignumber_1 = require("@ethersproject/bignumber");
-var bytes_1 = require("@ethersproject/bytes");
-var hash_1 = require("@ethersproject/hash");
-var properties_1 = require("@ethersproject/properties");
-var strings_1 = require("@ethersproject/strings");
-var web_1 = require("@ethersproject/web");
-var logger_1 = require("@ethersproject/logger");
+var abstract_signer_1 = require("@confluxproject/abstract-signer");
+var bignumber_1 = require("@confluxproject/bignumber");
+var bytes_1 = require("@confluxproject/bytes");
+var hash_1 = require("@confluxproject/hash");
+var properties_1 = require("@confluxproject/properties");
+var strings_1 = require("@confluxproject/strings");
+var web_1 = require("@confluxproject/web");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 var base_provider_1 = require("./base-provider");

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var WS = null;
 exports.WebSocket = WS;

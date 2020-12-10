@@ -1,14 +1,14 @@
 "use strict";
 
-import { BlockTag, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { hexlify, hexValue, isHexString } from "@ethersproject/bytes";
-import { Network, Networkish } from "@ethersproject/networks";
-import { deepCopy, defineReadOnly } from "@ethersproject/properties";
-import { ConnectionInfo, fetchJson } from "@ethersproject/web";
+import { BlockTag, TransactionRequest, TransactionResponse } from "@confluxproject/abstract-provider";
+import { hexlify, hexValue, isHexString } from "@confluxproject/bytes";
+import { Network, Networkish } from "@confluxproject/networks";
+import { deepCopy, defineReadOnly } from "@confluxproject/properties";
+import { ConnectionInfo, fetchJson } from "@confluxproject/web";
 
 import { showThrottleMessage } from "./formatter";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

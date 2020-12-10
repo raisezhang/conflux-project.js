@@ -1,13 +1,13 @@
 "use strict";
 
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { BytesLike, isHexString } from "@ethersproject/bytes";
-import { Network } from "@ethersproject/networks";
-import { Deferrable, Description, defineReadOnly } from "@ethersproject/properties";
-import { Transaction } from "@ethersproject/transactions";
-import { OnceBlockable } from "@ethersproject/web";
+import { BigNumber, BigNumberish } from "@confluxproject/bignumber";
+import { BytesLike, isHexString } from "@confluxproject/bytes";
+import { Network } from "@confluxproject/networks";
+import { Deferrable, Description, defineReadOnly } from "@confluxproject/properties";
+import { Transaction } from "@confluxproject/transactions";
+import { OnceBlockable } from "@confluxproject/web";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

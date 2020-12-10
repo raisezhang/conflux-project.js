@@ -9,8 +9,8 @@
   "dependencies": {
     "@babel/parser": "7.8.4",
     "@babel/types": "7.8.3",
-    "@ethersproject/asm": "^5.0.5",
-    "@ethersproject/basex": "^5.0.3",
+    "@confluxproject/asm": "^5.0.5",
+    "@confluxproject/basex": "^5.0.3",
     "ethers": "^5.0.13",
     "scrypt-js": "3.0.1",
     "solc": "0.7.1"
@@ -35,14 +35,14 @@
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./lib.esm/index.js",
-  "name": "@ethersproject/cli",
+  "name": "@confluxproject/cli",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "directory": "packages/cli",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "exit 1"

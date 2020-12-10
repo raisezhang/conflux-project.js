@@ -1,6 +1,6 @@
 {
   "_devDependencies": {
-    "@ethersproject/cli": "^5.0.0",
+    "@confluxproject/cli": "^5.0.0",
     "@types/bip39": "2.4.1",
     "@types/bitcoinjs-lib": "3.3.2",
     "bip39": "2.5.0",
@@ -16,40 +16,28 @@
     "./lib/disk-utils": "./lib/browser-disk-utils.js"
   },
   "dependencies": {
-    "@ethersproject/bignumber": "^5.0.7",
-    "@ethersproject/bytes": "^5.0.4",
-    "@ethersproject/keccak256": "^5.0.3",
-    "@ethersproject/strings": "^5.0.4",
+    "@confluxproject/bignumber": "^5.0.7",
+    "@confluxproject/bytes": "^5.0.4",
+    "@confluxproject/keccak256": "^5.0.3",
+    "@confluxproject/strings": "^5.0.4",
     "ethers": "^5.0.13",
     "tiny-inflate": "1.0.3"
   },
   "description": "Testcases for Ethereum and scripts to generate testcases.",
-  "ethereum": "donations.ethers.eth",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
-    },
-    {
-      "type": "individual",
-      "url": "https://www.buymeacoffee.com/ricmoo"
-    }
-  ],
   "keywords": [
-    "Ethereum",
-    "ethers"
+    "Conflux"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./lib.esm/index.js",
-  "name": "@ethersproject/testcases",
+  "name": "@confluxproject/testcases",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "directory": "packages/testcases",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

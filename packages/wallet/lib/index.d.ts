@@ -1,10 +1,10 @@
-import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
-import { Bytes, BytesLike, SignatureLike } from "@ethersproject/bytes";
-import { Mnemonic } from "@ethersproject/hdnode";
-import { SigningKey } from "@ethersproject/signing-key";
-import { ProgressCallback } from "@ethersproject/json-wallets";
-import { Wordlist } from "@ethersproject/wordlists";
+import { Provider, TransactionRequest } from "@confluxproject/abstract-provider";
+import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@confluxproject/abstract-signer";
+import { Bytes, BytesLike, SignatureLike } from "@confluxproject/bytes";
+import { Mnemonic } from "@confluxproject/hdnode";
+import { SigningKey } from "@confluxproject/signing-key";
+import { ProgressCallback } from "@confluxproject/json-wallets";
+import { Wordlist } from "@confluxproject/wordlists";
 export declare class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataSigner {
     readonly address: string;
     readonly provider: Provider;

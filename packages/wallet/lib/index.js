@@ -49,19 +49,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var address_1 = require("@ethersproject/address");
-var abstract_provider_1 = require("@ethersproject/abstract-provider");
-var abstract_signer_1 = require("@ethersproject/abstract-signer");
-var bytes_1 = require("@ethersproject/bytes");
-var hash_1 = require("@ethersproject/hash");
-var hdnode_1 = require("@ethersproject/hdnode");
-var keccak256_1 = require("@ethersproject/keccak256");
-var properties_1 = require("@ethersproject/properties");
-var random_1 = require("@ethersproject/random");
-var signing_key_1 = require("@ethersproject/signing-key");
-var json_wallets_1 = require("@ethersproject/json-wallets");
-var transactions_1 = require("@ethersproject/transactions");
-var logger_1 = require("@ethersproject/logger");
+var address_1 = require("@confluxproject/address");
+var abstract_provider_1 = require("@confluxproject/abstract-provider");
+var abstract_signer_1 = require("@confluxproject/abstract-signer");
+var bytes_1 = require("@confluxproject/bytes");
+var hash_1 = require("@confluxproject/hash");
+var hdnode_1 = require("@confluxproject/hdnode");
+var keccak256_1 = require("@confluxproject/keccak256");
+var properties_1 = require("@confluxproject/properties");
+var random_1 = require("@confluxproject/random");
+var signing_key_1 = require("@confluxproject/signing-key");
+var json_wallets_1 = require("@confluxproject/json-wallets");
+var transactions_1 = require("@confluxproject/transactions");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 function isAccount(value) {

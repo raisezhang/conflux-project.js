@@ -1,8 +1,8 @@
 "use strict";
 
-import { arrayify, BytesLike, hexZeroPad, isBytes } from "@ethersproject/bytes";
+import { arrayify, BytesLike, hexZeroPad, isBytes } from "@confluxproject/bytes";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

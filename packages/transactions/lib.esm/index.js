@@ -1,13 +1,13 @@
 "use strict";
-import { getAddress } from "@ethersproject/address";
-import { BigNumber } from "@ethersproject/bignumber";
-import { arrayify, hexDataSlice, hexlify, hexZeroPad, isBytesLike, splitSignature, stripZeros, } from "@ethersproject/bytes";
-import { Zero } from "@ethersproject/constants";
-import { keccak256 } from "@ethersproject/keccak256";
-import { checkProperties } from "@ethersproject/properties";
-import * as RLP from "@ethersproject/rlp";
-import { computePublicKey, recoverPublicKey } from "@ethersproject/signing-key";
-import { Logger } from "@ethersproject/logger";
+import { getAddress } from "@confluxproject/address";
+import { BigNumber } from "@confluxproject/bignumber";
+import { arrayify, hexDataSlice, hexlify, hexZeroPad, isBytesLike, splitSignature, stripZeros, } from "@confluxproject/bytes";
+import { Zero } from "@confluxproject/constants";
+import { keccak256 } from "@confluxproject/keccak256";
+import { checkProperties } from "@confluxproject/properties";
+import * as RLP from "@confluxproject/rlp";
+import { computePublicKey, recoverPublicKey } from "@confluxproject/signing-key";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 ///////////////////////////////

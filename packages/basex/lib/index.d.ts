@@ -37,7 +37,7 @@
  * IN THE SOFTWARE.
  *
  */
-import { BytesLike } from "@ethersproject/bytes";
+import { BytesLike } from "@confluxproject/bytes";
 export declare class BaseX {
     readonly alphabet: string;
     readonly base: number;

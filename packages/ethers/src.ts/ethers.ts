@@ -1,29 +1,29 @@
 "use strict";
 
-import { Contract, ContractFactory } from "@ethersproject/contracts";
+import { Contract, ContractFactory } from "@confluxproject/contracts";
 
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@confluxproject/bignumber";
 
-import { Signer, VoidSigner } from "@ethersproject/abstract-signer";
-import { Wallet } from "@ethersproject/wallet";
+import { Signer, VoidSigner } from "@confluxproject/abstract-signer";
+import { Wallet } from "@confluxproject/wallet";
 
-import * as constants from "@ethersproject/constants";
+import * as constants from "@confluxproject/constants";
 
-import * as providers from "@ethersproject/providers";
-import { getDefaultProvider } from "@ethersproject/providers";
+import * as providers from "@confluxproject/providers";
+import { getDefaultProvider } from "@confluxproject/providers";
 
-import { Wordlist, wordlists} from "@ethersproject/wordlists";
+import { Wordlist, wordlists} from "@confluxproject/wordlists";
 
 import * as utils from "./utils";
 
-import { ErrorCode as errors, Logger } from "@ethersproject/logger";
+import { ErrorCode as errors, Logger } from "@confluxproject/logger";
 
 ////////////////////////
 // Types
 
-import { BigNumberish } from "@ethersproject/bignumber";
-import { Bytes, BytesLike, Signature } from "@ethersproject/bytes";
-import { Transaction, UnsignedTransaction } from "@ethersproject/transactions";
+import { BigNumberish } from "@confluxproject/bignumber";
+import { Bytes, BytesLike, Signature } from "@confluxproject/bytes";
+import { Transaction, UnsignedTransaction } from "@confluxproject/transactions";
 
 
 ////////////////////////
@@ -52,7 +52,7 @@ import {
     PopulatedTransaction,
 
     ContractInterface
-} from "@ethersproject/contracts";
+} from "@confluxproject/contracts";
 
 
 ////////////////////////

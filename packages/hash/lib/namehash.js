@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bytes_1 = require("@ethersproject/bytes");
-var strings_1 = require("@ethersproject/strings");
-var keccak256_1 = require("@ethersproject/keccak256");
-var logger_1 = require("@ethersproject/logger");
+var bytes_1 = require("@confluxproject/bytes");
+var strings_1 = require("@confluxproject/strings");
+var keccak256_1 = require("@confluxproject/keccak256");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 var Zeros = new Uint8Array(32);

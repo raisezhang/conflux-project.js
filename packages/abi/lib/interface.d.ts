@@ -1,6 +1,6 @@
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { BytesLike } from "@ethersproject/bytes";
-import { Description } from "@ethersproject/properties";
+import { BigNumber, BigNumberish } from "@confluxproject/bignumber";
+import { BytesLike } from "@confluxproject/bytes";
+import { Description } from "@confluxproject/properties";
 import { AbiCoder } from "./abi-coder";
 import { checkResultErrors, Result } from "./coders/abstract-coder";
 import { ConstructorFragment, EventFragment, Fragment, FunctionFragment, JsonFragment, ParamType } from "./fragments";

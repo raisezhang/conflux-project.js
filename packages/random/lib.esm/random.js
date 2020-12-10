@@ -1,6 +1,6 @@
 "use strict";
-import { arrayify } from "@ethersproject/bytes";
-import { Logger } from "@ethersproject/logger";
+import { arrayify } from "@confluxproject/bytes";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 let anyGlobal = null;

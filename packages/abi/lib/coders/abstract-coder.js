@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bytes_1 = require("@ethersproject/bytes");
-var bignumber_1 = require("@ethersproject/bignumber");
-var properties_1 = require("@ethersproject/properties");
-var logger_1 = require("@ethersproject/logger");
+var bytes_1 = require("@confluxproject/bytes");
+var bignumber_1 = require("@confluxproject/bignumber");
+var properties_1 = require("@confluxproject/properties");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("../_version");
 var logger = new logger_1.Logger(_version_1.version);
 function checkResultErrors(result) {

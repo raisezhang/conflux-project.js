@@ -36,12 +36,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var address_1 = require("@ethersproject/address");
-var bignumber_1 = require("@ethersproject/bignumber");
-var bytes_1 = require("@ethersproject/bytes");
-var keccak256_1 = require("@ethersproject/keccak256");
-var properties_1 = require("@ethersproject/properties");
-var logger_1 = require("@ethersproject/logger");
+var address_1 = require("@confluxproject/address");
+var bignumber_1 = require("@confluxproject/bignumber");
+var bytes_1 = require("@confluxproject/bytes");
+var keccak256_1 = require("@confluxproject/keccak256");
+var properties_1 = require("@confluxproject/properties");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 var id_1 = require("./id");

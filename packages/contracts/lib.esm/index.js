@@ -8,15 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { checkResultErrors, Indexed, Interface } from "@ethersproject/abi";
-import { Provider } from "@ethersproject/abstract-provider";
-import { Signer, VoidSigner } from "@ethersproject/abstract-signer";
-import { getAddress, getContractAddress } from "@ethersproject/address";
-import { BigNumber } from "@ethersproject/bignumber";
-import { arrayify, concat, hexlify, isBytes, isHexString } from "@ethersproject/bytes";
-import { defineReadOnly, deepCopy, getStatic, resolveProperties, shallowCopy } from "@ethersproject/properties";
+import { checkResultErrors, Indexed, Interface } from "@confluxproject/abi";
+import { Provider } from "@confluxproject/abstract-provider";
+import { Signer, VoidSigner } from "@confluxproject/abstract-signer";
+import { getAddress, getContractAddress } from "@confluxproject/address";
+import { BigNumber } from "@confluxproject/bignumber";
+import { arrayify, concat, hexlify, isBytes, isHexString } from "@confluxproject/bytes";
+import { defineReadOnly, deepCopy, getStatic, resolveProperties, shallowCopy } from "@confluxproject/properties";
 // @TOOD remove dependences transactions
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 ;

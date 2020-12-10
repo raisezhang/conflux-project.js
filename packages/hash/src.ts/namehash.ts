@@ -1,8 +1,8 @@
-import { concat, hexlify } from "@ethersproject/bytes";
-import { nameprep, toUtf8Bytes } from "@ethersproject/strings";
-import { keccak256 } from "@ethersproject/keccak256";
+import { concat, hexlify } from "@confluxproject/bytes";
+import { nameprep, toUtf8Bytes } from "@confluxproject/strings";
+import { keccak256 } from "@confluxproject/keccak256";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

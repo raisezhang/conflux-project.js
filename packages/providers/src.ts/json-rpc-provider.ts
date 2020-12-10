@@ -2,17 +2,17 @@
 
 // See: https://github.com/ethereum/wiki/wiki/JSON-RPC
 
-import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
-import { BigNumber } from "@ethersproject/bignumber";
-import { Bytes, hexlify, hexValue, isHexString } from "@ethersproject/bytes";
-import { _TypedDataEncoder } from "@ethersproject/hash";
-import { Network, Networkish } from "@ethersproject/networks";
-import { checkProperties, deepCopy, Deferrable, defineReadOnly, getStatic, resolveProperties, shallowCopy } from "@ethersproject/properties";
-import { toUtf8Bytes } from "@ethersproject/strings";
-import { ConnectionInfo, fetchJson, poll } from "@ethersproject/web";
+import { Provider, TransactionRequest, TransactionResponse } from "@confluxproject/abstract-provider";
+import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@confluxproject/abstract-signer";
+import { BigNumber } from "@confluxproject/bignumber";
+import { Bytes, hexlify, hexValue, isHexString } from "@confluxproject/bytes";
+import { _TypedDataEncoder } from "@confluxproject/hash";
+import { Network, Networkish } from "@confluxproject/networks";
+import { checkProperties, deepCopy, Deferrable, defineReadOnly, getStatic, resolveProperties, shallowCopy } from "@confluxproject/properties";
+import { toUtf8Bytes } from "@confluxproject/strings";
+import { ConnectionInfo, fetchJson, poll } from "@confluxproject/web";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

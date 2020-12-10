@@ -247,7 +247,7 @@ module.exports = {
       "link-bip-32": { name: "BIP-32", url: "https:/\/github.com/bitcoin/bips/blob/master/bip-0032.mediawiki" },
 
       "link-npm-elliptic": { name: "elliptic", url: "https:/\/www.npmjs.com/package/elliptic" },
-      "link-npm-ethersproject-shims": { name: "Shims", url: "https:/\/www.npmjs.com/package/@ethersproject/shims" },
+      "link-npm-ethersproject-shims": { name: "Shims", url: "https:/\/www.npmjs.com/package/@confluxproject/shims" },
       "link-npm-events": { name: "EventEmitter", url: "https:/\/nodejs.org/dist/latest-v13.x/docs/api/events.html#events_class_eventemitter" },
       "link-npm-bnjs": { name: "BN.js", url: "https:/\/www.npmjs.com/package/bn.js" },
       "link-npm-query-bignumber": "https:/\/www.npmjs.com/search?q=bignumber",

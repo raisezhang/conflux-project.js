@@ -1,20 +1,20 @@
 "use strict";
 
-import { getAddress } from "@ethersproject/address";
-import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
-import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
-import { arrayify, Bytes, BytesLike, concat, hexDataSlice, isHexString, joinSignature, SignatureLike } from "@ethersproject/bytes";
-import { hashMessage, _TypedDataEncoder } from "@ethersproject/hash";
-import { defaultPath, HDNode, entropyToMnemonic, Mnemonic } from "@ethersproject/hdnode";
-import { keccak256 } from "@ethersproject/keccak256";
-import { defineReadOnly, resolveProperties } from "@ethersproject/properties";
-import { randomBytes } from "@ethersproject/random";
-import { SigningKey } from "@ethersproject/signing-key";
-import { decryptJsonWallet, decryptJsonWalletSync, encryptKeystore, ProgressCallback } from "@ethersproject/json-wallets";
-import { computeAddress, recoverAddress, serialize, UnsignedTransaction } from "@ethersproject/transactions";
-import { Wordlist } from "@ethersproject/wordlists";
+import { getAddress } from "@confluxproject/address";
+import { Provider, TransactionRequest } from "@confluxproject/abstract-provider";
+import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@confluxproject/abstract-signer";
+import { arrayify, Bytes, BytesLike, concat, hexDataSlice, isHexString, joinSignature, SignatureLike } from "@confluxproject/bytes";
+import { hashMessage, _TypedDataEncoder } from "@confluxproject/hash";
+import { defaultPath, HDNode, entropyToMnemonic, Mnemonic } from "@confluxproject/hdnode";
+import { keccak256 } from "@confluxproject/keccak256";
+import { defineReadOnly, resolveProperties } from "@confluxproject/properties";
+import { randomBytes } from "@confluxproject/random";
+import { SigningKey } from "@confluxproject/signing-key";
+import { decryptJsonWallet, decryptJsonWalletSync, encryptKeystore, ProgressCallback } from "@confluxproject/json-wallets";
+import { computeAddress, recoverAddress, serialize, UnsignedTransaction } from "@confluxproject/transactions";
+import { Wordlist } from "@confluxproject/wordlists";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

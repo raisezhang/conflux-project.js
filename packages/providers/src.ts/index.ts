@@ -11,10 +11,10 @@ import {
     TransactionReceipt,
     TransactionRequest,
     TransactionResponse
-} from "@ethersproject/abstract-provider";
+} from "@confluxproject/abstract-provider";
 
-import { getNetwork } from "@ethersproject/networks";
-import { Network, Networkish } from "@ethersproject/networks";
+import { getNetwork } from "@confluxproject/networks";
+import { Network, Networkish } from "@confluxproject/networks";
 
 import { BaseProvider, EnsProvider, EnsResolver, Resolver } from "./base-provider";
 
@@ -34,7 +34,7 @@ import { ExternalProvider, JsonRpcFetchFunc } from "./web3-provider";
 
 import { CommunityResourcable, Formatter, isCommunityResourcable, isCommunityResource, showThrottleMessage } from "./formatter";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

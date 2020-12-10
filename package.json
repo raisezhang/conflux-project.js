@@ -16,7 +16,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "preinstall": "npm run bootstrap-hoist",

@@ -7,15 +7,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var address_1 = require("@ethersproject/address");
-var bignumber_1 = require("@ethersproject/bignumber");
-var bytes_1 = require("@ethersproject/bytes");
-var constants_1 = require("@ethersproject/constants");
-var keccak256_1 = require("@ethersproject/keccak256");
-var properties_1 = require("@ethersproject/properties");
-var RLP = __importStar(require("@ethersproject/rlp"));
-var signing_key_1 = require("@ethersproject/signing-key");
-var logger_1 = require("@ethersproject/logger");
+var address_1 = require("@confluxproject/address");
+var bignumber_1 = require("@confluxproject/bignumber");
+var bytes_1 = require("@confluxproject/bytes");
+var constants_1 = require("@confluxproject/constants");
+var keccak256_1 = require("@confluxproject/keccak256");
+var properties_1 = require("@confluxproject/properties");
+var RLP = __importStar(require("@confluxproject/rlp"));
+var signing_key_1 = require("@confluxproject/signing-key");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 ///////////////////////////////

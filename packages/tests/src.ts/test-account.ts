@@ -3,7 +3,7 @@
 import assert from 'assert';
 
 import { ethers } from "ethers";
-import { loadTests } from "@ethersproject/testcases";
+import { loadTests } from "@confluxproject/testcases";
 
 
 type TestCase = {

@@ -1,9 +1,9 @@
-import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
-import { Bytes } from "@ethersproject/bytes";
-import { Network, Networkish } from "@ethersproject/networks";
-import { Deferrable } from "@ethersproject/properties";
-import { ConnectionInfo } from "@ethersproject/web";
+import { Provider, TransactionRequest, TransactionResponse } from "@confluxproject/abstract-provider";
+import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@confluxproject/abstract-signer";
+import { Bytes } from "@confluxproject/bytes";
+import { Network, Networkish } from "@confluxproject/networks";
+import { Deferrable } from "@confluxproject/properties";
+import { ConnectionInfo } from "@confluxproject/web";
 import { BaseProvider, Event } from "./base-provider";
 export declare class JsonRpcSigner extends Signer implements TypedDataSigner {
     readonly provider: JsonRpcProvider;

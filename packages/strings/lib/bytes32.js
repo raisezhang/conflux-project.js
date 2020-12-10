@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = require("@ethersproject/constants");
-var bytes_1 = require("@ethersproject/bytes");
+var constants_1 = require("@confluxproject/constants");
+var bytes_1 = require("@confluxproject/bytes");
 var utf8_1 = require("./utf8");
 function formatBytes32String(text) {
     // Get the bytes

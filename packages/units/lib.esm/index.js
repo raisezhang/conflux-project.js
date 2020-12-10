@@ -1,6 +1,6 @@
 "use strict";
-import { formatFixed, parseFixed } from "@ethersproject/bignumber";
-import { Logger } from "@ethersproject/logger";
+import { formatFixed, parseFixed } from "@confluxproject/bignumber";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 const names = [

@@ -1,6 +1,6 @@
 "use strict";
 
-import { getAddress } from "@ethersproject/address";
+import { getAddress } from "@confluxproject/address";
 
 
 export function isCrowdsaleWallet(json: string): boolean {

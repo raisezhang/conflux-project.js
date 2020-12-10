@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstract_provider_1 = require("@ethersproject/abstract-provider");
+var abstract_provider_1 = require("@confluxproject/abstract-provider");
 exports.Provider = abstract_provider_1.Provider;
-var networks_1 = require("@ethersproject/networks");
+var networks_1 = require("@confluxproject/networks");
 exports.getNetwork = networks_1.getNetwork;
 var base_provider_1 = require("./base-provider");
 exports.BaseProvider = base_provider_1.BaseProvider;
@@ -40,7 +40,7 @@ exports.Formatter = formatter_1.Formatter;
 exports.isCommunityResourcable = formatter_1.isCommunityResourcable;
 exports.isCommunityResource = formatter_1.isCommunityResource;
 exports.showThrottleMessage = formatter_1.showThrottleMessage;
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@confluxproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 ////////////////////////

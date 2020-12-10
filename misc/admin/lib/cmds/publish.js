@@ -110,6 +110,8 @@ exports.invalidate = invalidate;
         });
         const publishNames = Object.keys(publish);
         publishNames.sort((a, b) => (dirnames.indexOf(a) - dirnames.indexOf(b)));
+
+        console.log(publishNames)
         // Load the token from the encrypted store
         const options = {
             access: "public",

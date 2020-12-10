@@ -2,10 +2,10 @@
 
 // See: https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
 
-import { arrayify, BytesLike } from "@ethersproject/bytes";
-import { defineReadOnly } from "@ethersproject/properties";
+import { arrayify, BytesLike } from "@confluxproject/bytes";
+import { defineReadOnly } from "@confluxproject/properties";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 

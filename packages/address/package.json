@@ -1,39 +1,27 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@ethersproject/bignumber": "^5.0.10",
-    "@ethersproject/bytes": "^5.0.4",
-    "@ethersproject/keccak256": "^5.0.3",
-    "@ethersproject/logger": "^5.0.5",
-    "@ethersproject/rlp": "^5.0.3"
+    "@confluxproject/bignumber": "^5.0.10",
+    "@confluxproject/bytes": "^5.0.4",
+    "@confluxproject/keccak256": "^5.0.3",
+    "@confluxproject/logger": "^5.0.5",
+    "@confluxproject/rlp": "^5.0.3"
   },
   "description": "Utilities for handling Ethereum Addresses for ethers.",
-  "ethereum": "donations.ethers.eth",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
-    },
-    {
-      "type": "individual",
-      "url": "https://www.buymeacoffee.com/ricmoo"
-    }
-  ],
   "keywords": [
-    "Ethereum",
-    "ethers"
+    "Conflux"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./lib.esm/index.js",
-  "name": "@ethersproject/address",
+  "name": "@confluxproject/address",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "directory": "packages/address",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

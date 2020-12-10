@@ -3,31 +3,19 @@
   "author": "Richard Moore <me@ricmoo.com>",
   "browser": "./dist/index.min.js",
   "description": "Shims required for ethers in constrained environments.",
-  "ethereum": "donations.ethers.eth",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
-    },
-    {
-      "type": "individual",
-      "url": "https://www.buymeacoffee.com/ricmoo"
-    }
-  ],
   "keywords": [
-    "Ethereum",
-    "ethers"
+    "Conflux"
   ],
   "license": "MIT",
   "main": "./src/index.js",
-  "name": "@ethersproject/shims",
+  "name": "@confluxproject/shims",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "directory": "packages/shims",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,7 +1,7 @@
 "use strict";
 
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { MaxUint256, NegativeOne, One, Zero } from "@ethersproject/constants";
+import { BigNumber, BigNumberish } from "@confluxproject/bignumber";
+import { MaxUint256, NegativeOne, One, Zero } from "@confluxproject/constants";
 
 import { Coder, Reader, Writer } from "./abstract-coder";
 

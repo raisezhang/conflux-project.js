@@ -1,6 +1,6 @@
 "use strict";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 
 let WS: any = null;

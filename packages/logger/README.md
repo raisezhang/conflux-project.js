@@ -25,7 +25,7 @@ const {
 
     LogLevel,
 
-} = require("@ethersproject/logger");
+} = require("@confluxproject/logger");
 ```
 
 

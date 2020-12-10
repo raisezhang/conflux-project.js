@@ -11,7 +11,7 @@ LedgerSigner
 ------------
 
 ```
-import { LedgerSigner } from "@ethersproject/hardware-wallets";
+import { LedgerSigner } from "@confluxproject/hardware-wallets";
 ```
 
 ### API

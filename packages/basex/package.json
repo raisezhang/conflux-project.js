@@ -1,36 +1,24 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@ethersproject/bytes": "^5.0.4",
-    "@ethersproject/properties": "^5.0.3"
+    "@confluxproject/bytes": "^5.0.4",
+    "@confluxproject/properties": "^5.0.3"
   },
   "description": "Base-X without Buffer.",
-  "ethereum": "donations.ethers.eth",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
-    },
-    {
-      "type": "individual",
-      "url": "https://www.buymeacoffee.com/ricmoo"
-    }
-  ],
   "keywords": [
-    "Ethereum",
-    "ethers"
+    "Conflux"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
   "module": "./lib.esm/index.js",
-  "name": "@ethersproject/basex",
+  "name": "@confluxproject/basex",
   "publishConfig": {
     "access": "public"
   },
   "repository": {
     "directory": "packages/basex",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

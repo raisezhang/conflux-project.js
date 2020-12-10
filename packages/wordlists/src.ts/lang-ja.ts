@@ -1,7 +1,7 @@
 "use strict";
 
-import { hexlify } from "@ethersproject/bytes";
-import { toUtf8Bytes, toUtf8String } from "@ethersproject/strings";
+import { hexlify } from "@confluxproject/bytes";
+import { toUtf8Bytes, toUtf8String } from "@confluxproject/strings";
 
 import { logger, Wordlist } from "./wordlist";
 

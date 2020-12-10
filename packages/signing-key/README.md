@@ -21,7 +21,7 @@ const {
     computePublicKey,
     recoverPublicKey
 
-} = require("@ethersproject/signing-key");
+} = require("@confluxproject/signing-key");
 ```
 
 License

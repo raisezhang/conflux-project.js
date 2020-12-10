@@ -1,7 +1,7 @@
 "use strict";
-import { isHexString } from "@ethersproject/bytes";
-import { Description, defineReadOnly } from "@ethersproject/properties";
-import { Logger } from "@ethersproject/logger";
+import { isHexString } from "@confluxproject/bytes";
+import { Description, defineReadOnly } from "@confluxproject/properties";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 ;

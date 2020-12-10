@@ -2,52 +2,40 @@
   "author": "Richard Moore <me@ricmoo.com>",
   "browser-old": "./dist/ethers.umd.js",
   "dependencies": {
-    "@ethersproject/abi": "5.0.9",
-    "@ethersproject/abstract-provider": "5.0.7",
-    "@ethersproject/abstract-signer": "5.0.9",
-    "@ethersproject/address": "5.0.8",
-    "@ethersproject/base64": "5.0.6",
-    "@ethersproject/basex": "5.0.6",
-    "@ethersproject/bignumber": "5.0.12",
-    "@ethersproject/bytes": "5.0.8",
-    "@ethersproject/constants": "5.0.7",
-    "@ethersproject/contracts": "5.0.8",
-    "@ethersproject/hash": "5.0.9",
-    "@ethersproject/hdnode": "5.0.7",
-    "@ethersproject/json-wallets": "5.0.9",
-    "@ethersproject/keccak256": "5.0.6",
-    "@ethersproject/logger": "5.0.8",
-    "@ethersproject/networks": "5.0.6",
-    "@ethersproject/pbkdf2": "5.0.6",
-    "@ethersproject/properties": "5.0.6",
-    "@ethersproject/providers": "5.0.17",
-    "@ethersproject/random": "5.0.6",
-    "@ethersproject/rlp": "5.0.6",
-    "@ethersproject/sha2": "5.0.6",
-    "@ethersproject/signing-key": "5.0.7",
-    "@ethersproject/solidity": "5.0.7",
-    "@ethersproject/strings": "5.0.7",
-    "@ethersproject/transactions": "5.0.8",
-    "@ethersproject/units": "5.0.8",
-    "@ethersproject/wallet": "5.0.9",
-    "@ethersproject/web": "5.0.11",
-    "@ethersproject/wordlists": "5.0.7"
+    "@confluxproject/abi": "5.0.9",
+    "@confluxproject/abstract-provider": "5.0.7",
+    "@confluxproject/abstract-signer": "5.0.9",
+    "@confluxproject/address": "5.0.8",
+    "@confluxproject/base64": "5.0.6",
+    "@confluxproject/basex": "5.0.6",
+    "@confluxproject/bignumber": "5.0.12",
+    "@confluxproject/bytes": "5.0.8",
+    "@confluxproject/constants": "5.0.7",
+    "@confluxproject/contracts": "5.0.8",
+    "@confluxproject/hash": "5.0.9",
+    "@confluxproject/hdnode": "5.0.7",
+    "@confluxproject/json-wallets": "5.0.9",
+    "@confluxproject/keccak256": "5.0.6",
+    "@confluxproject/logger": "5.0.8",
+    "@confluxproject/networks": "5.0.6",
+    "@confluxproject/pbkdf2": "5.0.6",
+    "@confluxproject/properties": "5.0.6",
+    "@confluxproject/providers": "5.0.17",
+    "@confluxproject/random": "5.0.6",
+    "@confluxproject/rlp": "5.0.6",
+    "@confluxproject/sha2": "5.0.6",
+    "@confluxproject/signing-key": "5.0.7",
+    "@confluxproject/solidity": "5.0.7",
+    "@confluxproject/strings": "5.0.7",
+    "@confluxproject/transactions": "5.0.8",
+    "@confluxproject/units": "5.0.8",
+    "@confluxproject/wallet": "5.0.9",
+    "@confluxproject/web": "5.0.11",
+    "@confluxproject/wordlists": "5.0.7"
   },
   "description": "Umbrella package for most common Ethers libraries.",
-  "ethereum": "donations.ethers.eth",
-  "funding": [
-    {
-      "type": "individual",
-      "url": "https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny-2"
-    },
-    {
-      "type": "individual",
-      "url": "https://www.buymeacoffee.com/ricmoo"
-    }
-  ],
   "keywords": [
-    "Ethereum",
-    "ethers"
+    "Conflux"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
@@ -56,7 +44,7 @@
   "repository": {
     "directory": "packages/ethers",
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

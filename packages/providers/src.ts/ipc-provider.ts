@@ -2,10 +2,10 @@
 
 import { connect } from "net";
 
-import { defineReadOnly } from "@ethersproject/properties";
-import { Networkish } from "@ethersproject/networks";
+import { defineReadOnly } from "@confluxproject/properties";
+import { Networkish } from "@confluxproject/networks";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 
