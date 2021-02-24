@@ -6498,10 +6498,11 @@ function getAddress(address) {
             address = "0x" + address;
         }
         result = getChecksumAddress(address);
+        // Compatible Conflux Address
         // It is a checksummed address with a bad checksum
-        if (address.match(/([A-F].*[a-f])|([a-f].*[A-F])/) && result !== address) {
-            logger$7.throwArgumentError("bad address checksum", "address", address);
-        }
+        // if (address.match(/([A-F].*[a-f])|([a-f].*[A-F])/) && result !== address) {
+        //     logger.throwArgumentError("bad address checksum", "address", address);
+        // }
         // Maybe ICAP? (we only support direct mode)
     }
     else if (address.match(/^XE[0-9]{2}[0-9A-Za-z]{30,31}$/)) {
@@ -8751,7 +8752,7 @@ class Signer {
                 tx.nonce = this.getTransactionCount("pending");
             }
             if (tx.gasLimit == null) {
-                tx.gasLimit = this.estimateGas(tx).catch((error) => {
+                const estimateGasValue = yield this.estimateGas(tx).catch((error) => {
                     if (forwardErrors.indexOf(error.code) >= 0) {
                         throw error;
                     }
@@ -8760,6 +8761,8 @@ class Signer {
                         tx: tx
                     });
                 });
+                tx.gasLimit = estimateGasValue[0];
+                tx.storageLimit = estimateGasValue[1];
             }
             if (tx.chainId == null) {
                 tx.chainId = this.getChainId();
@@ -8853,34 +8856,32 @@ function resolveName(resolver, nameOrPromise) {
             });
         }
         const address = yield resolver.resolveName(name);
-        if (address == null) {
-            logger$g.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
-        }
+        // if (address == null) {
+        //     logger.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
+        // }
         return address;
     });
 }
 // Recursively replaces ENS names with promises to resolve the name and resolves all properties
 function resolveAddresses(resolver, value, paramType) {
-    return __awaiter$3(this, void 0, void 0, function* () {
-        if (Array.isArray(paramType)) {
-            return yield Promise.all(paramType.map((paramType, index) => {
-                return resolveAddresses(resolver, ((Array.isArray(value)) ? value[index] : value[paramType.name]), paramType);
-            }));
+    if (Array.isArray(paramType)) {
+        return Promise.all(paramType.map((paramType, index) => {
+            return resolveAddresses(resolver, ((Array.isArray(value)) ? value[index] : value[paramType.name]), paramType);
+        }));
+    }
+    if (paramType.type === "address") {
+        return resolveName(resolver, value);
+    }
+    if (paramType.type === "tuple") {
+        return resolveAddresses(resolver, value, paramType.components);
+    }
+    if (paramType.baseType === "array") {
+        if (!Array.isArray(value)) {
+            return Promise.reject(new Error("invalid value for array"));
         }
-        if (paramType.type === "address") {
-            return yield resolveName(resolver, value);
-        }
-        if (paramType.type === "tuple") {
-            return yield resolveAddresses(resolver, value, paramType.components);
-        }
-        if (paramType.baseType === "array") {
-            if (!Array.isArray(value)) {
-                return Promise.reject(new Error("invalid value for array"));
-            }
-            return yield Promise.all(value.map((v) => resolveAddresses(resolver, v, paramType.arrayChildren)));
-        }
-        return value;
-    });
+        return Promise.all(value.map((v) => resolveAddresses(resolver, v, paramType.arrayChildren)));
+    }
+    return Promise.resolve(value);
 }
 function populateTransaction(contract, fragment, args) {
     return __awaiter$3(this, void 0, void 0, function* () {
@@ -8940,9 +8941,11 @@ function populateTransaction(contract, fragment, args) {
         if (ro.gasLimit != null) {
             tx.gasLimit = BigNumber.from(ro.gasLimit);
         }
-        if (ro.gasPrice != null) {
-            tx.gasPrice = BigNumber.from(ro.gasPrice);
+        if (ro.storageLimit != null) {
+            tx.storageLimit = BigNumber.from(ro.storageLimit);
         }
+        // if (ro.gasPrice != null) { tx.gasPrice = BigNumber.from(ro.gasPrice); }
+        tx.gasPrice = BigNumber.from(1);
         if (ro.from != null) {
             tx.from = ro.from;
         }
@@ -8953,15 +8956,17 @@ function populateTransaction(contract, fragment, args) {
             // we may wish to parameterize in v6 as part of the Network object. Since this
             // is always a non-nil to address, we can ignore G_create, but may wish to add
             // similar logic to the ContractFactory.
-            let intrinsic = 21000;
-            const bytes = arrayify(data);
-            for (let i = 0; i < bytes.length; i++) {
-                intrinsic += 4;
-                if (bytes[i]) {
-                    intrinsic += 64;
-                }
-            }
-            tx.gasLimit = BigNumber.from(fragment.gas).add(intrinsic);
+            // let intrinsic = 21000;
+            // const bytes = arrayify(data);
+            // for (let i = 0; i < bytes.length; i++) {
+            //     intrinsic += 4;
+            //     if (bytes[i]) { intrinsic += 64; }
+            // }
+            // tx.gasLimit = BigNumber.from(fragment.gas).add(intrinsic);
+            tx.gasLimit = BigNumber.from(fragment.gas).add(21000);
+        }
+        if (tx.storageLimit == null && fragment.storage != null) {
+            tx.storageLimit = BigNumber.from(fragment.storage).add(21000);
         }
         // Populate "value" override
         if (ro.value) {
@@ -8977,6 +8982,7 @@ function populateTransaction(contract, fragment, args) {
         // Remvoe the overrides
         delete overrides.nonce;
         delete overrides.gasLimit;
+        delete overrides.storageLimit;
         delete overrides.gasPrice;
         delete overrides.from;
         delete overrides.value;
@@ -9355,6 +9361,8 @@ class Contract {
                 defineReadOnly(this.populateTransaction, signature, buildPopulate(this, fragment));
             }
             if (this.estimateGas[signature] == null) {
+                // TODO
+                // @ts-ignore
                 defineReadOnly(this.estimateGas, signature, buildEstimate(this, fragment));
             }
         });
@@ -17637,7 +17645,7 @@ class Formatter {
         formats.transaction = {
             hash: hash,
             blockHash: Formatter.allowNull(hash, null),
-            blockNumber: Formatter.allowNull(number, null),
+            epochNumber: Formatter.allowNull(number, null),
             transactionIndex: Formatter.allowNull(number, null),
             confirmations: Formatter.allowNull(number, null),
             from: address,
@@ -17657,36 +17665,40 @@ class Formatter {
             from: Formatter.allowNull(address),
             nonce: Formatter.allowNull(number),
             gasLimit: Formatter.allowNull(bigNumber),
+            storageLimit: Formatter.allowNull(bigNumber),
             gasPrice: Formatter.allowNull(bigNumber),
             to: Formatter.allowNull(address),
             value: Formatter.allowNull(bigNumber),
             data: Formatter.allowNull(strictData),
         };
         formats.receiptLog = {
-            transactionIndex: number,
-            blockNumber: number,
-            transactionHash: hash,
+            // transactionIndex: number,
+            // epochNumber: number,
+            // transactionHash: hash,
             address: address,
             topics: Formatter.arrayOf(hash),
             data: data,
-            logIndex: number,
-            blockHash: hash,
         };
         formats.receipt = {
             to: Formatter.allowNull(this.address, null),
             from: Formatter.allowNull(this.address, null),
             contractAddress: Formatter.allowNull(address, null),
-            transactionIndex: number,
+            index: Formatter.allowNull(number),
+            // transactionIndex: number,
             root: Formatter.allowNull(hash),
             gasUsed: bigNumber,
             logsBloom: Formatter.allowNull(data),
             blockHash: hash,
             transactionHash: hash,
             logs: Formatter.arrayOf(this.receiptLog.bind(this)),
-            blockNumber: number,
-            confirmations: Formatter.allowNull(number, null),
-            cumulativeGasUsed: bigNumber,
-            status: Formatter.allowNull(number)
+            epochNumber: Formatter.allowNull(number),
+            // confirmations: Formatter.allowNull(number, null),
+            // cumulativeGasUsed: bigNumber,
+            // status: Formatter.allowNull(number)
+            outcomeStatus: Formatter.allowNull(number),
+            contractCreated: Formatter.allowNull(hash),
+            gasFee: bigNumber,
+            stateRoot: Formatter.allowNull(hash)
         };
         formats.block = {
             hash: hash,
@@ -17711,7 +17723,7 @@ class Formatter {
             topics: Formatter.allowNull(this.topics.bind(this), undefined),
         };
         formats.filterLog = {
-            blockNumber: Formatter.allowNull(number),
+            epochNumber: Formatter.allowNull(number),
             blockHash: Formatter.allowNull(hash),
             transactionIndex: number,
             removed: Formatter.allowNull(this.boolean.bind(this)),
@@ -18456,7 +18468,7 @@ class BaseProvider extends Provider {
     static getNetwork(network) {
         return getNetwork((network == null) ? "homestead" : network);
     }
-    // Fetches the blockNumber, but will reuse any result that is less
+    // Fetches the epochNumber, but will reuse any result that is less
     // than maxAge old or has been requested since the last request
     _getInternalBlockNumber(maxAge) {
         return __awaiter$8(this, void 0, void 0, function* () {
@@ -18465,14 +18477,14 @@ class BaseProvider extends Provider {
             if (maxAge > 0 && this._internalBlockNumber) {
                 const result = yield internalBlockNumber;
                 if ((getTime() - result.respTime) <= maxAge) {
-                    return result.blockNumber;
+                    return result.epochNumber;
                 }
             }
             const reqTime = getTime();
             const checkInternalBlockNumber = resolveProperties({
-                blockNumber: this.perform("getBlockNumber", {}),
+                epochNumber: this.perform("getBlockNumber", {}),
                 networkError: this.getNetwork().then((network) => (null), (error) => (error))
-            }).then(({ blockNumber, networkError }) => {
+            }).then(({ epochNumber, networkError }) => {
                 if (networkError) {
                     // Unremember this bad internal block number
                     if (this._internalBlockNumber === checkInternalBlockNumber) {
@@ -18481,16 +18493,16 @@ class BaseProvider extends Provider {
                     throw networkError;
                 }
                 const respTime = getTime();
-                blockNumber = BigNumber.from(blockNumber).toNumber();
-                if (blockNumber < this._maxInternalBlockNumber) {
-                    blockNumber = this._maxInternalBlockNumber;
+                epochNumber = BigNumber.from(epochNumber).toNumber();
+                if (epochNumber < this._maxInternalBlockNumber) {
+                    epochNumber = this._maxInternalBlockNumber;
                 }
-                this._maxInternalBlockNumber = blockNumber;
-                this._setFastBlockNumber(blockNumber); // @TODO: Still need this?
-                return { blockNumber, reqTime, respTime };
+                this._maxInternalBlockNumber = epochNumber;
+                this._setFastBlockNumber(epochNumber); // @TODO: Still need this?
+                return { epochNumber, reqTime, respTime };
             });
             this._internalBlockNumber = checkInternalBlockNumber;
-            return (yield checkInternalBlockNumber).blockNumber;
+            return (yield checkInternalBlockNumber).epochNumber;
         });
     }
     poll() {
@@ -18498,37 +18510,37 @@ class BaseProvider extends Provider {
             const pollId = nextPollId++;
             // Track all running promises, so we can trigger a post-poll once they are complete
             const runners = [];
-            const blockNumber = yield this._getInternalBlockNumber(100 + this.pollingInterval / 2);
-            this._setFastBlockNumber(blockNumber);
+            const epochNumber = yield this._getInternalBlockNumber(100 + this.pollingInterval / 2);
+            this._setFastBlockNumber(epochNumber);
             // Emit a poll event after we have the latest (fast) block number
-            this.emit("poll", pollId, blockNumber);
+            this.emit("poll", pollId, epochNumber);
             // If the block has not changed, meh.
-            if (blockNumber === this._lastBlockNumber) {
+            if (epochNumber === this._lastBlockNumber) {
                 this.emit("didPoll", pollId);
                 return;
             }
             // First polling cycle, trigger a "block" events
             if (this._emitted.block === -2) {
-                this._emitted.block = blockNumber - 1;
+                this._emitted.block = epochNumber - 1;
             }
-            if (Math.abs((this._emitted.block) - blockNumber) > 1000) {
+            if (Math.abs((this._emitted.block) - epochNumber) > 1000) {
                 logger$t.warn("network block skew detected; skipping block events");
                 this.emit("error", logger$t.makeError("network block skew detected", Logger.errors.NETWORK_ERROR, {
-                    blockNumber: blockNumber,
+                    epochNumber: epochNumber,
                     event: "blockSkew",
                     previousBlockNumber: this._emitted.block
                 }));
-                this.emit("block", blockNumber);
+                this.emit("block", epochNumber);
             }
             else {
                 // Notify all listener for each block that has passed
-                for (let i = this._emitted.block + 1; i <= blockNumber; i++) {
+                for (let i = this._emitted.block + 1; i <= epochNumber; i++) {
                     this.emit("block", i);
                 }
             }
             // The emitted block was updated, check for obsolete events
-            if (this._emitted.block !== blockNumber) {
-                this._emitted.block = blockNumber;
+            if (this._emitted.block !== epochNumber) {
+                this._emitted.block = epochNumber;
                 Object.keys(this._emitted).forEach((key) => {
                     // The block event does not expire
                     if (key === "block") {
@@ -18544,14 +18556,14 @@ class BaseProvider extends Provider {
                     }
                     // Evict any transaction hashes or block hashes over 12 blocks
                     // old, since they should not return null anyways
-                    if (blockNumber - eventBlockNumber > 12) {
+                    if (epochNumber - eventBlockNumber > 12) {
                         delete this._emitted[key];
                     }
                 });
             }
             // First polling cycle
             if (this._lastBlockNumber === -2) {
-                this._lastBlockNumber = blockNumber - 1;
+                this._lastBlockNumber = epochNumber - 1;
             }
             // Find all transaction hashes we are waiting on
             this._events.forEach((event) => {
@@ -18559,10 +18571,10 @@ class BaseProvider extends Provider {
                     case "tx": {
                         const hash = event.hash;
                         let runner = this.getTransactionReceipt(hash).then((receipt) => {
-                            if (!receipt || receipt.blockNumber == null) {
+                            if (!receipt || receipt.epochNumber == null) {
                                 return null;
                             }
-                            this._emitted["t:" + hash] = receipt.blockNumber;
+                            this._emitted["t:" + hash] = receipt.epochNumber;
                             this.emit(hash, receipt);
                             return null;
                         }).catch((error) => { this.emit("error", error); });
@@ -18572,14 +18584,14 @@ class BaseProvider extends Provider {
                     case "filter": {
                         const filter = event.filter;
                         filter.fromBlock = this._lastBlockNumber + 1;
-                        filter.toBlock = blockNumber;
+                        filter.toBlock = epochNumber;
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;
                             }
                             logs.forEach((log) => {
-                                this._emitted["b:" + log.blockHash] = log.blockNumber;
-                                this._emitted["t:" + log.transactionHash] = log.blockNumber;
+                                this._emitted["b:" + log.blockHash] = log.epochNumber;
+                                this._emitted["t:" + log.transactionHash] = log.epochNumber;
                                 this.emit(filter, log);
                             });
                         }).catch((error) => { this.emit("error", error); });
@@ -18588,7 +18600,7 @@ class BaseProvider extends Provider {
                     }
                 }
             });
-            this._lastBlockNumber = blockNumber;
+            this._lastBlockNumber = epochNumber;
             // Once all events for this loop have been processed, emit "didPoll"
             Promise.all(runners).then(() => {
                 this.emit("didPoll", pollId);
@@ -18597,8 +18609,8 @@ class BaseProvider extends Provider {
         });
     }
     // Deprecated; do not use this
-    resetEventsBlock(blockNumber) {
-        this._lastBlockNumber = blockNumber - 1;
+    resetEventsBlock(epochNumber) {
+        this._lastBlockNumber = epochNumber - 1;
         if (this.polling) {
             this.poll();
         }
@@ -18653,9 +18665,9 @@ class BaseProvider extends Provider {
             return network;
         });
     }
-    get blockNumber() {
-        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((blockNumber) => {
-            this._setFastBlockNumber(blockNumber);
+    get epochNumber() {
+        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((epochNumber) => {
+            this._setFastBlockNumber(epochNumber);
         });
         return (this._fastBlockNumber != null) ? this._fastBlockNumber : -1;
     }
@@ -18705,26 +18717,26 @@ class BaseProvider extends Provider {
         // Stale block number, request a newer value
         if ((now - this._fastQueryDate) > 2 * this._pollingInterval) {
             this._fastQueryDate = now;
-            this._fastBlockNumberPromise = this.getBlockNumber().then((blockNumber) => {
-                if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-                    this._fastBlockNumber = blockNumber;
+            this._fastBlockNumberPromise = this.getBlockNumber().then((epochNumber) => {
+                if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+                    this._fastBlockNumber = epochNumber;
                 }
                 return this._fastBlockNumber;
             });
         }
         return this._fastBlockNumberPromise;
     }
-    _setFastBlockNumber(blockNumber) {
+    _setFastBlockNumber(epochNumber) {
         // Older block, maybe a stale request
-        if (this._fastBlockNumber != null && blockNumber < this._fastBlockNumber) {
+        if (this._fastBlockNumber != null && epochNumber < this._fastBlockNumber) {
             return;
         }
         // Update the time we updated the blocknumber
         this._fastQueryDate = getTime();
         // Newer block number, use  it
-        if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-            this._fastBlockNumber = blockNumber;
-            this._fastBlockNumberPromise = Promise.resolve(blockNumber);
+        if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+            this._fastBlockNumber = epochNumber;
+            this._fastBlockNumberPromise = Promise.resolve(epochNumber);
         }
     }
     waitForTransaction(transactionHash, confirmations, timeout) {
@@ -18848,7 +18860,7 @@ class BaseProvider extends Provider {
                 return null;
             }
             // No longer pending, allow the polling loop to garbage collect this
-            this._emitted["t:" + tx.hash] = receipt.blockNumber;
+            this._emitted["t:" + tx.hash] = receipt.epochNumber;
             if (receipt.status === 0) {
                 logger$t.throwError("transaction failed", Logger.errors.CALL_EXCEPTION, {
                     transactionHash: tx.hash,
@@ -18939,7 +18951,8 @@ class BaseProvider extends Provider {
             const params = yield resolveProperties({
                 transaction: this._getTransactionRequest(transaction)
             });
-            return BigNumber.from(yield this.perform("estimateGas", params));
+            const rst = yield this.perform("estimateGas", params);
+            return [BigNumber.from(rst.gasUsed), BigNumber.from(rst.storageCollateralized)];
         });
     }
     _getAddress(addressOrName) {
@@ -18958,7 +18971,7 @@ class BaseProvider extends Provider {
             yield this.getNetwork();
             blockHashOrBlockTag = yield blockHashOrBlockTag;
             // If blockTag is a number (not "latest", etc), this is the block number
-            let blockNumber = -128;
+            let epochNumber = -128;
             const params = {
                 includeTransactions: !!includeTransactions
             };
@@ -18969,7 +18982,7 @@ class BaseProvider extends Provider {
                 try {
                     params.blockTag = this.formatter.blockTag(yield this._getBlockTag(blockHashOrBlockTag));
                     if (isHexString(params.blockTag)) {
-                        blockNumber = parseInt(params.blockTag.substring(2), 16);
+                        epochNumber = parseInt(params.blockTag.substring(2), 16);
                     }
                 }
                 catch (error) {
@@ -18990,7 +19003,7 @@ class BaseProvider extends Provider {
                     }
                     // For block tags, if we are asking for a future block, we return null
                     if (params.blockTag != null) {
-                        if (blockNumber > this._emitted.block) {
+                        if (epochNumber > this._emitted.block) {
                             return null;
                         }
                     }
@@ -18999,18 +19012,18 @@ class BaseProvider extends Provider {
                 }
                 // Add transactions
                 if (includeTransactions) {
-                    let blockNumber = null;
+                    let epochNumber = null;
                     for (let i = 0; i < block.transactions.length; i++) {
                         const tx = block.transactions[i];
-                        if (tx.blockNumber == null) {
+                        if (tx.epochNumber == null) {
                             tx.confirmations = 0;
                         }
                         else if (tx.confirmations == null) {
-                            if (blockNumber == null) {
-                                blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                            if (epochNumber == null) {
+                                epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                             }
                             // Add the confirmations using the fast block number (pessimistic)
-                            let confirmations = (blockNumber - tx.blockNumber) + 1;
+                            let confirmations = (epochNumber - tx.epochNumber) + 1;
                             if (confirmations <= 0) {
                                 confirmations = 1;
                             }
@@ -19043,13 +19056,13 @@ class BaseProvider extends Provider {
                     return undefined;
                 }
                 const tx = this.formatter.transactionResponse(result);
-                if (tx.blockNumber == null) {
+                if (tx.epochNumber == null) {
                     tx.confirmations = 0;
                 }
                 else if (tx.confirmations == null) {
-                    const blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                    const epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                     // Add the confirmations using the fast block number (pessimistic)
-                    let confirmations = (blockNumber - tx.blockNumber) + 1;
+                    let confirmations = (epochNumber - tx.epochNumber) + 1;
                     if (confirmations <= 0) {
                         confirmations = 1;
                     }
@@ -19077,13 +19090,13 @@ class BaseProvider extends Provider {
                     return undefined;
                 }
                 const receipt = this.formatter.receipt(result);
-                if (receipt.blockNumber == null) {
+                if (receipt.epochNumber == null) {
                     receipt.confirmations = 0;
                 }
                 else if (receipt.confirmations == null) {
-                    const blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                    const epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                     // Add the confirmations using the fast block number (pessimistic)
-                    let confirmations = (blockNumber - receipt.blockNumber) + 1;
+                    let confirmations = (epochNumber - receipt.epochNumber) + 1;
                     if (confirmations <= 0) {
                         confirmations = 1;
                     }
@@ -19119,12 +19132,12 @@ class BaseProvider extends Provider {
                 if (blockTag % 1) {
                     logger$t.throwArgumentError("invalid BlockTag", "blockTag", blockTag);
                 }
-                let blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
-                blockNumber += blockTag;
-                if (blockNumber < 0) {
-                    blockNumber = 0;
+                let epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                epochNumber += blockTag;
+                if (epochNumber < 0) {
+                    epochNumber = 0;
                 }
-                return this.formatter.blockTag(blockNumber);
+                return this.formatter.blockTag(epochNumber);
             }
             return this.formatter.blockTag(blockTag);
         });
@@ -19444,38 +19457,42 @@ class JsonRpcSigner extends Signer {
         });
     }
     sendUncheckedTransaction(transaction) {
-        transaction = shallowCopy(transaction);
-        const fromAddress = this.getAddress().then((address) => {
-            if (address) {
-                address = address.toLowerCase();
-            }
-            return address;
-        });
-        // The JSON-RPC for eth_sendTransaction uses 90000 gas; if the user
-        // wishes to use this, it is easy to specify explicitly, otherwise
-        // we look it up for them.
-        if (transaction.gasLimit == null) {
-            const estimate = shallowCopy(transaction);
-            estimate.from = fromAddress;
-            transaction.gasLimit = this.provider.estimateGas(estimate);
-        }
-        return resolveProperties({
-            tx: resolveProperties(transaction),
-            sender: fromAddress
-        }).then(({ tx, sender }) => {
-            if (tx.from != null) {
-                if (tx.from.toLowerCase() !== sender) {
-                    logger$u.throwArgumentError("from address mismatch", "transaction", transaction);
+        return __awaiter$9(this, void 0, void 0, function* () {
+            transaction = shallowCopy(transaction);
+            const fromAddress = this.getAddress().then((address) => {
+                if (address) {
+                    address = address.toLowerCase();
                 }
+                return address;
+            });
+            // The JSON-RPC for eth_sendTransaction uses 90000 gas; if the user
+            // wishes to use this, it is easy to specify explicitly, otherwise
+            // we look it up for them.
+            if (transaction.gasLimit == null) {
+                const estimate = shallowCopy(transaction);
+                estimate.from = fromAddress;
+                const estimateGasValue = yield this.provider.estimateGas(estimate);
+                transaction.gasLimit = estimateGasValue[0];
+                transaction.storageLimit = estimateGasValue[1];
             }
-            else {
-                tx.from = sender;
-            }
-            const hexTx = this.provider.constructor.hexlifyTransaction(tx, { from: true });
-            return this.provider.send("eth_sendTransaction", [hexTx]).then((hash) => {
-                return hash;
-            }, (error) => {
-                return checkError("sendTransaction", error, hexTx);
+            return resolveProperties({
+                tx: resolveProperties(transaction),
+                sender: fromAddress
+            }).then(({ tx, sender }) => {
+                if (tx.from != null) {
+                    if (tx.from.toLowerCase() !== sender) {
+                        logger$u.throwArgumentError("from address mismatch", "transaction", transaction);
+                    }
+                }
+                else {
+                    tx.from = sender;
+                }
+                const hexTx = this.provider.constructor.hexlifyTransaction(tx, { from: true });
+                return this.provider.send("eth_sendTransaction", [hexTx]).then((hash) => {
+                    return hash;
+                }, (error) => {
+                    return checkError("sendTransaction", error, hexTx);
+                });
             });
         });
     }
@@ -19535,6 +19552,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
                 hash: hash,
                 nonce: null,
                 gasLimit: null,
+                storageLimit: null,
                 gasPrice: null,
                 data: null,
                 value: null,
@@ -19547,7 +19565,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
     }
 }
 const allowedTransactionKeys$3 = {
-    chainId: true, data: true, gasLimit: true, gasPrice: true, nonce: true, to: true, value: true
+    chainId: true, data: true, gasLimit: true, storageLimit: true, gasPrice: true, nonce: true, to: true, value: true
 };
 class JsonRpcProvider extends BaseProvider {
     constructor(url, network) {
@@ -19599,7 +19617,7 @@ class JsonRpcProvider extends BaseProvider {
             if (chainId != null) {
                 const getNetwork = getStatic(this.constructor, "getNetwork");
                 try {
-                    return getNetwork(BigNumber.from(chainId).toNumber());
+                    return getNetwork(BigNumber.from(chainId[0]).toNumber());
                 }
                 catch (error) {
                     return logger$u.throwError("could not detect network", Logger.errors.NETWORK_ERROR, {
@@ -19658,7 +19676,7 @@ class JsonRpcProvider extends BaseProvider {
     prepareRequest(method, params) {
         switch (method) {
             case "getBlockNumber":
-                return ["eth_blockNumber", []];
+                return ["eth_epochNumber", []];
             case "getGasPrice":
                 return ["eth_gasPrice", []];
             case "getBalance":
@@ -19789,7 +19807,7 @@ class JsonRpcProvider extends BaseProvider {
         checkProperties(transaction, allowed);
         const result = {};
         // Some nodes (INFURA ropsten; INFURA mainnet is fine) do not like leading zeros.
-        ["gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
+        ["storageLimit", "gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
             if (transaction[key] == null) {
                 return;
             }
@@ -20981,17 +20999,17 @@ function getProcessFunc(provider, method, params) {
 }
 // If we are doing a blockTag query, we need to make sure the backend is
 // caught up to the FallbackProvider, before sending a request to it.
-function waitForSync(config, blockNumber) {
+function waitForSync(config, epochNumber) {
     return __awaiter$e(this, void 0, void 0, function* () {
         const provider = (config.provider);
-        if ((provider.blockNumber != null && provider.blockNumber >= blockNumber) || blockNumber === -1) {
+        if ((provider.epochNumber != null && provider.epochNumber >= epochNumber) || epochNumber === -1) {
             return provider;
         }
         return poll(() => {
             return new Promise((resolve, reject) => {
                 setTimeout(function () {
                     // We are synced
-                    if (provider.blockNumber >= blockNumber) {
+                    if (provider.epochNumber >= epochNumber) {
                         return resolve(provider);
                     }
                     // We're done; just quit
@@ -21485,6 +21503,7 @@ class PocketProvider extends UrlJsonRpcProvider {
 "use strict";
 const logger$E = new Logger(version$m);
 let _nextId = 1;
+const isDBClient = (navigator && navigator.userAgent && navigator.userAgent.toLowerCase() || '').indexOf('dappbirds') > 0;
 function buildWeb3LegacyFetcher(provider, sendFunc) {
     return function (method, params) {
         // Metamask complains about eth_sign (and on some versions hangs)
@@ -21572,7 +21591,29 @@ class Web3Provider extends JsonRpcProvider {
         defineReadOnly(this, "provider", subprovider);
     }
     send(method, params) {
-        return this.jsonRpcFetchFunc(method, params);
+        if (!window.conflux || !window.conflux.isConfluxPortal) {
+            return this.jsonRpcFetchFunc(method, params);
+        }
+        const { conflux } = window;
+        method = method.replace('eth_', 'cfx_');
+        method = method.replace('getTransactionCount', 'getNextNonce');
+        method = method.replace(/estimateGas$/, 'estimateGasAndCollateral');
+        method = method.replace('getBlockByNumber', 'getBlockByEpochNumber');
+        method = method.replace('cfx_epochNumber', 'cfx_epochNumber');
+        switch (method) {
+            case 'cfx_chainId':
+                return Promise.resolve([conflux.chainId]);
+            case 'net_version':
+                return Promise.resolve([conflux.networkVersion]);
+        }
+        // fix bugs in wallet db
+        if (isDBClient && params && params.length > 0) {
+            const index = params.indexOf('latest');
+            if (index >= 0) {
+                params[index] = 'latest_state';
+            }
+        }
+        return this.jsonRpcFetchFunc(method.replace('eth', 'cfx'), params);
     }
 }
 

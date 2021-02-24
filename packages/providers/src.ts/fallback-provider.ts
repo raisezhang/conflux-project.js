@@ -323,10 +323,10 @@ function getProcessFunc(provider: FallbackProvider, method: string, params: { [ 
 
 // If we are doing a blockTag query, we need to make sure the backend is
 // caught up to the FallbackProvider, before sending a request to it.
-async function waitForSync(config: RunningConfig, blockNumber: number): Promise<BaseProvider> {
+async function waitForSync(config: RunningConfig, epochNumber: number): Promise<BaseProvider> {
     const provider = <BaseProvider>(config.provider);
 
-    if ((provider.blockNumber != null && provider.blockNumber >= blockNumber) || blockNumber === -1) {
+    if ((provider.epochNumber != null && provider.epochNumber >= epochNumber) || epochNumber === -1) {
         return provider;
     }
 
@@ -335,7 +335,7 @@ async function waitForSync(config: RunningConfig, blockNumber: number): Promise<
             setTimeout(function() {
 
                 // We are synced
-                if (provider.blockNumber >= blockNumber) { return resolve(provider); }
+                if (provider.epochNumber >= epochNumber) { return resolve(provider); }
 
                 // We're done; just quit
                 if (config.cancelled) { return resolve(null); }

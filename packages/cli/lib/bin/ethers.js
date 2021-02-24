@@ -888,7 +888,7 @@ var WaitPlugin = /** @class */ (function (_super) {
                     case 1:
                         receipt = _a.sent();
                         cli_1.dump("Response:", {
-                            "Block": receipt.blockNumber,
+                            "Block": receipt.epochNumber,
                             "Block Hash": receipt.blockHash,
                             "Status": (receipt.status ? "ok" : "failed")
                         });

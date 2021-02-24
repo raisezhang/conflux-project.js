@@ -29,7 +29,7 @@ var Formatter = /** @class */ (function () {
         formats.transaction = {
             hash: hash,
             blockHash: Formatter.allowNull(hash, null),
-            blockNumber: Formatter.allowNull(number, null),
+            epochNumber: Formatter.allowNull(number, null),
             transactionIndex: Formatter.allowNull(number, null),
             confirmations: Formatter.allowNull(number, null),
             from: address,
@@ -49,36 +49,40 @@ var Formatter = /** @class */ (function () {
             from: Formatter.allowNull(address),
             nonce: Formatter.allowNull(number),
             gasLimit: Formatter.allowNull(bigNumber),
+            storageLimit: Formatter.allowNull(bigNumber),
             gasPrice: Formatter.allowNull(bigNumber),
             to: Formatter.allowNull(address),
             value: Formatter.allowNull(bigNumber),
             data: Formatter.allowNull(strictData),
         };
         formats.receiptLog = {
-            transactionIndex: number,
-            blockNumber: number,
-            transactionHash: hash,
+            // transactionIndex: number,
+            // epochNumber: number,
+            // transactionHash: hash,
             address: address,
             topics: Formatter.arrayOf(hash),
             data: data,
-            logIndex: number,
-            blockHash: hash,
         };
         formats.receipt = {
             to: Formatter.allowNull(this.address, null),
             from: Formatter.allowNull(this.address, null),
             contractAddress: Formatter.allowNull(address, null),
-            transactionIndex: number,
+            index: Formatter.allowNull(number),
+            // transactionIndex: number,
             root: Formatter.allowNull(hash),
             gasUsed: bigNumber,
             logsBloom: Formatter.allowNull(data),
             blockHash: hash,
             transactionHash: hash,
             logs: Formatter.arrayOf(this.receiptLog.bind(this)),
-            blockNumber: number,
-            confirmations: Formatter.allowNull(number, null),
-            cumulativeGasUsed: bigNumber,
-            status: Formatter.allowNull(number)
+            epochNumber: Formatter.allowNull(number),
+            // confirmations: Formatter.allowNull(number, null),
+            // cumulativeGasUsed: bigNumber,
+            // status: Formatter.allowNull(number)
+            outcomeStatus: Formatter.allowNull(number),
+            contractCreated: Formatter.allowNull(hash),
+            gasFee: bigNumber,
+            stateRoot: Formatter.allowNull(hash)
         };
         formats.block = {
             hash: hash,
@@ -103,7 +107,7 @@ var Formatter = /** @class */ (function () {
             topics: Formatter.allowNull(this.topics.bind(this), undefined),
         };
         formats.filterLog = {
-            blockNumber: Formatter.allowNull(number),
+            epochNumber: Formatter.allowNull(number),
             blockHash: Formatter.allowNull(hash),
             transactionIndex: number,
             removed: Formatter.allowNull(this.boolean.bind(this)),

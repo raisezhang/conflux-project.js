@@ -13,7 +13,7 @@
     "@confluxproject/properties": "^5.0.3",
     "@confluxproject/strings": "^5.0.4"
   },
-  "description": "Utility fucntions for managing web requests for ethers.",
+  "description": "Utility fucntions for managing web requests for conflux.",
   "keywords": [
     "Conflux"
   ],

@@ -5,7 +5,7 @@ import { Block, BlockTag, Filter, FilterByBlockHash, Listener, Log, Provider, Tr
 import { Signer, VoidSigner } from "@confluxproject/abstract-signer";
 import { getAddress, getContractAddress } from "@confluxproject/address";
 import { BigNumber, BigNumberish } from "@confluxproject/bignumber";
-import { arrayify, BytesLike, concat, hexlify, isBytes, isHexString } from "@confluxproject/bytes";
+import { BytesLike, concat, hexlify, isBytes, isHexString } from "@confluxproject/bytes";
 import { Deferrable, defineReadOnly, deepCopy, getStatic, resolveProperties, shallowCopy } from "@confluxproject/properties";
 // @TOOD remove dependences transactions
 
@@ -18,6 +18,7 @@ export interface Overrides {
     gasLimit?: BigNumberish | Promise<BigNumberish>;
     gasPrice?: BigNumberish | Promise<BigNumberish>;
     nonce?: BigNumberish | Promise<BigNumberish>;
+    storageLimit?: BigNumberish | Promise<BigNumberish>;
 };
 
 export interface PayableOverrides extends Overrides {
@@ -41,6 +42,8 @@ export interface PopulatedTransaction {
 
     gasLimit?: BigNumber;
     gasPrice?: BigNumber;
+
+    storageLimit?: BigNumber;
 
     data?: string;
     value?: BigNumber;
@@ -113,17 +116,17 @@ async function resolveName(resolver: Signer | Provider, nameOrPromise: string | 
 
     const address = await resolver.resolveName(name);
 
-    if (address == null) {
-        logger.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
-    }
+    // if (address == null) {
+    //     logger.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
+    // }
 
     return address;
 }
 
 // Recursively replaces ENS names with promises to resolve the name and resolves all properties
-async function resolveAddresses(resolver: Signer | Provider, value: any, paramType: ParamType | Array<ParamType>): Promise<any> {
+function resolveAddresses(resolver: Signer | Provider, value: any, paramType: ParamType | Array<ParamType>): Promise<any> {
     if (Array.isArray(paramType)) {
-        return await Promise.all(paramType.map((paramType, index) => {
+        return Promise.all(paramType.map((paramType, index) => {
             return resolveAddresses(
                 resolver,
                 ((Array.isArray(value)) ? value[index]: value[paramType.name]),
@@ -133,19 +136,19 @@ async function resolveAddresses(resolver: Signer | Provider, value: any, paramTy
     }
 
     if (paramType.type === "address") {
-        return await resolveName(resolver, value);
+        return resolveName(resolver, value);
     }
 
     if (paramType.type === "tuple") {
-        return await resolveAddresses(resolver, value, paramType.components);
+        return resolveAddresses(resolver, value, paramType.components);
     }
 
     if (paramType.baseType === "array") {
         if (!Array.isArray(value)) { return Promise.reject(new Error("invalid value for array")); }
-        return await Promise.all(value.map((v) => resolveAddresses(resolver, v, paramType.arrayChildren)));
+        return Promise.all(value.map((v) => resolveAddresses(resolver, v, paramType.arrayChildren)));
     }
 
-    return value;
+    return Promise.resolve(value);
 }
 
 async function populateTransaction(contract: Contract, fragment: FunctionFragment, args: Array<any>): Promise<PopulatedTransaction> {
@@ -209,7 +212,9 @@ async function populateTransaction(contract: Contract, fragment: FunctionFragmen
     // Populate simple overrides
     if (ro.nonce != null) { tx.nonce = BigNumber.from(ro.nonce).toNumber(); }
     if (ro.gasLimit != null) { tx.gasLimit = BigNumber.from(ro.gasLimit); }
-    if (ro.gasPrice != null) { tx.gasPrice = BigNumber.from(ro.gasPrice); }
+    if (ro.storageLimit != null) { tx.storageLimit = BigNumber.from(ro.storageLimit); }
+    // if (ro.gasPrice != null) { tx.gasPrice = BigNumber.from(ro.gasPrice); }
+    tx.gasPrice = BigNumber.from(1);
     if (ro.from != null) { tx.from = ro.from; }
 
     // If there was no "gasLimit" override, but the ABI specifies a default, use it
@@ -219,13 +224,19 @@ async function populateTransaction(contract: Contract, fragment: FunctionFragmen
         // we may wish to parameterize in v6 as part of the Network object. Since this
         // is always a non-nil to address, we can ignore G_create, but may wish to add
         // similar logic to the ContractFactory.
-        let intrinsic = 21000;
-        const bytes = arrayify(data);
-        for (let i = 0; i < bytes.length; i++) {
-            intrinsic += 4;
-            if (bytes[i]) { intrinsic += 64; }
-        }
-        tx.gasLimit = BigNumber.from(fragment.gas).add(intrinsic);
+
+        // let intrinsic = 21000;
+        // const bytes = arrayify(data);
+        // for (let i = 0; i < bytes.length; i++) {
+        //     intrinsic += 4;
+        //     if (bytes[i]) { intrinsic += 64; }
+        // }
+        // tx.gasLimit = BigNumber.from(fragment.gas).add(intrinsic);
+        tx.gasLimit = BigNumber.from(fragment.gas).add(21000)
+    }
+
+    if (tx.storageLimit == null && fragment.storage != null) {
+        tx.storageLimit = BigNumber.from(fragment.storage).add(21000)
     }
 
     // Populate "value" override
@@ -243,6 +254,7 @@ async function populateTransaction(contract: Contract, fragment: FunctionFragmen
     // Remvoe the overrides
     delete overrides.nonce;
     delete overrides.gasLimit;
+    delete overrides.storageLimit;
     delete overrides.gasPrice;
     delete overrides.from;
     delete overrides.value;
@@ -267,9 +279,9 @@ function buildPopulate(contract: Contract, fragment: FunctionFragment): Contract
     };
 }
 
-function buildEstimate(contract: Contract, fragment: FunctionFragment): ContractFunction<BigNumber> {
+function buildEstimate(contract: Contract, fragment: FunctionFragment): ContractFunction<BigNumber | BigNumber[]> {
     const signerOrProvider = (contract.signer || contract.provider);
-    return async function(...args: Array<any>): Promise<BigNumber> {
+    return async function(...args: Array<any>): Promise<BigNumber | BigNumber[]> {
         if (!signerOrProvider) {
             logger.throwError("estimate require a provider or signer", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "estimateGas"
@@ -713,6 +725,8 @@ export class Contract {
             }
 
             if (this.estimateGas[signature] == null) {
+                // TODO
+                // @ts-ignore
                 defineReadOnly(this.estimateGas, signature, buildEstimate(this, fragment));
             }
         });

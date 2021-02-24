@@ -94,9 +94,9 @@ function resolveName(resolver, nameOrPromise) {
                     return [4 /*yield*/, resolver.resolveName(name)];
                 case 2:
                     address = _a.sent();
-                    if (address == null) {
-                        logger.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
-                    }
+                    // if (address == null) {
+                    //     logger.throwArgumentError("resolver or addr is not configured for ENS name", "name", name);
+                    // }
                     return [2 /*return*/, address];
             }
         });
@@ -104,38 +104,28 @@ function resolveName(resolver, nameOrPromise) {
 }
 // Recursively replaces ENS names with promises to resolve the name and resolves all properties
 function resolveAddresses(resolver, value, paramType) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!Array.isArray(paramType)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, Promise.all(paramType.map(function (paramType, index) {
-                            return resolveAddresses(resolver, ((Array.isArray(value)) ? value[index] : value[paramType.name]), paramType);
-                        }))];
-                case 1: return [2 /*return*/, _a.sent()];
-                case 2:
-                    if (!(paramType.type === "address")) return [3 /*break*/, 4];
-                    return [4 /*yield*/, resolveName(resolver, value)];
-                case 3: return [2 /*return*/, _a.sent()];
-                case 4:
-                    if (!(paramType.type === "tuple")) return [3 /*break*/, 6];
-                    return [4 /*yield*/, resolveAddresses(resolver, value, paramType.components)];
-                case 5: return [2 /*return*/, _a.sent()];
-                case 6:
-                    if (!(paramType.baseType === "array")) return [3 /*break*/, 8];
-                    if (!Array.isArray(value)) {
-                        return [2 /*return*/, Promise.reject(new Error("invalid value for array"))];
-                    }
-                    return [4 /*yield*/, Promise.all(value.map(function (v) { return resolveAddresses(resolver, v, paramType.arrayChildren); }))];
-                case 7: return [2 /*return*/, _a.sent()];
-                case 8: return [2 /*return*/, value];
-            }
-        });
-    });
+    if (Array.isArray(paramType)) {
+        return Promise.all(paramType.map(function (paramType, index) {
+            return resolveAddresses(resolver, ((Array.isArray(value)) ? value[index] : value[paramType.name]), paramType);
+        }));
+    }
+    if (paramType.type === "address") {
+        return resolveName(resolver, value);
+    }
+    if (paramType.type === "tuple") {
+        return resolveAddresses(resolver, value, paramType.components);
+    }
+    if (paramType.baseType === "array") {
+        if (!Array.isArray(value)) {
+            return Promise.reject(new Error("invalid value for array"));
+        }
+        return Promise.all(value.map(function (v) { return resolveAddresses(resolver, v, paramType.arrayChildren); }));
+    }
+    return Promise.resolve(value);
 }
 function populateTransaction(contract, fragment, args) {
     return __awaiter(this, void 0, void 0, function () {
-        var overrides, resolved, data, tx, ro, intrinsic, bytes, i, roValue, leftovers;
+        var overrides, resolved, data, tx, ro, roValue, leftovers;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -196,23 +186,32 @@ function populateTransaction(contract, fragment, args) {
                     if (ro.gasLimit != null) {
                         tx.gasLimit = bignumber_1.BigNumber.from(ro.gasLimit);
                     }
-                    if (ro.gasPrice != null) {
-                        tx.gasPrice = bignumber_1.BigNumber.from(ro.gasPrice);
+                    if (ro.storageLimit != null) {
+                        tx.storageLimit = bignumber_1.BigNumber.from(ro.storageLimit);
                     }
+                    // if (ro.gasPrice != null) { tx.gasPrice = BigNumber.from(ro.gasPrice); }
+                    tx.gasPrice = bignumber_1.BigNumber.from(1);
                     if (ro.from != null) {
                         tx.from = ro.from;
                     }
                     // If there was no "gasLimit" override, but the ABI specifies a default, use it
                     if (tx.gasLimit == null && fragment.gas != null) {
-                        intrinsic = 21000;
-                        bytes = bytes_1.arrayify(data);
-                        for (i = 0; i < bytes.length; i++) {
-                            intrinsic += 4;
-                            if (bytes[i]) {
-                                intrinsic += 64;
-                            }
-                        }
-                        tx.gasLimit = bignumber_1.BigNumber.from(fragment.gas).add(intrinsic);
+                        // Conmpute the intrinisic gas cost for this transaction
+                        // @TODO: This is based on the yellow paper as of Petersburg; this is something
+                        // we may wish to parameterize in v6 as part of the Network object. Since this
+                        // is always a non-nil to address, we can ignore G_create, but may wish to add
+                        // similar logic to the ContractFactory.
+                        // let intrinsic = 21000;
+                        // const bytes = arrayify(data);
+                        // for (let i = 0; i < bytes.length; i++) {
+                        //     intrinsic += 4;
+                        //     if (bytes[i]) { intrinsic += 64; }
+                        // }
+                        // tx.gasLimit = BigNumber.from(fragment.gas).add(intrinsic);
+                        tx.gasLimit = bignumber_1.BigNumber.from(fragment.gas).add(21000);
+                    }
+                    if (tx.storageLimit == null && fragment.storage != null) {
+                        tx.storageLimit = bignumber_1.BigNumber.from(fragment.storage).add(21000);
                     }
                     // Populate "value" override
                     if (ro.value) {
@@ -228,6 +227,7 @@ function populateTransaction(contract, fragment, args) {
                     // Remvoe the overrides
                     delete overrides.nonce;
                     delete overrides.gasLimit;
+                    delete overrides.storageLimit;
                     delete overrides.gasPrice;
                     delete overrides.from;
                     delete overrides.value;
@@ -674,6 +674,8 @@ var Contract = /** @class */ (function () {
                 properties_1.defineReadOnly(_this.populateTransaction, signature, buildPopulate(_this, fragment));
             }
             if (_this.estimateGas[signature] == null) {
+                // TODO
+                // @ts-ignore
                 properties_1.defineReadOnly(_this.estimateGas, signature, buildEstimate(_this, fragment));
             }
         });

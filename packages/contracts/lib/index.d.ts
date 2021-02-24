@@ -7,6 +7,7 @@ export interface Overrides {
     gasLimit?: BigNumberish | Promise<BigNumberish>;
     gasPrice?: BigNumberish | Promise<BigNumberish>;
     nonce?: BigNumberish | Promise<BigNumberish>;
+    storageLimit?: BigNumberish | Promise<BigNumberish>;
 }
 export interface PayableOverrides extends Overrides {
     value?: BigNumberish | Promise<BigNumberish>;
@@ -21,6 +22,7 @@ export interface PopulatedTransaction {
     nonce?: number;
     gasLimit?: BigNumber;
     gasPrice?: BigNumber;
+    storageLimit?: BigNumber;
     data?: string;
     value?: BigNumber;
     chainId?: number;

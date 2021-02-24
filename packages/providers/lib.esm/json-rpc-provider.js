@@ -133,38 +133,42 @@ export class JsonRpcSigner extends Signer {
         });
     }
     sendUncheckedTransaction(transaction) {
-        transaction = shallowCopy(transaction);
-        const fromAddress = this.getAddress().then((address) => {
-            if (address) {
-                address = address.toLowerCase();
-            }
-            return address;
-        });
-        // The JSON-RPC for eth_sendTransaction uses 90000 gas; if the user
-        // wishes to use this, it is easy to specify explicitly, otherwise
-        // we look it up for them.
-        if (transaction.gasLimit == null) {
-            const estimate = shallowCopy(transaction);
-            estimate.from = fromAddress;
-            transaction.gasLimit = this.provider.estimateGas(estimate);
-        }
-        return resolveProperties({
-            tx: resolveProperties(transaction),
-            sender: fromAddress
-        }).then(({ tx, sender }) => {
-            if (tx.from != null) {
-                if (tx.from.toLowerCase() !== sender) {
-                    logger.throwArgumentError("from address mismatch", "transaction", transaction);
+        return __awaiter(this, void 0, void 0, function* () {
+            transaction = shallowCopy(transaction);
+            const fromAddress = this.getAddress().then((address) => {
+                if (address) {
+                    address = address.toLowerCase();
                 }
+                return address;
+            });
+            // The JSON-RPC for eth_sendTransaction uses 90000 gas; if the user
+            // wishes to use this, it is easy to specify explicitly, otherwise
+            // we look it up for them.
+            if (transaction.gasLimit == null) {
+                const estimate = shallowCopy(transaction);
+                estimate.from = fromAddress;
+                const estimateGasValue = yield this.provider.estimateGas(estimate);
+                transaction.gasLimit = estimateGasValue[0];
+                transaction.storageLimit = estimateGasValue[1];
             }
-            else {
-                tx.from = sender;
-            }
-            const hexTx = this.provider.constructor.hexlifyTransaction(tx, { from: true });
-            return this.provider.send("eth_sendTransaction", [hexTx]).then((hash) => {
-                return hash;
-            }, (error) => {
-                return checkError("sendTransaction", error, hexTx);
+            return resolveProperties({
+                tx: resolveProperties(transaction),
+                sender: fromAddress
+            }).then(({ tx, sender }) => {
+                if (tx.from != null) {
+                    if (tx.from.toLowerCase() !== sender) {
+                        logger.throwArgumentError("from address mismatch", "transaction", transaction);
+                    }
+                }
+                else {
+                    tx.from = sender;
+                }
+                const hexTx = this.provider.constructor.hexlifyTransaction(tx, { from: true });
+                return this.provider.send("eth_sendTransaction", [hexTx]).then((hash) => {
+                    return hash;
+                }, (error) => {
+                    return checkError("sendTransaction", error, hexTx);
+                });
             });
         });
     }
@@ -224,6 +228,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
                 hash: hash,
                 nonce: null,
                 gasLimit: null,
+                storageLimit: null,
                 gasPrice: null,
                 data: null,
                 value: null,
@@ -236,7 +241,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
     }
 }
 const allowedTransactionKeys = {
-    chainId: true, data: true, gasLimit: true, gasPrice: true, nonce: true, to: true, value: true
+    chainId: true, data: true, gasLimit: true, storageLimit: true, gasPrice: true, nonce: true, to: true, value: true
 };
 export class JsonRpcProvider extends BaseProvider {
     constructor(url, network) {
@@ -288,7 +293,7 @@ export class JsonRpcProvider extends BaseProvider {
             if (chainId != null) {
                 const getNetwork = getStatic(this.constructor, "getNetwork");
                 try {
-                    return getNetwork(BigNumber.from(chainId).toNumber());
+                    return getNetwork(BigNumber.from(chainId[0]).toNumber());
                 }
                 catch (error) {
                     return logger.throwError("could not detect network", Logger.errors.NETWORK_ERROR, {
@@ -347,7 +352,7 @@ export class JsonRpcProvider extends BaseProvider {
     prepareRequest(method, params) {
         switch (method) {
             case "getBlockNumber":
-                return ["eth_blockNumber", []];
+                return ["eth_epochNumber", []];
             case "getGasPrice":
                 return ["eth_gasPrice", []];
             case "getBalance":
@@ -478,7 +483,7 @@ export class JsonRpcProvider extends BaseProvider {
         checkProperties(transaction, allowed);
         const result = {};
         // Some nodes (INFURA ropsten; INFURA mainnet is fine) do not like leading zeros.
-        ["gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
+        ["storageLimit", "gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
             if (transaction[key] == null) {
                 return;
             }

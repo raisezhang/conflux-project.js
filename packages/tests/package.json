@@ -6,7 +6,7 @@
     "@types/mocha": "^5.2.0",
     "ethers": "^5.0.13"
   },
-  "description": "Testing package for ethers.",
+  "description": "Testing package for conflux.",
   "keywords": [
     "Conflux"
   ],

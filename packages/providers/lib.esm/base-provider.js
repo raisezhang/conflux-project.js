@@ -448,7 +448,7 @@ export class BaseProvider extends Provider {
     static getNetwork(network) {
         return getNetwork((network == null) ? "homestead" : network);
     }
-    // Fetches the blockNumber, but will reuse any result that is less
+    // Fetches the epochNumber, but will reuse any result that is less
     // than maxAge old or has been requested since the last request
     _getInternalBlockNumber(maxAge) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -457,14 +457,14 @@ export class BaseProvider extends Provider {
             if (maxAge > 0 && this._internalBlockNumber) {
                 const result = yield internalBlockNumber;
                 if ((getTime() - result.respTime) <= maxAge) {
-                    return result.blockNumber;
+                    return result.epochNumber;
                 }
             }
             const reqTime = getTime();
             const checkInternalBlockNumber = resolveProperties({
-                blockNumber: this.perform("getBlockNumber", {}),
+                epochNumber: this.perform("getBlockNumber", {}),
                 networkError: this.getNetwork().then((network) => (null), (error) => (error))
-            }).then(({ blockNumber, networkError }) => {
+            }).then(({ epochNumber, networkError }) => {
                 if (networkError) {
                     // Unremember this bad internal block number
                     if (this._internalBlockNumber === checkInternalBlockNumber) {
@@ -473,16 +473,16 @@ export class BaseProvider extends Provider {
                     throw networkError;
                 }
                 const respTime = getTime();
-                blockNumber = BigNumber.from(blockNumber).toNumber();
-                if (blockNumber < this._maxInternalBlockNumber) {
-                    blockNumber = this._maxInternalBlockNumber;
+                epochNumber = BigNumber.from(epochNumber).toNumber();
+                if (epochNumber < this._maxInternalBlockNumber) {
+                    epochNumber = this._maxInternalBlockNumber;
                 }
-                this._maxInternalBlockNumber = blockNumber;
-                this._setFastBlockNumber(blockNumber); // @TODO: Still need this?
-                return { blockNumber, reqTime, respTime };
+                this._maxInternalBlockNumber = epochNumber;
+                this._setFastBlockNumber(epochNumber); // @TODO: Still need this?
+                return { epochNumber, reqTime, respTime };
             });
             this._internalBlockNumber = checkInternalBlockNumber;
-            return (yield checkInternalBlockNumber).blockNumber;
+            return (yield checkInternalBlockNumber).epochNumber;
         });
     }
     poll() {
@@ -490,37 +490,37 @@ export class BaseProvider extends Provider {
             const pollId = nextPollId++;
             // Track all running promises, so we can trigger a post-poll once they are complete
             const runners = [];
-            const blockNumber = yield this._getInternalBlockNumber(100 + this.pollingInterval / 2);
-            this._setFastBlockNumber(blockNumber);
+            const epochNumber = yield this._getInternalBlockNumber(100 + this.pollingInterval / 2);
+            this._setFastBlockNumber(epochNumber);
             // Emit a poll event after we have the latest (fast) block number
-            this.emit("poll", pollId, blockNumber);
+            this.emit("poll", pollId, epochNumber);
             // If the block has not changed, meh.
-            if (blockNumber === this._lastBlockNumber) {
+            if (epochNumber === this._lastBlockNumber) {
                 this.emit("didPoll", pollId);
                 return;
             }
             // First polling cycle, trigger a "block" events
             if (this._emitted.block === -2) {
-                this._emitted.block = blockNumber - 1;
+                this._emitted.block = epochNumber - 1;
             }
-            if (Math.abs((this._emitted.block) - blockNumber) > 1000) {
+            if (Math.abs((this._emitted.block) - epochNumber) > 1000) {
                 logger.warn("network block skew detected; skipping block events");
                 this.emit("error", logger.makeError("network block skew detected", Logger.errors.NETWORK_ERROR, {
-                    blockNumber: blockNumber,
+                    epochNumber: epochNumber,
                     event: "blockSkew",
                     previousBlockNumber: this._emitted.block
                 }));
-                this.emit("block", blockNumber);
+                this.emit("block", epochNumber);
             }
             else {
                 // Notify all listener for each block that has passed
-                for (let i = this._emitted.block + 1; i <= blockNumber; i++) {
+                for (let i = this._emitted.block + 1; i <= epochNumber; i++) {
                     this.emit("block", i);
                 }
             }
             // The emitted block was updated, check for obsolete events
-            if (this._emitted.block !== blockNumber) {
-                this._emitted.block = blockNumber;
+            if (this._emitted.block !== epochNumber) {
+                this._emitted.block = epochNumber;
                 Object.keys(this._emitted).forEach((key) => {
                     // The block event does not expire
                     if (key === "block") {
@@ -536,14 +536,14 @@ export class BaseProvider extends Provider {
                     }
                     // Evict any transaction hashes or block hashes over 12 blocks
                     // old, since they should not return null anyways
-                    if (blockNumber - eventBlockNumber > 12) {
+                    if (epochNumber - eventBlockNumber > 12) {
                         delete this._emitted[key];
                     }
                 });
             }
             // First polling cycle
             if (this._lastBlockNumber === -2) {
-                this._lastBlockNumber = blockNumber - 1;
+                this._lastBlockNumber = epochNumber - 1;
             }
             // Find all transaction hashes we are waiting on
             this._events.forEach((event) => {
@@ -551,10 +551,10 @@ export class BaseProvider extends Provider {
                     case "tx": {
                         const hash = event.hash;
                         let runner = this.getTransactionReceipt(hash).then((receipt) => {
-                            if (!receipt || receipt.blockNumber == null) {
+                            if (!receipt || receipt.epochNumber == null) {
                                 return null;
                             }
-                            this._emitted["t:" + hash] = receipt.blockNumber;
+                            this._emitted["t:" + hash] = receipt.epochNumber;
                             this.emit(hash, receipt);
                             return null;
                         }).catch((error) => { this.emit("error", error); });
@@ -564,14 +564,14 @@ export class BaseProvider extends Provider {
                     case "filter": {
                         const filter = event.filter;
                         filter.fromBlock = this._lastBlockNumber + 1;
-                        filter.toBlock = blockNumber;
+                        filter.toBlock = epochNumber;
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;
                             }
                             logs.forEach((log) => {
-                                this._emitted["b:" + log.blockHash] = log.blockNumber;
-                                this._emitted["t:" + log.transactionHash] = log.blockNumber;
+                                this._emitted["b:" + log.blockHash] = log.epochNumber;
+                                this._emitted["t:" + log.transactionHash] = log.epochNumber;
                                 this.emit(filter, log);
                             });
                         }).catch((error) => { this.emit("error", error); });
@@ -580,7 +580,7 @@ export class BaseProvider extends Provider {
                     }
                 }
             });
-            this._lastBlockNumber = blockNumber;
+            this._lastBlockNumber = epochNumber;
             // Once all events for this loop have been processed, emit "didPoll"
             Promise.all(runners).then(() => {
                 this.emit("didPoll", pollId);
@@ -589,8 +589,8 @@ export class BaseProvider extends Provider {
         });
     }
     // Deprecated; do not use this
-    resetEventsBlock(blockNumber) {
-        this._lastBlockNumber = blockNumber - 1;
+    resetEventsBlock(epochNumber) {
+        this._lastBlockNumber = epochNumber - 1;
         if (this.polling) {
             this.poll();
         }
@@ -645,9 +645,9 @@ export class BaseProvider extends Provider {
             return network;
         });
     }
-    get blockNumber() {
-        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((blockNumber) => {
-            this._setFastBlockNumber(blockNumber);
+    get epochNumber() {
+        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((epochNumber) => {
+            this._setFastBlockNumber(epochNumber);
         });
         return (this._fastBlockNumber != null) ? this._fastBlockNumber : -1;
     }
@@ -697,26 +697,26 @@ export class BaseProvider extends Provider {
         // Stale block number, request a newer value
         if ((now - this._fastQueryDate) > 2 * this._pollingInterval) {
             this._fastQueryDate = now;
-            this._fastBlockNumberPromise = this.getBlockNumber().then((blockNumber) => {
-                if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-                    this._fastBlockNumber = blockNumber;
+            this._fastBlockNumberPromise = this.getBlockNumber().then((epochNumber) => {
+                if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+                    this._fastBlockNumber = epochNumber;
                 }
                 return this._fastBlockNumber;
             });
         }
         return this._fastBlockNumberPromise;
     }
-    _setFastBlockNumber(blockNumber) {
+    _setFastBlockNumber(epochNumber) {
         // Older block, maybe a stale request
-        if (this._fastBlockNumber != null && blockNumber < this._fastBlockNumber) {
+        if (this._fastBlockNumber != null && epochNumber < this._fastBlockNumber) {
             return;
         }
         // Update the time we updated the blocknumber
         this._fastQueryDate = getTime();
         // Newer block number, use  it
-        if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-            this._fastBlockNumber = blockNumber;
-            this._fastBlockNumberPromise = Promise.resolve(blockNumber);
+        if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+            this._fastBlockNumber = epochNumber;
+            this._fastBlockNumberPromise = Promise.resolve(epochNumber);
         }
     }
     waitForTransaction(transactionHash, confirmations, timeout) {
@@ -840,7 +840,7 @@ export class BaseProvider extends Provider {
                 return null;
             }
             // No longer pending, allow the polling loop to garbage collect this
-            this._emitted["t:" + tx.hash] = receipt.blockNumber;
+            this._emitted["t:" + tx.hash] = receipt.epochNumber;
             if (receipt.status === 0) {
                 logger.throwError("transaction failed", Logger.errors.CALL_EXCEPTION, {
                     transactionHash: tx.hash,
@@ -931,7 +931,8 @@ export class BaseProvider extends Provider {
             const params = yield resolveProperties({
                 transaction: this._getTransactionRequest(transaction)
             });
-            return BigNumber.from(yield this.perform("estimateGas", params));
+            const rst = yield this.perform("estimateGas", params);
+            return [BigNumber.from(rst.gasUsed), BigNumber.from(rst.storageCollateralized)];
         });
     }
     _getAddress(addressOrName) {
@@ -950,7 +951,7 @@ export class BaseProvider extends Provider {
             yield this.getNetwork();
             blockHashOrBlockTag = yield blockHashOrBlockTag;
             // If blockTag is a number (not "latest", etc), this is the block number
-            let blockNumber = -128;
+            let epochNumber = -128;
             const params = {
                 includeTransactions: !!includeTransactions
             };
@@ -961,7 +962,7 @@ export class BaseProvider extends Provider {
                 try {
                     params.blockTag = this.formatter.blockTag(yield this._getBlockTag(blockHashOrBlockTag));
                     if (isHexString(params.blockTag)) {
-                        blockNumber = parseInt(params.blockTag.substring(2), 16);
+                        epochNumber = parseInt(params.blockTag.substring(2), 16);
                     }
                 }
                 catch (error) {
@@ -982,7 +983,7 @@ export class BaseProvider extends Provider {
                     }
                     // For block tags, if we are asking for a future block, we return null
                     if (params.blockTag != null) {
-                        if (blockNumber > this._emitted.block) {
+                        if (epochNumber > this._emitted.block) {
                             return null;
                         }
                     }
@@ -991,18 +992,18 @@ export class BaseProvider extends Provider {
                 }
                 // Add transactions
                 if (includeTransactions) {
-                    let blockNumber = null;
+                    let epochNumber = null;
                     for (let i = 0; i < block.transactions.length; i++) {
                         const tx = block.transactions[i];
-                        if (tx.blockNumber == null) {
+                        if (tx.epochNumber == null) {
                             tx.confirmations = 0;
                         }
                         else if (tx.confirmations == null) {
-                            if (blockNumber == null) {
-                                blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                            if (epochNumber == null) {
+                                epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                             }
                             // Add the confirmations using the fast block number (pessimistic)
-                            let confirmations = (blockNumber - tx.blockNumber) + 1;
+                            let confirmations = (epochNumber - tx.epochNumber) + 1;
                             if (confirmations <= 0) {
                                 confirmations = 1;
                             }
@@ -1035,13 +1036,13 @@ export class BaseProvider extends Provider {
                     return undefined;
                 }
                 const tx = this.formatter.transactionResponse(result);
-                if (tx.blockNumber == null) {
+                if (tx.epochNumber == null) {
                     tx.confirmations = 0;
                 }
                 else if (tx.confirmations == null) {
-                    const blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                    const epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                     // Add the confirmations using the fast block number (pessimistic)
-                    let confirmations = (blockNumber - tx.blockNumber) + 1;
+                    let confirmations = (epochNumber - tx.epochNumber) + 1;
                     if (confirmations <= 0) {
                         confirmations = 1;
                     }
@@ -1069,13 +1070,13 @@ export class BaseProvider extends Provider {
                     return undefined;
                 }
                 const receipt = this.formatter.receipt(result);
-                if (receipt.blockNumber == null) {
+                if (receipt.epochNumber == null) {
                     receipt.confirmations = 0;
                 }
                 else if (receipt.confirmations == null) {
-                    const blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                    const epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                     // Add the confirmations using the fast block number (pessimistic)
-                    let confirmations = (blockNumber - receipt.blockNumber) + 1;
+                    let confirmations = (epochNumber - receipt.epochNumber) + 1;
                     if (confirmations <= 0) {
                         confirmations = 1;
                     }
@@ -1111,12 +1112,12 @@ export class BaseProvider extends Provider {
                 if (blockTag % 1) {
                     logger.throwArgumentError("invalid BlockTag", "blockTag", blockTag);
                 }
-                let blockNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
-                blockNumber += blockTag;
-                if (blockNumber < 0) {
-                    blockNumber = 0;
+                let epochNumber = yield this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                epochNumber += blockTag;
+                if (epochNumber < 0) {
+                    epochNumber = 0;
                 }
-                return this.formatter.blockTag(blockNumber);
+                return this.formatter.blockTag(epochNumber);
             }
             return this.formatter.blockTag(blockTag);
         });

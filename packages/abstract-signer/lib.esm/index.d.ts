@@ -30,7 +30,7 @@ export declare abstract class Signer {
     constructor();
     getBalance(blockTag?: BlockTag): Promise<BigNumber>;
     getTransactionCount(blockTag?: BlockTag): Promise<number>;
-    estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
+    estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]>;
     call(transaction: Deferrable<TransactionRequest>, blockTag?: BlockTag): Promise<string>;
     sendTransaction(transaction: Deferrable<TransactionRequest>): Promise<TransactionResponse>;
     getChainId(): Promise<number>;

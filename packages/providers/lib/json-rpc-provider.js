@@ -179,40 +179,49 @@ var JsonRpcSigner = /** @class */ (function (_super) {
         });
     };
     JsonRpcSigner.prototype.sendUncheckedTransaction = function (transaction) {
-        var _this = this;
-        transaction = properties_1.shallowCopy(transaction);
-        var fromAddress = this.getAddress().then(function (address) {
-            if (address) {
-                address = address.toLowerCase();
-            }
-            return address;
-        });
-        // The JSON-RPC for eth_sendTransaction uses 90000 gas; if the user
-        // wishes to use this, it is easy to specify explicitly, otherwise
-        // we look it up for them.
-        if (transaction.gasLimit == null) {
-            var estimate = properties_1.shallowCopy(transaction);
-            estimate.from = fromAddress;
-            transaction.gasLimit = this.provider.estimateGas(estimate);
-        }
-        return properties_1.resolveProperties({
-            tx: properties_1.resolveProperties(transaction),
-            sender: fromAddress
-        }).then(function (_a) {
-            var tx = _a.tx, sender = _a.sender;
-            if (tx.from != null) {
-                if (tx.from.toLowerCase() !== sender) {
-                    logger.throwArgumentError("from address mismatch", "transaction", transaction);
+        return __awaiter(this, void 0, void 0, function () {
+            var fromAddress, estimate, estimateGasValue;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        transaction = properties_1.shallowCopy(transaction);
+                        fromAddress = this.getAddress().then(function (address) {
+                            if (address) {
+                                address = address.toLowerCase();
+                            }
+                            return address;
+                        });
+                        if (!(transaction.gasLimit == null)) return [3 /*break*/, 2];
+                        estimate = properties_1.shallowCopy(transaction);
+                        estimate.from = fromAddress;
+                        return [4 /*yield*/, this.provider.estimateGas(estimate)];
+                    case 1:
+                        estimateGasValue = _a.sent();
+                        transaction.gasLimit = estimateGasValue[0];
+                        transaction.storageLimit = estimateGasValue[1];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/, properties_1.resolveProperties({
+                            tx: properties_1.resolveProperties(transaction),
+                            sender: fromAddress
+                        }).then(function (_a) {
+                            var tx = _a.tx, sender = _a.sender;
+                            if (tx.from != null) {
+                                if (tx.from.toLowerCase() !== sender) {
+                                    logger.throwArgumentError("from address mismatch", "transaction", transaction);
+                                }
+                            }
+                            else {
+                                tx.from = sender;
+                            }
+                            var hexTx = _this.provider.constructor.hexlifyTransaction(tx, { from: true });
+                            return _this.provider.send("eth_sendTransaction", [hexTx]).then(function (hash) {
+                                return hash;
+                            }, function (error) {
+                                return checkError("sendTransaction", error, hexTx);
+                            });
+                        })];
                 }
-            }
-            else {
-                tx.from = sender;
-            }
-            var hexTx = _this.provider.constructor.hexlifyTransaction(tx, { from: true });
-            return _this.provider.send("eth_sendTransaction", [hexTx]).then(function (hash) {
-                return hash;
-            }, function (error) {
-                return checkError("sendTransaction", error, hexTx);
             });
         });
     };
@@ -308,6 +317,7 @@ var UncheckedJsonRpcSigner = /** @class */ (function (_super) {
                 hash: hash,
                 nonce: null,
                 gasLimit: null,
+                storageLimit: null,
                 gasPrice: null,
                 data: null,
                 value: null,
@@ -321,7 +331,7 @@ var UncheckedJsonRpcSigner = /** @class */ (function (_super) {
     return UncheckedJsonRpcSigner;
 }(JsonRpcSigner));
 var allowedTransactionKeys = {
-    chainId: true, data: true, gasLimit: true, gasPrice: true, nonce: true, to: true, value: true
+    chainId: true, data: true, gasLimit: true, storageLimit: true, gasPrice: true, nonce: true, to: true, value: true
 };
 var JsonRpcProvider = /** @class */ (function (_super) {
     __extends(JsonRpcProvider, _super);
@@ -394,7 +404,7 @@ var JsonRpcProvider = /** @class */ (function (_super) {
                         if (chainId != null) {
                             getNetwork = properties_1.getStatic(this.constructor, "getNetwork");
                             try {
-                                return [2 /*return*/, getNetwork(bignumber_1.BigNumber.from(chainId).toNumber())];
+                                return [2 /*return*/, getNetwork(bignumber_1.BigNumber.from(chainId[0]).toNumber())];
                             }
                             catch (error) {
                                 return [2 /*return*/, logger.throwError("could not detect network", logger_1.Logger.errors.NETWORK_ERROR, {
@@ -457,7 +467,7 @@ var JsonRpcProvider = /** @class */ (function (_super) {
     JsonRpcProvider.prototype.prepareRequest = function (method, params) {
         switch (method) {
             case "getBlockNumber":
-                return ["eth_blockNumber", []];
+                return ["eth_epochNumber", []];
             case "getGasPrice":
                 return ["eth_gasPrice", []];
             case "getBalance":
@@ -597,7 +607,7 @@ var JsonRpcProvider = /** @class */ (function (_super) {
         properties_1.checkProperties(transaction, allowed);
         var result = {};
         // Some nodes (INFURA ropsten; INFURA mainnet is fine) do not like leading zeros.
-        ["gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
+        ["storageLimit", "gasLimit", "gasPrice", "nonce", "value"].forEach(function (key) {
             if (transaction[key] == null) {
                 return;
             }

@@ -5,7 +5,7 @@
     "ethers": "^5.0.13",
     "scrypt-js": "3.0.1"
   },
-  "description": "Experimental libraries for ethers. These should not be considered stable.",
+  "description": "Experimental libraries for conflux. These should not be considered stable.",
   "keywords": [
     "Conflux"
   ],

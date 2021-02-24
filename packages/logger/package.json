@@ -1,6 +1,6 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
-  "description": "Logger utility functions for ethers.",
+  "description": "Logger utility functions for conflux.",
   "keywords": [
     "Conflux"
   ],
@@ -22,5 +22,5 @@
   "sideEffects": false,
   "tarballHash": "0x5017c8da7b7d8467daee3cc7b637d9e30727756d541cb32523362b701ef0dd36",
   "types": "./lib/index.d.ts",
-  "version": "5.0.9"
+  "version": "5.0.10"
 }

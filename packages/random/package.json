@@ -10,7 +10,7 @@
     "@confluxproject/bytes": "^5.0.4",
     "@confluxproject/logger": "^5.0.5"
   },
-  "description": "Random utility functions for ethers.",
+  "description": "Random utility functions for conflux.",
   "ethereum": "donations.ethers.eth",
   "funding": [
     {

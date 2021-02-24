@@ -558,7 +558,7 @@ var BaseProvider = /** @class */ (function (_super) {
     BaseProvider.getNetwork = function (network) {
         return networks_1.getNetwork((network == null) ? "homestead" : network);
     };
-    // Fetches the blockNumber, but will reuse any result that is less
+    // Fetches the epochNumber, but will reuse any result that is less
     // than maxAge old or has been requested since the last request
     BaseProvider.prototype._getInternalBlockNumber = function (maxAge) {
         return __awaiter(this, void 0, void 0, function () {
@@ -575,16 +575,16 @@ var BaseProvider = /** @class */ (function (_super) {
                     case 2:
                         result = _a.sent();
                         if ((getTime() - result.respTime) <= maxAge) {
-                            return [2 /*return*/, result.blockNumber];
+                            return [2 /*return*/, result.epochNumber];
                         }
                         _a.label = 3;
                     case 3:
                         reqTime = getTime();
                         checkInternalBlockNumber = properties_1.resolveProperties({
-                            blockNumber: this.perform("getBlockNumber", {}),
+                            epochNumber: this.perform("getBlockNumber", {}),
                             networkError: this.getNetwork().then(function (network) { return (null); }, function (error) { return (error); })
                         }).then(function (_a) {
-                            var blockNumber = _a.blockNumber, networkError = _a.networkError;
+                            var epochNumber = _a.epochNumber, networkError = _a.networkError;
                             if (networkError) {
                                 // Unremember this bad internal block number
                                 if (_this._internalBlockNumber === checkInternalBlockNumber) {
@@ -593,24 +593,24 @@ var BaseProvider = /** @class */ (function (_super) {
                                 throw networkError;
                             }
                             var respTime = getTime();
-                            blockNumber = bignumber_1.BigNumber.from(blockNumber).toNumber();
-                            if (blockNumber < _this._maxInternalBlockNumber) {
-                                blockNumber = _this._maxInternalBlockNumber;
+                            epochNumber = bignumber_1.BigNumber.from(epochNumber).toNumber();
+                            if (epochNumber < _this._maxInternalBlockNumber) {
+                                epochNumber = _this._maxInternalBlockNumber;
                             }
-                            _this._maxInternalBlockNumber = blockNumber;
-                            _this._setFastBlockNumber(blockNumber); // @TODO: Still need this?
-                            return { blockNumber: blockNumber, reqTime: reqTime, respTime: respTime };
+                            _this._maxInternalBlockNumber = epochNumber;
+                            _this._setFastBlockNumber(epochNumber); // @TODO: Still need this?
+                            return { epochNumber: epochNumber, reqTime: reqTime, respTime: respTime };
                         });
                         this._internalBlockNumber = checkInternalBlockNumber;
                         return [4 /*yield*/, checkInternalBlockNumber];
-                    case 4: return [2 /*return*/, (_a.sent()).blockNumber];
+                    case 4: return [2 /*return*/, (_a.sent()).epochNumber];
                 }
             });
         });
     };
     BaseProvider.prototype.poll = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var pollId, runners, blockNumber, i;
+            var pollId, runners, epochNumber, i;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -619,37 +619,37 @@ var BaseProvider = /** @class */ (function (_super) {
                         runners = [];
                         return [4 /*yield*/, this._getInternalBlockNumber(100 + this.pollingInterval / 2)];
                     case 1:
-                        blockNumber = _a.sent();
-                        this._setFastBlockNumber(blockNumber);
+                        epochNumber = _a.sent();
+                        this._setFastBlockNumber(epochNumber);
                         // Emit a poll event after we have the latest (fast) block number
-                        this.emit("poll", pollId, blockNumber);
+                        this.emit("poll", pollId, epochNumber);
                         // If the block has not changed, meh.
-                        if (blockNumber === this._lastBlockNumber) {
+                        if (epochNumber === this._lastBlockNumber) {
                             this.emit("didPoll", pollId);
                             return [2 /*return*/];
                         }
                         // First polling cycle, trigger a "block" events
                         if (this._emitted.block === -2) {
-                            this._emitted.block = blockNumber - 1;
+                            this._emitted.block = epochNumber - 1;
                         }
-                        if (Math.abs((this._emitted.block) - blockNumber) > 1000) {
+                        if (Math.abs((this._emitted.block) - epochNumber) > 1000) {
                             logger.warn("network block skew detected; skipping block events");
                             this.emit("error", logger.makeError("network block skew detected", logger_1.Logger.errors.NETWORK_ERROR, {
-                                blockNumber: blockNumber,
+                                epochNumber: epochNumber,
                                 event: "blockSkew",
                                 previousBlockNumber: this._emitted.block
                             }));
-                            this.emit("block", blockNumber);
+                            this.emit("block", epochNumber);
                         }
                         else {
                             // Notify all listener for each block that has passed
-                            for (i = this._emitted.block + 1; i <= blockNumber; i++) {
+                            for (i = this._emitted.block + 1; i <= epochNumber; i++) {
                                 this.emit("block", i);
                             }
                         }
                         // The emitted block was updated, check for obsolete events
-                        if (this._emitted.block !== blockNumber) {
-                            this._emitted.block = blockNumber;
+                        if (this._emitted.block !== epochNumber) {
+                            this._emitted.block = epochNumber;
                             Object.keys(this._emitted).forEach(function (key) {
                                 // The block event does not expire
                                 if (key === "block") {
@@ -665,14 +665,14 @@ var BaseProvider = /** @class */ (function (_super) {
                                 }
                                 // Evict any transaction hashes or block hashes over 12 blocks
                                 // old, since they should not return null anyways
-                                if (blockNumber - eventBlockNumber > 12) {
+                                if (epochNumber - eventBlockNumber > 12) {
                                     delete _this._emitted[key];
                                 }
                             });
                         }
                         // First polling cycle
                         if (this._lastBlockNumber === -2) {
-                            this._lastBlockNumber = blockNumber - 1;
+                            this._lastBlockNumber = epochNumber - 1;
                         }
                         // Find all transaction hashes we are waiting on
                         this._events.forEach(function (event) {
@@ -680,10 +680,10 @@ var BaseProvider = /** @class */ (function (_super) {
                                 case "tx": {
                                     var hash_2 = event.hash;
                                     var runner = _this.getTransactionReceipt(hash_2).then(function (receipt) {
-                                        if (!receipt || receipt.blockNumber == null) {
+                                        if (!receipt || receipt.epochNumber == null) {
                                             return null;
                                         }
-                                        _this._emitted["t:" + hash_2] = receipt.blockNumber;
+                                        _this._emitted["t:" + hash_2] = receipt.epochNumber;
                                         _this.emit(hash_2, receipt);
                                         return null;
                                     }).catch(function (error) { _this.emit("error", error); });
@@ -693,14 +693,14 @@ var BaseProvider = /** @class */ (function (_super) {
                                 case "filter": {
                                     var filter_1 = event.filter;
                                     filter_1.fromBlock = _this._lastBlockNumber + 1;
-                                    filter_1.toBlock = blockNumber;
+                                    filter_1.toBlock = epochNumber;
                                     var runner = _this.getLogs(filter_1).then(function (logs) {
                                         if (logs.length === 0) {
                                             return;
                                         }
                                         logs.forEach(function (log) {
-                                            _this._emitted["b:" + log.blockHash] = log.blockNumber;
-                                            _this._emitted["t:" + log.transactionHash] = log.blockNumber;
+                                            _this._emitted["b:" + log.blockHash] = log.epochNumber;
+                                            _this._emitted["t:" + log.transactionHash] = log.epochNumber;
                                             _this.emit(filter_1, log);
                                         });
                                     }).catch(function (error) { _this.emit("error", error); });
@@ -709,7 +709,7 @@ var BaseProvider = /** @class */ (function (_super) {
                                 }
                             }
                         });
-                        this._lastBlockNumber = blockNumber;
+                        this._lastBlockNumber = epochNumber;
                         // Once all events for this loop have been processed, emit "didPoll"
                         Promise.all(runners).then(function () {
                             _this.emit("didPoll", pollId);
@@ -720,8 +720,8 @@ var BaseProvider = /** @class */ (function (_super) {
         });
     };
     // Deprecated; do not use this
-    BaseProvider.prototype.resetEventsBlock = function (blockNumber) {
-        this._lastBlockNumber = blockNumber - 1;
+    BaseProvider.prototype.resetEventsBlock = function (epochNumber) {
+        this._lastBlockNumber = epochNumber - 1;
         if (this.polling) {
             this.poll();
         }
@@ -787,11 +787,11 @@ var BaseProvider = /** @class */ (function (_super) {
             });
         });
     };
-    Object.defineProperty(BaseProvider.prototype, "blockNumber", {
+    Object.defineProperty(BaseProvider.prototype, "epochNumber", {
         get: function () {
             var _this = this;
-            this._getInternalBlockNumber(100 + this.pollingInterval / 2).then(function (blockNumber) {
-                _this._setFastBlockNumber(blockNumber);
+            this._getInternalBlockNumber(100 + this.pollingInterval / 2).then(function (epochNumber) {
+                _this._setFastBlockNumber(epochNumber);
             });
             return (this._fastBlockNumber != null) ? this._fastBlockNumber : -1;
         },
@@ -855,26 +855,26 @@ var BaseProvider = /** @class */ (function (_super) {
         // Stale block number, request a newer value
         if ((now - this._fastQueryDate) > 2 * this._pollingInterval) {
             this._fastQueryDate = now;
-            this._fastBlockNumberPromise = this.getBlockNumber().then(function (blockNumber) {
-                if (_this._fastBlockNumber == null || blockNumber > _this._fastBlockNumber) {
-                    _this._fastBlockNumber = blockNumber;
+            this._fastBlockNumberPromise = this.getBlockNumber().then(function (epochNumber) {
+                if (_this._fastBlockNumber == null || epochNumber > _this._fastBlockNumber) {
+                    _this._fastBlockNumber = epochNumber;
                 }
                 return _this._fastBlockNumber;
             });
         }
         return this._fastBlockNumberPromise;
     };
-    BaseProvider.prototype._setFastBlockNumber = function (blockNumber) {
+    BaseProvider.prototype._setFastBlockNumber = function (epochNumber) {
         // Older block, maybe a stale request
-        if (this._fastBlockNumber != null && blockNumber < this._fastBlockNumber) {
+        if (this._fastBlockNumber != null && epochNumber < this._fastBlockNumber) {
             return;
         }
         // Update the time we updated the blocknumber
         this._fastQueryDate = getTime();
         // Newer block number, use  it
-        if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-            this._fastBlockNumber = blockNumber;
-            this._fastBlockNumberPromise = Promise.resolve(blockNumber);
+        if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+            this._fastBlockNumber = epochNumber;
+            this._fastBlockNumberPromise = Promise.resolve(epochNumber);
         }
     };
     BaseProvider.prototype.waitForTransaction = function (transactionHash, confirmations, timeout) {
@@ -1069,7 +1069,7 @@ var BaseProvider = /** @class */ (function (_super) {
                             return [2 /*return*/, null];
                         }
                         // No longer pending, allow the polling loop to garbage collect this
-                        this._emitted["t:" + tx.hash] = receipt.blockNumber;
+                        this._emitted["t:" + tx.hash] = receipt.epochNumber;
                         if (receipt.status === 0) {
                             logger.throwError("transaction failed", logger_1.Logger.errors.CALL_EXCEPTION, {
                                 transactionHash: tx.hash,
@@ -1202,20 +1202,21 @@ var BaseProvider = /** @class */ (function (_super) {
     };
     BaseProvider.prototype.estimateGas = function (transaction) {
         return __awaiter(this, void 0, void 0, function () {
-            var params, _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var params, rst;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getNetwork()];
                     case 1:
-                        _c.sent();
+                        _a.sent();
                         return [4 /*yield*/, properties_1.resolveProperties({
                                 transaction: this._getTransactionRequest(transaction)
                             })];
                     case 2:
-                        params = _c.sent();
-                        _b = (_a = bignumber_1.BigNumber).from;
+                        params = _a.sent();
                         return [4 /*yield*/, this.perform("estimateGas", params)];
-                    case 3: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                    case 3:
+                        rst = _a.sent();
+                        return [2 /*return*/, [bignumber_1.BigNumber.from(rst.gasUsed), bignumber_1.BigNumber.from(rst.storageCollateralized)]];
                 }
             });
         });
@@ -1240,7 +1241,7 @@ var BaseProvider = /** @class */ (function (_super) {
     };
     BaseProvider.prototype._getBlock = function (blockHashOrBlockTag, includeTransactions) {
         return __awaiter(this, void 0, void 0, function () {
-            var blockNumber, params, _a, _b, _c, error_3;
+            var epochNumber, params, _a, _b, _c, error_3;
             var _this = this;
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -1250,7 +1251,7 @@ var BaseProvider = /** @class */ (function (_super) {
                         return [4 /*yield*/, blockHashOrBlockTag];
                     case 2:
                         blockHashOrBlockTag = _d.sent();
-                        blockNumber = -128;
+                        epochNumber = -128;
                         params = {
                             includeTransactions: !!includeTransactions
                         };
@@ -1265,7 +1266,7 @@ var BaseProvider = /** @class */ (function (_super) {
                     case 4:
                         _a.blockTag = _c.apply(_b, [_d.sent()]);
                         if (bytes_1.isHexString(params.blockTag)) {
-                            blockNumber = parseInt(params.blockTag.substring(2), 16);
+                            epochNumber = parseInt(params.blockTag.substring(2), 16);
                         }
                         return [3 /*break*/, 6];
                     case 5:
@@ -1273,7 +1274,7 @@ var BaseProvider = /** @class */ (function (_super) {
                         logger.throwArgumentError("invalid block hash or block tag", "blockHashOrBlockTag", blockHashOrBlockTag);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/, web_1.poll(function () { return __awaiter(_this, void 0, void 0, function () {
-                            var block, blockNumber_1, i, tx, confirmations;
+                            var block, epochNumber_1, i, tx, confirmations;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0: return [4 /*yield*/, this.perform("getBlock", params)];
@@ -1291,7 +1292,7 @@ var BaseProvider = /** @class */ (function (_super) {
                                             }
                                             // For block tags, if we are asking for a future block, we return null
                                             if (params.blockTag != null) {
-                                                if (blockNumber > this._emitted.block) {
+                                                if (epochNumber > this._emitted.block) {
                                                     return [2 /*return*/, null];
                                                 }
                                             }
@@ -1299,24 +1300,24 @@ var BaseProvider = /** @class */ (function (_super) {
                                             return [2 /*return*/, undefined];
                                         }
                                         if (!includeTransactions) return [3 /*break*/, 8];
-                                        blockNumber_1 = null;
+                                        epochNumber_1 = null;
                                         i = 0;
                                         _a.label = 2;
                                     case 2:
                                         if (!(i < block.transactions.length)) return [3 /*break*/, 7];
                                         tx = block.transactions[i];
-                                        if (!(tx.blockNumber == null)) return [3 /*break*/, 3];
+                                        if (!(tx.epochNumber == null)) return [3 /*break*/, 3];
                                         tx.confirmations = 0;
                                         return [3 /*break*/, 6];
                                     case 3:
                                         if (!(tx.confirmations == null)) return [3 /*break*/, 6];
-                                        if (!(blockNumber_1 == null)) return [3 /*break*/, 5];
+                                        if (!(epochNumber_1 == null)) return [3 /*break*/, 5];
                                         return [4 /*yield*/, this._getInternalBlockNumber(100 + 2 * this.pollingInterval)];
                                     case 4:
-                                        blockNumber_1 = _a.sent();
+                                        epochNumber_1 = _a.sent();
                                         _a.label = 5;
                                     case 5:
-                                        confirmations = (blockNumber_1 - tx.blockNumber) + 1;
+                                        confirmations = (epochNumber_1 - tx.epochNumber) + 1;
                                         if (confirmations <= 0) {
                                             confirmations = 1;
                                         }
@@ -1354,7 +1355,7 @@ var BaseProvider = /** @class */ (function (_super) {
                         transactionHash = _a.sent();
                         params = { transactionHash: this.formatter.hash(transactionHash, true) };
                         return [2 /*return*/, web_1.poll(function () { return __awaiter(_this, void 0, void 0, function () {
-                                var result, tx, blockNumber, confirmations;
+                                var result, tx, epochNumber, confirmations;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0: return [4 /*yield*/, this.perform("getTransaction", params)];
@@ -1367,15 +1368,15 @@ var BaseProvider = /** @class */ (function (_super) {
                                                 return [2 /*return*/, undefined];
                                             }
                                             tx = this.formatter.transactionResponse(result);
-                                            if (!(tx.blockNumber == null)) return [3 /*break*/, 2];
+                                            if (!(tx.epochNumber == null)) return [3 /*break*/, 2];
                                             tx.confirmations = 0;
                                             return [3 /*break*/, 4];
                                         case 2:
                                             if (!(tx.confirmations == null)) return [3 /*break*/, 4];
                                             return [4 /*yield*/, this._getInternalBlockNumber(100 + 2 * this.pollingInterval)];
                                         case 3:
-                                            blockNumber = _a.sent();
-                                            confirmations = (blockNumber - tx.blockNumber) + 1;
+                                            epochNumber = _a.sent();
+                                            confirmations = (epochNumber - tx.epochNumber) + 1;
                                             if (confirmations <= 0) {
                                                 confirmations = 1;
                                             }
@@ -1403,7 +1404,7 @@ var BaseProvider = /** @class */ (function (_super) {
                         transactionHash = _a.sent();
                         params = { transactionHash: this.formatter.hash(transactionHash, true) };
                         return [2 /*return*/, web_1.poll(function () { return __awaiter(_this, void 0, void 0, function () {
-                                var result, receipt, blockNumber, confirmations;
+                                var result, receipt, epochNumber, confirmations;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0: return [4 /*yield*/, this.perform("getTransactionReceipt", params)];
@@ -1420,15 +1421,15 @@ var BaseProvider = /** @class */ (function (_super) {
                                                 return [2 /*return*/, undefined];
                                             }
                                             receipt = this.formatter.receipt(result);
-                                            if (!(receipt.blockNumber == null)) return [3 /*break*/, 2];
+                                            if (!(receipt.epochNumber == null)) return [3 /*break*/, 2];
                                             receipt.confirmations = 0;
                                             return [3 /*break*/, 4];
                                         case 2:
                                             if (!(receipt.confirmations == null)) return [3 /*break*/, 4];
                                             return [4 /*yield*/, this._getInternalBlockNumber(100 + 2 * this.pollingInterval)];
                                         case 3:
-                                            blockNumber = _a.sent();
-                                            confirmations = (blockNumber - receipt.blockNumber) + 1;
+                                            epochNumber = _a.sent();
+                                            confirmations = (epochNumber - receipt.epochNumber) + 1;
                                             if (confirmations <= 0) {
                                                 confirmations = 1;
                                             }
@@ -1480,7 +1481,7 @@ var BaseProvider = /** @class */ (function (_super) {
     };
     BaseProvider.prototype._getBlockTag = function (blockTag) {
         return __awaiter(this, void 0, void 0, function () {
-            var blockNumber;
+            var epochNumber;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, blockTag];
@@ -1492,12 +1493,12 @@ var BaseProvider = /** @class */ (function (_super) {
                         }
                         return [4 /*yield*/, this._getInternalBlockNumber(100 + 2 * this.pollingInterval)];
                     case 2:
-                        blockNumber = _a.sent();
-                        blockNumber += blockTag;
-                        if (blockNumber < 0) {
-                            blockNumber = 0;
+                        epochNumber = _a.sent();
+                        epochNumber += blockTag;
+                        if (epochNumber < 0) {
+                            epochNumber = 0;
                         }
-                        return [2 /*return*/, this.formatter.blockTag(blockNumber)];
+                        return [2 /*return*/, this.formatter.blockTag(epochNumber)];
                     case 3: return [2 /*return*/, this.formatter.blockTag(blockTag)];
                 }
             });

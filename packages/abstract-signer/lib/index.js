@@ -219,7 +219,7 @@ var Signer = /** @class */ (function () {
     //   - sendTransaction
     Signer.prototype.populateTransaction = function (transaction) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx;
+            var tx, estimateGasValue;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -235,8 +235,8 @@ var Signer = /** @class */ (function () {
                         if (tx.nonce == null) {
                             tx.nonce = this.getTransactionCount("pending");
                         }
-                        if (tx.gasLimit == null) {
-                            tx.gasLimit = this.estimateGas(tx).catch(function (error) {
+                        if (!(tx.gasLimit == null)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.estimateGas(tx).catch(function (error) {
                                 if (forwardErrors.indexOf(error.code) >= 0) {
                                     throw error;
                                 }
@@ -244,8 +244,13 @@ var Signer = /** @class */ (function () {
                                     error: error,
                                     tx: tx
                                 });
-                            });
-                        }
+                            })];
+                    case 2:
+                        estimateGasValue = _a.sent();
+                        tx.gasLimit = estimateGasValue[0];
+                        tx.storageLimit = estimateGasValue[1];
+                        _a.label = 3;
+                    case 3:
                         if (tx.chainId == null) {
                             tx.chainId = this.getChainId();
                         }
@@ -261,7 +266,7 @@ var Signer = /** @class */ (function () {
                             });
                         }
                         return [4 /*yield*/, properties_1.resolveProperties(tx)];
-                    case 2: return [2 /*return*/, _a.sent()];
+                    case 4: return [2 /*return*/, _a.sent()];
                 }
             });
         });

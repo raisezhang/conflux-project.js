@@ -3,7 +3,7 @@
   "dependencies": {
     "@confluxproject/logger": "^5.0.5"
   },
-  "description": "Network definitions for ethers.",
+  "description": "Network definitions for conflux.",
   "keywords": [
     "Conflux"
   ],

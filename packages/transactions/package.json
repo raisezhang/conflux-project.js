@@ -11,7 +11,7 @@
     "@confluxproject/rlp": "^5.0.3",
     "@confluxproject/signing-key": "^5.0.4"
   },
-  "description": "Utilities for decoding and encoding Ethereum transaction for ethers.",
+  "description": "Utilities for decoding and encoding Ethereum transaction for conflux.",
   "keywords": [
     "Conflux"
   ],

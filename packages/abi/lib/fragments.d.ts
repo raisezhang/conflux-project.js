@@ -59,6 +59,7 @@ export declare class ConstructorFragment extends Fragment {
     stateMutability: string;
     payable: boolean;
     gas?: BigNumber;
+    storage?: BigNumber;
     format(format?: string): string;
     static from(value: ConstructorFragment | JsonFragment | string): ConstructorFragment;
     static fromObject(value: ConstructorFragment | JsonFragment): ConstructorFragment;

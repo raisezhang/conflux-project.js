@@ -312,19 +312,19 @@ function getProcessFunc(provider, method, params) {
 }
 // If we are doing a blockTag query, we need to make sure the backend is
 // caught up to the FallbackProvider, before sending a request to it.
-function waitForSync(config, blockNumber) {
+function waitForSync(config, epochNumber) {
     return __awaiter(this, void 0, void 0, function () {
         var provider;
         return __generator(this, function (_a) {
             provider = (config.provider);
-            if ((provider.blockNumber != null && provider.blockNumber >= blockNumber) || blockNumber === -1) {
+            if ((provider.epochNumber != null && provider.epochNumber >= epochNumber) || epochNumber === -1) {
                 return [2 /*return*/, provider];
             }
             return [2 /*return*/, web_1.poll(function () {
                     return new Promise(function (resolve, reject) {
                         setTimeout(function () {
                             // We are synced
-                            if (provider.blockNumber >= blockNumber) {
+                            if (provider.epochNumber >= epochNumber) {
                                 return resolve(provider);
                             }
                             // We're done; just quit

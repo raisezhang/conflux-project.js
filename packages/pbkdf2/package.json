@@ -10,7 +10,7 @@
     "@confluxproject/bytes": "^5.0.4",
     "@confluxproject/sha2": "^5.0.3"
   },
-  "description": "The PBKDF2 password-pbased key derivation function for ethers.",
+  "description": "The PBKDF2 password-pbased key derivation function for conflux.",
   "ethereum": "donations.ethers.eth",
   "funding": [
     {

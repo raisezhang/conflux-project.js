@@ -454,7 +454,7 @@ export class BaseProvider extends Provider implements EnsProvider {
     _fastQueryDate: number;
 
     _maxInternalBlockNumber: number;
-    _internalBlockNumber: Promise<{ blockNumber: number, reqTime: number, respTime: number }>;
+    _internalBlockNumber: Promise<{ epochNumber: number, reqTime: number, respTime: number }>;
 
     readonly anyNetwork: boolean;
 
@@ -580,7 +580,7 @@ export class BaseProvider extends Provider implements EnsProvider {
         return getNetwork((network == null) ? "homestead": network);
     }
 
-    // Fetches the blockNumber, but will reuse any result that is less
+    // Fetches the epochNumber, but will reuse any result that is less
     // than maxAge old or has been requested since the last request
     async _getInternalBlockNumber(maxAge: number): Promise<number> {
         await this._ready();
@@ -590,16 +590,16 @@ export class BaseProvider extends Provider implements EnsProvider {
         if (maxAge > 0 && this._internalBlockNumber) {
             const result = await internalBlockNumber;
             if ((getTime() - result.respTime) <= maxAge) {
-                return result.blockNumber;
+                return result.epochNumber;
             }
         }
 
         const reqTime = getTime();
 
         const checkInternalBlockNumber = resolveProperties({
-            blockNumber: this.perform("getBlockNumber", { }),
+            epochNumber: this.perform("getBlockNumber", { }),
             networkError: this.getNetwork().then((network) => (null), (error) => (error))
-        }).then(({ blockNumber, networkError }) => {
+        }).then(({ epochNumber, networkError }) => {
             if (networkError) {
                 // Unremember this bad internal block number
                 if (this._internalBlockNumber === checkInternalBlockNumber) {
@@ -610,17 +610,17 @@ export class BaseProvider extends Provider implements EnsProvider {
 
             const respTime = getTime();
 
-            blockNumber = BigNumber.from(blockNumber).toNumber();
-            if (blockNumber < this._maxInternalBlockNumber) { blockNumber = this._maxInternalBlockNumber; }
+            epochNumber = BigNumber.from(epochNumber).toNumber();
+            if (epochNumber < this._maxInternalBlockNumber) { epochNumber = this._maxInternalBlockNumber; }
 
-            this._maxInternalBlockNumber = blockNumber;
-            this._setFastBlockNumber(blockNumber); // @TODO: Still need this?
-            return { blockNumber, reqTime, respTime };
+            this._maxInternalBlockNumber = epochNumber;
+            this._setFastBlockNumber(epochNumber); // @TODO: Still need this?
+            return { epochNumber, reqTime, respTime };
         });
 
         this._internalBlockNumber = checkInternalBlockNumber;
 
-        return (await checkInternalBlockNumber).blockNumber;
+        return (await checkInternalBlockNumber).epochNumber;
     }
 
     async poll(): Promise<void> {
@@ -629,42 +629,42 @@ export class BaseProvider extends Provider implements EnsProvider {
         // Track all running promises, so we can trigger a post-poll once they are complete
         const runners: Array<Promise<void>> = [];
 
-        const blockNumber = await this._getInternalBlockNumber(100 + this.pollingInterval / 2);
-        this._setFastBlockNumber(blockNumber);
+        const epochNumber = await this._getInternalBlockNumber(100 + this.pollingInterval / 2);
+        this._setFastBlockNumber(epochNumber);
 
         // Emit a poll event after we have the latest (fast) block number
-        this.emit("poll", pollId, blockNumber);
+        this.emit("poll", pollId, epochNumber);
 
         // If the block has not changed, meh.
-        if (blockNumber === this._lastBlockNumber) {
+        if (epochNumber === this._lastBlockNumber) {
             this.emit("didPoll", pollId);
             return;
         }
 
         // First polling cycle, trigger a "block" events
         if (this._emitted.block === -2) {
-            this._emitted.block = blockNumber - 1;
+            this._emitted.block = epochNumber - 1;
         }
 
-        if (Math.abs((<number>(this._emitted.block)) - blockNumber) > 1000) {
+        if (Math.abs((<number>(this._emitted.block)) - epochNumber) > 1000) {
             logger.warn("network block skew detected; skipping block events");
             this.emit("error", logger.makeError("network block skew detected", Logger.errors.NETWORK_ERROR, {
-                blockNumber: blockNumber,
+                epochNumber: epochNumber,
                 event: "blockSkew",
                 previousBlockNumber: this._emitted.block
             }));
-            this.emit("block", blockNumber);
+            this.emit("block", epochNumber);
 
         } else {
             // Notify all listener for each block that has passed
-            for (let i = (<number>this._emitted.block) + 1; i <= blockNumber; i++) {
+            for (let i = (<number>this._emitted.block) + 1; i <= epochNumber; i++) {
                 this.emit("block", i);
             }
         }
 
         // The emitted block was updated, check for obsolete events
-        if ((<number>this._emitted.block) !== blockNumber) {
-            this._emitted.block = blockNumber;
+        if ((<number>this._emitted.block) !== epochNumber) {
+            this._emitted.block = epochNumber;
 
             Object.keys(this._emitted).forEach((key) => {
                 // The block event does not expire
@@ -680,7 +680,7 @@ export class BaseProvider extends Provider implements EnsProvider {
 
                 // Evict any transaction hashes or block hashes over 12 blocks
                 // old, since they should not return null anyways
-                if (blockNumber - eventBlockNumber > 12) {
+                if (epochNumber - eventBlockNumber > 12) {
                     delete this._emitted[key];
                 }
             });
@@ -688,7 +688,7 @@ export class BaseProvider extends Provider implements EnsProvider {
 
         // First polling cycle
         if (this._lastBlockNumber === -2) {
-            this._lastBlockNumber = blockNumber - 1;
+            this._lastBlockNumber = epochNumber - 1;
         }
 
         // Find all transaction hashes we are waiting on
@@ -697,8 +697,8 @@ export class BaseProvider extends Provider implements EnsProvider {
                 case "tx": {
                     const hash = event.hash;
                     let runner = this.getTransactionReceipt(hash).then((receipt) => {
-                        if (!receipt || receipt.blockNumber == null) { return null; }
-                        this._emitted["t:" + hash] = receipt.blockNumber;
+                        if (!receipt || receipt.epochNumber == null) { return null; }
+                        this._emitted["t:" + hash] = receipt.epochNumber;
                         this.emit(hash, receipt);
                         return null;
                     }).catch((error: Error) => { this.emit("error", error); });
@@ -711,13 +711,13 @@ export class BaseProvider extends Provider implements EnsProvider {
                 case "filter": {
                     const filter = event.filter;
                     filter.fromBlock = this._lastBlockNumber + 1;
-                    filter.toBlock = blockNumber;
+                    filter.toBlock = epochNumber;
 
                     const runner = this.getLogs(filter).then((logs) => {
                         if (logs.length === 0) { return; }
                         logs.forEach((log: Log) => {
-                            this._emitted["b:" + log.blockHash] = log.blockNumber;
-                            this._emitted["t:" + log.transactionHash] = log.blockNumber;
+                            this._emitted["b:" + log.blockHash] = log.epochNumber;
+                            this._emitted["t:" + log.transactionHash] = log.epochNumber;
                             this.emit(filter, log);
                         });
                     }).catch((error: Error) => { this.emit("error", error); });
@@ -728,7 +728,7 @@ export class BaseProvider extends Provider implements EnsProvider {
             }
         });
 
-        this._lastBlockNumber = blockNumber;
+        this._lastBlockNumber = epochNumber;
 
         // Once all events for this loop have been processed, emit "didPoll"
         Promise.all(runners).then(() => {
@@ -739,8 +739,8 @@ export class BaseProvider extends Provider implements EnsProvider {
     }
 
     // Deprecated; do not use this
-    resetEventsBlock(blockNumber: number): void {
-        this._lastBlockNumber = blockNumber - 1;
+    resetEventsBlock(epochNumber: number): void {
+        this._lastBlockNumber = epochNumber - 1;
         if (this.polling) { this.poll(); }
     }
 
@@ -801,9 +801,9 @@ export class BaseProvider extends Provider implements EnsProvider {
         return network;
     }
 
-    get blockNumber(): number {
-        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((blockNumber) => {
-            this._setFastBlockNumber(blockNumber);
+    get epochNumber(): number {
+        this._getInternalBlockNumber(100 + this.pollingInterval / 2).then((epochNumber) => {
+            this._setFastBlockNumber(epochNumber);
         });
 
         return (this._fastBlockNumber != null) ? this._fastBlockNumber: -1;
@@ -863,9 +863,9 @@ export class BaseProvider extends Provider implements EnsProvider {
         // Stale block number, request a newer value
         if ((now - this._fastQueryDate) > 2 * this._pollingInterval) {
             this._fastQueryDate = now;
-            this._fastBlockNumberPromise = this.getBlockNumber().then((blockNumber) => {
-                if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-                    this._fastBlockNumber = blockNumber;
+            this._fastBlockNumberPromise = this.getBlockNumber().then((epochNumber) => {
+                if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+                    this._fastBlockNumber = epochNumber;
                 }
                 return this._fastBlockNumber;
             });
@@ -874,17 +874,17 @@ export class BaseProvider extends Provider implements EnsProvider {
         return this._fastBlockNumberPromise;
     }
 
-    _setFastBlockNumber(blockNumber: number): void {
+    _setFastBlockNumber(epochNumber: number): void {
         // Older block, maybe a stale request
-        if (this._fastBlockNumber != null && blockNumber < this._fastBlockNumber) { return; }
+        if (this._fastBlockNumber != null && epochNumber < this._fastBlockNumber) { return; }
 
         // Update the time we updated the blocknumber
         this._fastQueryDate = getTime();
 
         // Newer block number, use  it
-        if (this._fastBlockNumber == null || blockNumber > this._fastBlockNumber) {
-            this._fastBlockNumber = blockNumber;
-            this._fastBlockNumberPromise = Promise.resolve(blockNumber);
+        if (this._fastBlockNumber == null || epochNumber > this._fastBlockNumber) {
+            this._fastBlockNumber = epochNumber;
+            this._fastBlockNumberPromise = Promise.resolve(epochNumber);
         }
     }
 
@@ -998,7 +998,7 @@ export class BaseProvider extends Provider implements EnsProvider {
             if (receipt == null && confirmations === 0) { return null; }
 
             // No longer pending, allow the polling loop to garbage collect this
-            this._emitted["t:" + tx.hash] = receipt.blockNumber;
+            this._emitted["t:" + tx.hash] = receipt.epochNumber;
 
             if (receipt.status === 0) {
                 logger.throwError("transaction failed", Logger.errors.CALL_EXCEPTION, {
@@ -1081,12 +1081,13 @@ export class BaseProvider extends Provider implements EnsProvider {
         return hexlify(await this.perform("call", params));
     }
 
-    async estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber> {
+    async estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]> {
         await this.getNetwork();
         const params = await resolveProperties({
             transaction: this._getTransactionRequest(transaction)
         });
-        return BigNumber.from(await this.perform("estimateGas", params));
+        const rst = await this.perform("estimateGas", params)
+        return [BigNumber.from(rst.gasUsed), BigNumber.from(rst.storageCollateralized)]
     }
 
     async _getAddress(addressOrName: string | Promise<string>): Promise<string> {
@@ -1105,7 +1106,7 @@ export class BaseProvider extends Provider implements EnsProvider {
         blockHashOrBlockTag = await blockHashOrBlockTag;
 
         // If blockTag is a number (not "latest", etc), this is the block number
-        let blockNumber = -128;
+        let epochNumber = -128;
 
         const params: { [key: string]: any } = {
             includeTransactions: !!includeTransactions
@@ -1117,7 +1118,7 @@ export class BaseProvider extends Provider implements EnsProvider {
             try {
                 params.blockTag = this.formatter.blockTag(await this._getBlockTag(blockHashOrBlockTag));
                 if (isHexString(params.blockTag)) {
-                    blockNumber = parseInt(params.blockTag.substring(2), 16);
+                    epochNumber = parseInt(params.blockTag.substring(2), 16);
                 }
             } catch (error) {
                 logger.throwArgumentError("invalid block hash or block tag", "blockHashOrBlockTag", blockHashOrBlockTag);
@@ -1139,7 +1140,7 @@ export class BaseProvider extends Provider implements EnsProvider {
 
                 // For block tags, if we are asking for a future block, we return null
                 if (params.blockTag != null) {
-                    if (blockNumber > this._emitted.block) { return null; }
+                    if (epochNumber > this._emitted.block) { return null; }
                 }
 
                 // Retry on the next block
@@ -1148,19 +1149,19 @@ export class BaseProvider extends Provider implements EnsProvider {
 
             // Add transactions
             if (includeTransactions) {
-                let blockNumber: number = null;
+                let epochNumber: number = null;
                 for (let i = 0; i < block.transactions.length; i++) {
                     const tx = block.transactions[i];
-                    if (tx.blockNumber == null) {
+                    if (tx.epochNumber == null) {
                         tx.confirmations = 0;
 
                     } else if (tx.confirmations == null) {
-                        if (blockNumber == null) {
-                            blockNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                        if (epochNumber == null) {
+                            epochNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
                         }
 
                         // Add the confirmations using the fast block number (pessimistic)
-                        let confirmations = (blockNumber - tx.blockNumber) + 1;
+                        let confirmations = (epochNumber - tx.epochNumber) + 1;
                         if (confirmations <= 0) { confirmations = 1; }
                         tx.confirmations = confirmations;
                     }
@@ -1198,14 +1199,14 @@ export class BaseProvider extends Provider implements EnsProvider {
 
             const tx = this.formatter.transactionResponse(result);
 
-            if (tx.blockNumber == null) {
+            if (tx.epochNumber == null) {
                 tx.confirmations = 0;
 
             } else if (tx.confirmations == null) {
-                const blockNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                const epochNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
 
                 // Add the confirmations using the fast block number (pessimistic)
-                let confirmations = (blockNumber - tx.blockNumber) + 1;
+                let confirmations = (epochNumber - tx.epochNumber) + 1;
                 if (confirmations <= 0) { confirmations = 1; }
                 tx.confirmations = confirmations;
             }
@@ -1236,14 +1237,14 @@ export class BaseProvider extends Provider implements EnsProvider {
 
             const receipt = this.formatter.receipt(result);
 
-            if (receipt.blockNumber == null) {
+            if (receipt.epochNumber == null) {
                 receipt.confirmations = 0;
 
             } else if (receipt.confirmations == null) {
-                const blockNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+                const epochNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
 
                 // Add the confirmations using the fast block number (pessimistic)
-                let confirmations = (blockNumber - receipt.blockNumber) + 1;
+                let confirmations = (epochNumber - receipt.epochNumber) + 1;
                 if (confirmations <= 0) { confirmations = 1; }
                 receipt.confirmations = confirmations;
             }
@@ -1275,10 +1276,10 @@ export class BaseProvider extends Provider implements EnsProvider {
                 logger.throwArgumentError("invalid BlockTag", "blockTag", blockTag);
             }
 
-            let blockNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
-            blockNumber += blockTag;
-            if (blockNumber < 0) { blockNumber = 0; }
-            return this.formatter.blockTag(blockNumber)
+            let epochNumber = await this._getInternalBlockNumber(100 + 2 * this.pollingInterval);
+            epochNumber += blockTag;
+            if (epochNumber < 0) { epochNumber = 0; }
+            return this.formatter.blockTag(epochNumber)
         }
 
         return this.formatter.blockTag(blockTag);

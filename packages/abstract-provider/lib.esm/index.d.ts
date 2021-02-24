@@ -9,6 +9,7 @@ export declare type TransactionRequest = {
     from?: string;
     nonce?: BigNumberish;
     gasLimit?: BigNumberish;
+    storageLimit?: BigNumberish;
     gasPrice?: BigNumberish;
     data?: BytesLike;
     value?: BigNumberish;
@@ -16,7 +17,7 @@ export declare type TransactionRequest = {
 };
 export interface TransactionResponse extends Transaction {
     hash: string;
-    blockNumber?: number;
+    epochNumber?: number;
     blockHash?: string;
     timestamp?: number;
     confirmations: number;
@@ -44,7 +45,7 @@ export interface BlockWithTransactions extends _Block {
     transactions: Array<TransactionResponse>;
 }
 export interface Log {
-    blockNumber: number;
+    epochNumber: number;
     blockHash: string;
     transactionIndex: number;
     removed: boolean;
@@ -65,7 +66,7 @@ export interface TransactionReceipt {
     blockHash: string;
     transactionHash: string;
     logs: Array<Log>;
-    blockNumber: number;
+    epochNumber: number;
     confirmations: number;
     cumulativeGasUsed: BigNumber;
     byzantium: boolean;
@@ -114,7 +115,7 @@ export declare abstract class Provider implements OnceBlockable {
     abstract getStorageAt(addressOrName: string | Promise<string>, position: BigNumberish | Promise<BigNumberish>, blockTag?: BlockTag | Promise<BlockTag>): Promise<string>;
     abstract sendTransaction(signedTransaction: string | Promise<string>): Promise<TransactionResponse>;
     abstract call(transaction: Deferrable<TransactionRequest>, blockTag?: BlockTag | Promise<BlockTag>): Promise<string>;
-    abstract estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
+    abstract estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]>;
     abstract getBlock(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>): Promise<Block>;
     abstract getBlockWithTransactions(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>): Promise<BlockWithTransactions>;
     abstract getTransaction(transactionHash: string): Promise<TransactionResponse>;

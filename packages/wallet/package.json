@@ -17,7 +17,7 @@
     "@confluxproject/transactions": "^5.0.5",
     "@confluxproject/wordlists": "^5.0.4"
   },
-  "description": "Classes for managing, encrypting and decrypting Ethereum private keys as a Signer for ethers.",
+  "description": "Classes for managing, encrypting and decrypting Ethereum private keys as a Signer for conflux.",
   "keywords": [
     "Conflux"
   ],

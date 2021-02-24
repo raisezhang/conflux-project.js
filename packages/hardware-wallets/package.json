@@ -12,7 +12,7 @@
     "@ledgerhq/hw-transport-u2f": "5.26.0",
     "ethers": "^5.0.13"
   },
-  "description": "Hardware Wallet support for ethers.",
+  "description": "Hardware Wallet support for conflux.",
   "ethereum": "donations.ethers.eth",
   "funding": [
     {

@@ -8,3 +8,13 @@ declare module "ws" {
     export default WebSocket;
 }
 
+interface Window {
+    conflux?: {
+        chainId?: string
+        networkVersion?: string
+        isConfluxPortal?: true
+        on?: (...args: any[]) => void
+        removeListener?: (...args: any[]) => void
+    }
+}
+

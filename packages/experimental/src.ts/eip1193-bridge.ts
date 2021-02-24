@@ -91,7 +91,8 @@ export class _Eip1193Bridge extends EventEmitter {
 
                  const req = ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
                  const result = await this.provider.estimateGas(req);
-                 return result.toHexString();
+                 // TODO  FIXME
+                 return result[0].toHexString();
              }
 
              // @TOOD: Transform? No uncles?

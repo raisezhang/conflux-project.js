@@ -98,10 +98,6 @@ exports.invalidate = invalidate;
             if (dirname === 'ethers') {
                 continue;
             }
-            // for test
-            if (dirname !== 'logger') {
-                continue;
-            }
             let info = local.getPackage(dirname);
             let npmInfo;
             try {

@@ -105,7 +105,7 @@ export abstract class Signer {
     }
 
     // Populates "from" if unspecified, and estimates the gas for the transation
-    async estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber> {
+    async estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]> {
         this._checkProvider("estimateGas");
         const tx = await resolveProperties(this.checkTransaction(transaction));
         return await this.provider.estimateGas(tx);
@@ -196,7 +196,7 @@ export abstract class Signer {
         if (tx.nonce == null) { tx.nonce = this.getTransactionCount("pending"); }
 
         if (tx.gasLimit == null) {
-            tx.gasLimit = this.estimateGas(tx).catch((error) => {
+            const estimateGasValue = await this.estimateGas(tx).catch((error) => {
                 if (forwardErrors.indexOf(error.code) >= 0) {
                     throw error;
                 }
@@ -206,6 +206,8 @@ export abstract class Signer {
                     tx: tx
                 });
             });
+            tx.gasLimit = estimateGasValue[0]
+            tx.storageLimit = estimateGasValue[1]
         }
 
         if (tx.chainId == null) {

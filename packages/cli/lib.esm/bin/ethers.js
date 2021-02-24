@@ -622,7 +622,7 @@ class WaitPlugin extends Plugin {
             console.log("Waiting for Transaction:", this.hash);
             let receipt = yield this.provider.waitForTransaction(this.hash);
             dump("Response:", {
-                "Block": receipt.blockNumber,
+                "Block": receipt.epochNumber,
                 "Block Hash": receipt.blockHash,
                 "Status": (receipt.status ? "ok" : "failed")
             });

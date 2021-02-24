@@ -176,7 +176,8 @@ var _Eip1193Bridge = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.provider.estimateGas(req)];
                     case 24:
                         result = _b.sent();
-                        return [2 /*return*/, result.toHexString()];
+                        // TODO  FIXME
+                        return [2 /*return*/, result[0].toHexString()];
                     case 25:
                         if (!params[1]) return [3 /*break*/, 27];
                         return [4 /*yield*/, this.provider.getBlockWithTransactions(params[0])];

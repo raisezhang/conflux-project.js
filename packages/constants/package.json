@@ -3,7 +3,7 @@
   "dependencies": {
     "@confluxproject/bignumber": "^5.0.7"
   },
-  "description": "Common Ethereum constants used for ethers.",
+  "description": "Common Ethereum constants used for conflux.",
   "keywords": [
     "Conflux"
   ],

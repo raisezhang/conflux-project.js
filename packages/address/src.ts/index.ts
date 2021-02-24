@@ -88,10 +88,11 @@ export function getAddress(address: string): string {
 
         result = getChecksumAddress(address);
 
+        // Compatible Conflux Address
         // It is a checksummed address with a bad checksum
-        if (address.match(/([A-F].*[a-f])|([a-f].*[A-F])/) && result !== address) {
-            logger.throwArgumentError("bad address checksum", "address", address);
-        }
+        // if (address.match(/([A-F].*[a-f])|([a-f].*[A-F])/) && result !== address) {
+        //     logger.throwArgumentError("bad address checksum", "address", address);
+        // }
 
     // Maybe ICAP? (we only support direct mode)
     } else if (address.match(/^XE[0-9]{2}[0-9A-Za-z]{30,31}$/)) {

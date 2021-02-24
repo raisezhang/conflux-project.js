@@ -21,6 +21,7 @@ export type TransactionRequest = {
     nonce?: BigNumberish,
 
     gasLimit?: BigNumberish,
+    storageLimit?: BigNumberish,
     gasPrice?: BigNumberish,
 
     data?: BytesLike,
@@ -32,7 +33,7 @@ export interface TransactionResponse extends Transaction {
     hash: string;
 
     // Only if a transaction has been mined
-    blockNumber?: number,
+    epochNumber?: number,
     blockHash?: string,
     timestamp?: number,
 
@@ -76,7 +77,7 @@ export interface BlockWithTransactions extends _Block {
 
 
 export interface Log {
-    blockNumber: number;
+    epochNumber: number;
     blockHash: string;
     transactionIndex: number;
 
@@ -102,7 +103,7 @@ export interface TransactionReceipt {
     blockHash: string,
     transactionHash: string,
     logs: Array<Log>,
-    blockNumber: number,
+    epochNumber: number,
     confirmations: number,
     cumulativeGasUsed: BigNumber,
     byzantium: boolean,
@@ -222,7 +223,7 @@ export abstract class Provider implements OnceBlockable {
     // Execution
     abstract sendTransaction(signedTransaction: string | Promise<string>): Promise<TransactionResponse>;
     abstract call(transaction: Deferrable<TransactionRequest>, blockTag?: BlockTag | Promise<BlockTag>): Promise<string>;
-    abstract estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
+    abstract estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]>;
 
     // Queries
     abstract getBlock(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>): Promise<Block>;

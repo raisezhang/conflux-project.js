@@ -9,7 +9,7 @@
     "@confluxproject/transactions": "^5.0.5",
     "@confluxproject/web": "^5.0.6"
   },
-  "description": "An Abstract Class for describing an Ethereum Provider for ethers.",
+  "description": "An Abstract Class for describing an Ethereum Provider for conflux.",
   "keywords": [
     "Conflux"
   ],

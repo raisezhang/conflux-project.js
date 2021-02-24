@@ -703,12 +703,15 @@ interface _ConstructorFragment extends _Fragment {
     stateMutability: string;
     payable: boolean;
     gas?: BigNumber;
+    storage?: BigNumber;
 }
 
 export class ConstructorFragment extends Fragment {
     stateMutability: string;
     payable: boolean;
     gas?: BigNumber;
+    storage?: BigNumber;
+    
 
     format(format?: string): string {
         if (!format) { format = FormatTypes.sighash; }

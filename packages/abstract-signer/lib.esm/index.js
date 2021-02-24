@@ -137,7 +137,7 @@ export class Signer {
                 tx.nonce = this.getTransactionCount("pending");
             }
             if (tx.gasLimit == null) {
-                tx.gasLimit = this.estimateGas(tx).catch((error) => {
+                const estimateGasValue = yield this.estimateGas(tx).catch((error) => {
                     if (forwardErrors.indexOf(error.code) >= 0) {
                         throw error;
                     }
@@ -146,6 +146,8 @@ export class Signer {
                         tx: tx
                     });
                 });
+                tx.gasLimit = estimateGasValue[0];
+                tx.storageLimit = estimateGasValue[1];
             }
             if (tx.chainId == null) {
                 tx.chainId = this.getChainId();

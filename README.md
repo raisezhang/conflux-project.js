@@ -1,4 +1,4 @@
-The Ethers Project
+The Conflux (Ethers) Project
 ==================
 
 [![npm (tag)](https://img.shields.io/npm/v/ethers)](https://www.npmjs.com/package/ethers)

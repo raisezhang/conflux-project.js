@@ -243,7 +243,7 @@ class WrappedSigner extends ethers.Signer {
                 try {
                     let receipt = yield response.wait();
                     dump("Success:", {
-                        "Block Number": receipt.blockNumber,
+                        "Block Number": receipt.epochNumber,
                         "Block Hash": receipt.blockHash,
                         "Gas Used": ethers.utils.commify(receipt.gasUsed.toString()),
                         "Fee": (ethers.utils.formatEther(receipt.gasUsed.mul(tx.gasPrice)) + " ether")

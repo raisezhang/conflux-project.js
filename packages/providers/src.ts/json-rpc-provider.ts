@@ -154,7 +154,7 @@ export class JsonRpcSigner extends Signer implements TypedDataSigner {
         });
     }
 
-    sendUncheckedTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
+    async sendUncheckedTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
         transaction = shallowCopy(transaction);
 
         const fromAddress = this.getAddress().then((address) => {
@@ -168,7 +168,9 @@ export class JsonRpcSigner extends Signer implements TypedDataSigner {
         if (transaction.gasLimit == null) {
             const estimate = shallowCopy(transaction);
             estimate.from = fromAddress;
-            transaction.gasLimit = this.provider.estimateGas(estimate);
+            const estimateGasValue = await this.provider.estimateGas(estimate);
+            transaction.gasLimit = estimateGasValue[0];
+            transaction.storageLimit = estimateGasValue[1];
         }
 
         return resolveProperties({
@@ -251,6 +253,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
                 hash: hash,
                 nonce: null,
                 gasLimit: null,
+                storageLimit: null,
                 gasPrice: null,
                 data: null,
                 value: null,
@@ -264,7 +267,7 @@ class UncheckedJsonRpcSigner extends JsonRpcSigner {
 }
 
 const allowedTransactionKeys: { [ key: string ]: boolean } = {
-    chainId: true, data: true, gasLimit: true, gasPrice:true, nonce: true, to: true, value: true
+    chainId: true, data: true, gasLimit: true, storageLimit: true, gasPrice:true, nonce: true, to: true, value: true
 }
 
 export class JsonRpcProvider extends BaseProvider {
@@ -326,7 +329,7 @@ export class JsonRpcProvider extends BaseProvider {
         if (chainId != null) {
             const getNetwork = getStatic<(network: Networkish) => Network>(this.constructor, "getNetwork");
             try {
-                return getNetwork(BigNumber.from(chainId).toNumber());
+                return getNetwork(BigNumber.from(chainId[0]).toNumber());
             } catch (error) {
                 return logger.throwError("could not detect network", Logger.errors.NETWORK_ERROR, {
                     chainId: chainId,
@@ -394,7 +397,7 @@ export class JsonRpcProvider extends BaseProvider {
     prepareRequest(method: string, params: any): [ string, Array<any> ] {
         switch (method) {
             case "getBlockNumber":
-                return [ "eth_blockNumber", [] ];
+                return [ "eth_epochNumber", [] ];
 
             case "getGasPrice":
                 return [ "eth_gasPrice", [] ];
@@ -542,7 +545,7 @@ export class JsonRpcProvider extends BaseProvider {
         const result: { [key: string]: string } = {};
 
         // Some nodes (INFURA ropsten; INFURA mainnet is fine) do not like leading zeros.
-        ["gasLimit", "gasPrice", "nonce", "value"].forEach(function(key) {
+        ["storageLimit", "gasLimit", "gasPrice", "nonce", "value"].forEach(function(key) {
             if ((<any>transaction)[key] == null) { return; }
             const value = hexValue((<any>transaction)[key]);
             if (key === "gasLimit") { key = "gas"; }

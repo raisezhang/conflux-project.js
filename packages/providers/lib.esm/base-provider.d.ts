@@ -56,7 +56,7 @@ export declare class BaseProvider extends Provider implements EnsProvider {
     _fastQueryDate: number;
     _maxInternalBlockNumber: number;
     _internalBlockNumber: Promise<{
-        blockNumber: number;
+        epochNumber: number;
         reqTime: number;
         respTime: number;
     }>;
@@ -77,17 +77,17 @@ export declare class BaseProvider extends Provider implements EnsProvider {
     static getNetwork(network: Networkish): Network;
     _getInternalBlockNumber(maxAge: number): Promise<number>;
     poll(): Promise<void>;
-    resetEventsBlock(blockNumber: number): void;
+    resetEventsBlock(epochNumber: number): void;
     get network(): Network;
     detectNetwork(): Promise<Network>;
     getNetwork(): Promise<Network>;
-    get blockNumber(): number;
+    get epochNumber(): number;
     get polling(): boolean;
     set polling(value: boolean);
     get pollingInterval(): number;
     set pollingInterval(value: number);
     _getFastBlockNumber(): Promise<number>;
-    _setFastBlockNumber(blockNumber: number): void;
+    _setFastBlockNumber(epochNumber: number): void;
     waitForTransaction(transactionHash: string, confirmations?: number, timeout?: number): Promise<TransactionReceipt>;
     getBlockNumber(): Promise<number>;
     getGasPrice(): Promise<BigNumber>;
@@ -100,7 +100,7 @@ export declare class BaseProvider extends Provider implements EnsProvider {
     _getTransactionRequest(transaction: Deferrable<TransactionRequest>): Promise<Transaction>;
     _getFilter(filter: Filter | FilterByBlockHash | Promise<Filter | FilterByBlockHash>): Promise<Filter | FilterByBlockHash>;
     call(transaction: Deferrable<TransactionRequest>, blockTag?: BlockTag | Promise<BlockTag>): Promise<string>;
-    estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
+    estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber[]>;
     _getAddress(addressOrName: string | Promise<string>): Promise<string>;
     _getBlock(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>, includeTransactions?: boolean): Promise<Block | BlockWithTransactions>;
     getBlock(blockHashOrBlockTag: BlockTag | string | Promise<BlockTag | string>): Promise<Block>;
