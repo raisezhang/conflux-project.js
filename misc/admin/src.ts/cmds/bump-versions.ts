@@ -63,7 +63,7 @@ import { loadJson, repeat, saveJson } from "../utils";
     progress(1);
 
     if (updated) {
-        const filename = resolve("packages/ethers/package.json")
+        const filename = resolve("packages/conflux/package.json")
         const info = loadJson(filename);
         Object.keys(info.dependencies).forEach((name) => {
             const version = latestVersions[name];

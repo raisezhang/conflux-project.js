@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'assert';
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 import { loadTests } from "@confluxproject/testcases";
 describe('Private key generation', function () {
     let tests = loadTests('accounts');

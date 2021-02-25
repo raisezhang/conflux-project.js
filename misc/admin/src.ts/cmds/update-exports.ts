@@ -5,7 +5,7 @@ import fs from "fs";
 import { colorify } from "../log";
 import { resolve } from "../path";
 
-const sourceEthers = fs.readFileSync(resolve("packages/ethers/src.ts/ethers.ts")).toString();
+const sourceEthers = fs.readFileSync(resolve("packages/conflux/src.ts/ethers.ts")).toString();
 const targets = sourceEthers.match(/export\s*{\s*((.|\s)*)}/)[1].trim();
 
 ////////////////////
@@ -16,7 +16,7 @@ const output = `"use strict";
 
 // To modify this file, you must update ./misc/admin/lib/cmds/update-exports.js
 
-import * as ethers from "./ethers";
+import * as ethers from "./conflux";
 
 try {
     const anyGlobal = (window as any);
@@ -30,7 +30,7 @@ export { ethers };
 
 export {
     ${ targets }
-} from "./ethers";
+} from "./conflux";
 `;
 
 ////////////////////
@@ -39,4 +39,4 @@ export {
 
 console.log(colorify.bold(`Flattening exports...`))
 
-fs.writeFileSync(resolve("packages/ethers/src.ts/index.ts"), output);
+fs.writeFileSync(resolve("packages/conflux/src.ts/index.ts"), output);

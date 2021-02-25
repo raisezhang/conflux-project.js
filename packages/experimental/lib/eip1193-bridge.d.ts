@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import EventEmitter from "events";
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 export declare class _Eip1193Bridge extends EventEmitter {
     readonly signer: ethers.Signer;
     readonly provider: ethers.providers.Provider;

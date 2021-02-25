@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const log_1 = require("../log");
 const path_1 = require("../path");
-const sourceEthers = fs_1.default.readFileSync(path_1.resolve("packages/ethers/src.ts/ethers.ts")).toString();
+const sourceEthers = fs_1.default.readFileSync(path_1.resolve("packages/conflux/src.ts/conflux.ts")).toString();
 const targets = sourceEthers.match(/export\s*{\s*((.|\s)*)}/)[1].trim();
 ////////////////////
 // Begin template
@@ -15,7 +15,7 @@ const output = `"use strict";
 
 // To modify this file, you must update ./misc/admin/lib/cmds/update-exports.js
 
-import * as ethers from "./ethers";
+import * as ethers from "./conflux";
 
 try {
     const anyGlobal = (window as any);
@@ -29,10 +29,10 @@ export { ethers };
 
 export {
     ${targets}
-} from "./ethers";
+} from "./conflux";
 `;
 ////////////////////
 // End template
 ////////////////////
 console.log(log_1.colorify.bold(`Flattening exports...`));
-fs_1.default.writeFileSync(path_1.resolve("packages/ethers/src.ts/index.ts"), output);
+fs_1.default.writeFileSync(path_1.resolve("packages/conflux/src.ts/index.ts"), output);

@@ -1,7 +1,7 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "ethers": "^5.0.13"
+    "@confluxproject/conflux": "^5.0.24"
   },
   "description": "ASM libraries and tools for the Ethereum EVM.",
   "ethereum": "donations.ethers.eth",
@@ -38,5 +38,5 @@
   },
   "tarballHash": "0x83d6934a78956b083ea22841ce0c1595a344cd0d6ed8a0de8e702da9e826b757",
   "types": "./lib/index.d.ts",
-  "version": "5.0.8"
+  "version": "5.0.9"
 }

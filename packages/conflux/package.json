@@ -1,0 +1,55 @@
+{
+  "author": "Richard Moore <me@ricmoo.com>",
+  "dependencies": {
+    "@confluxproject/abi": "5.0.10",
+    "@confluxproject/abstract-provider": "5.0.8",
+    "@confluxproject/abstract-signer": "5.0.10",
+    "@confluxproject/address": "5.0.9",
+    "@confluxproject/base64": "5.0.7",
+    "@confluxproject/basex": "5.0.7",
+    "@confluxproject/bignumber": "5.0.13",
+    "@confluxproject/bytes": "5.0.9",
+    "@confluxproject/constants": "5.0.8",
+    "@confluxproject/contracts": "5.0.9",
+    "@confluxproject/hash": "5.0.10",
+    "@confluxproject/hdnode": "5.0.8",
+    "@confluxproject/json-wallets": "5.0.10",
+    "@confluxproject/keccak256": "5.0.7",
+    "@confluxproject/logger": "5.0.9",
+    "@confluxproject/networks": "5.0.7",
+    "@confluxproject/pbkdf2": "5.0.7",
+    "@confluxproject/properties": "5.0.7",
+    "@confluxproject/providers": "5.0.18",
+    "@confluxproject/random": "5.0.7",
+    "@confluxproject/rlp": "5.0.7",
+    "@confluxproject/sha2": "5.0.7",
+    "@confluxproject/signing-key": "5.0.8",
+    "@confluxproject/solidity": "5.0.8",
+    "@confluxproject/strings": "5.0.8",
+    "@confluxproject/transactions": "5.0.9",
+    "@confluxproject/units": "5.0.9",
+    "@confluxproject/wallet": "5.0.10",
+    "@confluxproject/web": "5.0.12",
+    "@confluxproject/wordlists": "5.0.8"
+  },
+  "description": "Umbrella package for most common Conflux libraries.",
+  "keywords": [
+    "Conflux"
+  ],
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./lib.esm/index.js",
+  "name": "@confluxproject/conflux",
+  "repository": {
+    "directory": "packages/conflux",
+    "type": "git",
+    "url": "git@github.com:raisezhang/conflux-project.js.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "sideEffects": false,
+  "tarballHash": "0x29af40c513a6ae9f1f3d3b9281e9dab348f682dd7cc6a69f4f8977a03eb651eb",
+  "types": "./lib/index.d.ts",
+  "version": "5.0.25"
+}

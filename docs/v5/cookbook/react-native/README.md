@@ -19,7 +19,7 @@ Installing
 import "@confluxproject/shims"
 
 // Import the ethers library
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 ```
 
 Security
@@ -33,6 +33,6 @@ import "react-native-get-random-values"
 import "@confluxproject/shims"
 
 // Import the ethers library
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 ```
 

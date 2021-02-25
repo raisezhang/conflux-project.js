@@ -159,7 +159,7 @@ export function invalidate(cloudfront: AWS.CloudFront, distributionId: string): 
             const username = await config.get("github-user");
             const password = await config.get("github-release");
 
-            const hash = createHash("sha384").update(fs.readFileSync(resolve("packages/ethers/dist/ethers.umd.min.js"))).digest("base64");
+            const hash = createHash("sha384").update(fs.readFileSync(resolve("packages/conflux/dist/ethers.umd.min.js"))).digest("base64");
 
             const gitCommit = await getGitTag(resolve("CHANGELOG.md"));
 
@@ -201,14 +201,14 @@ export function invalidate(cloudfront: AWS.CloudFront, distributionId: string): 
                     bucketName: bucketNameCors,
                     originRoot: originRootCors,
                     suffix: "-cors",
-                    filename: "packages/ethers/dist/ethers.esm.min.js",
+                    filename: "packages/conflux/dist/ethers.esm.min.js",
                     key: `ethers-${ change.version.substring(1) }.esm.min.js`
                 },
                 {
                     bucketName: bucketNameCors,
                     originRoot: originRootCors,
                     suffix: "-cors",
-                    filename: "packages/ethers/dist/ethers.umd.min.js",
+                    filename: "packages/conflux/dist/ethers.umd.min.js",
                     key: `ethers-${ change.version.substring(1) }.umd.min.js`
                 },
 
@@ -216,25 +216,25 @@ export function invalidate(cloudfront: AWS.CloudFront, distributionId: string): 
                 {
                     bucketName: bucketNameLib,
                     originRoot: originRootLib,
-                    filename: "packages/ethers/dist/ethers.esm.min.js",
+                    filename: "packages/conflux/dist/ethers.esm.min.js",
                     key: `ethers-${ change.version.substring(1) }.esm.min.js`
                 },
                 {
                     bucketName: bucketNameLib,
                     originRoot: originRootLib,
-                    filename: "packages/ethers/dist/ethers.umd.min.js",
+                    filename: "packages/conflux/dist/ethers.umd.min.js",
                     key: `ethers-${ change.version.substring(1) }.umd.min.js`
                 },
                 {
                     bucketName: bucketNameLib,
                     originRoot: originRootLib,
-                    filename: "packages/ethers/dist/ethers.esm.min.js",
+                    filename: "packages/conflux/dist/ethers.esm.min.js",
                     key: "ethers-5.0.esm.min.js"
                 },
                 {
                     bucketName: bucketNameLib,
                     originRoot: originRootLib,
-                    filename: "packages/ethers/dist/ethers.umd.min.js",
+                    filename: "packages/conflux/dist/ethers.umd.min.js",
                     key: "ethers-5.0.umd.min.js"
                 },
             ];

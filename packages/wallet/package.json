@@ -39,5 +39,5 @@
   "sideEffects": false,
   "tarballHash": "0x5a20d69b99052391b9cf659f97f9993e8a1a4ce96758afd05a184df1ecf6c30f",
   "types": "./lib/index.d.ts",
-  "version": "5.0.9"
+  "version": "5.0.10"
 }

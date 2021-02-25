@@ -66,7 +66,7 @@ const utils_1 = require("../utils");
         }
         progress(1);
         if (updated) {
-            const filename = path_1.resolve("packages/ethers/package.json");
+            const filename = path_1.resolve("packages/conflux/package.json");
             const info = utils_1.loadJson(filename);
             Object.keys(info.dependencies).forEach((name) => {
                 const version = latestVersions[name];

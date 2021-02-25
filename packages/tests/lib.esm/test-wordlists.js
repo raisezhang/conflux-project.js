@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'assert';
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 import { loadTests } from "@confluxproject/testcases";
 function checkWordlist(content, wordlist) {
     let words = content.split('\n');

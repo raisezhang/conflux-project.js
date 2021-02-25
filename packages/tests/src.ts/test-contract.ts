@@ -2,7 +2,7 @@
 
 import assert from "assert";
 
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 
 import contractData from "./test-contract.json";
 

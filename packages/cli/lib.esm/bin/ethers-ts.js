@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import fs from 'fs';
 import { join as pathJoin } from "path";
-import { ethers } from 'ethers';
+import { ethers } from "@confluxproject/conflux";
 import { CLI, Plugin } from '../cli';
 import { header as Header, generate as generateTypeScript } from "../typescript";
 import { compile } from "../solc";

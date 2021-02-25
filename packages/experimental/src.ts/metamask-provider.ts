@@ -1,6 +1,6 @@
 "use strict";
 
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 
 import { version } from "./_version";
 

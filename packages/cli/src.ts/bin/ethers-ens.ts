@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { ethers } from "ethers";
+import { ethers } from "@confluxproject/conflux";
 import { Base58 } from "@confluxproject/basex";
 
 import { ArgParser, CLI, Help, Plugin } from '../cli';

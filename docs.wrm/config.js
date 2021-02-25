@@ -117,7 +117,7 @@ const getSourceUrl = (function(path, include, exclude) {
 
 function codeContextify(context) {
     const { inspect } = require("util");
-    const ethers = context.require("./packages/ethers");
+    const ethers = context.require("./packages/conflux");
 
     context.ethers = ethers;
     context.BigNumber = ethers.BigNumber;
