@@ -7,8 +7,8 @@
     "./lib/pbkdf2": "./lib/browser-pbkdf2.js"
   },
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/sha2": "^5.0.3"
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/sha2": "^5.0.30"
   },
   "description": "The PBKDF2 password-pbased key derivation function for conflux.",
   "ethereum": "donations.ethers.eth",
@@ -45,5 +45,5 @@
   "sideEffects": false,
   "tarballHash": "0x8b2c2a44858cc3d1798c0b2d56a3af2295ca91f887b1940efdc1bff966c1836e",
   "types": "./lib/index.d.ts",
-  "version": "5.0.6"
+  "version": "5.0.30"
 }

@@ -2,7 +2,7 @@
 
 import assert from "assert";
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 import { loadTests, randomNumber, TestCase } from "@confluxproject/testcases";
 
 function randomCase(seed: string, text: string): string {

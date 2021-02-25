@@ -1,15 +1,15 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/address": "^5.0.4",
-    "@confluxproject/bignumber": "^5.0.7",
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/constants": "^5.0.4",
-    "@confluxproject/hash": "^5.0.4",
-    "@confluxproject/keccak256": "^5.0.3",
-    "@confluxproject/logger": "^5.0.5",
-    "@confluxproject/properties": "^5.0.3",
-    "@confluxproject/strings": "^5.0.4"
+    "@confluxproject/address": "^5.0.30",
+    "@confluxproject/bignumber": "^5.0.30",
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/constants": "^5.0.30",
+    "@confluxproject/hash": "^5.0.30",
+    "@confluxproject/keccak256": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/properties": "^5.0.30",
+    "@confluxproject/strings": "^5.0.30"
   },
   "description": "Utilities and Classes for parsing, formatting and managing Ethereum ABIs.",
   "keywords": [
@@ -33,5 +33,5 @@
   "sideEffects": false,
   "tarballHash": "0xff31d43d9c97aa55fb2980106be2e4ffbe77ad4c6efcba95263c70f86239e8e0",
   "types": "./lib/index.d.ts",
-  "version": "5.0.9"
+  "version": "5.0.30"
 }

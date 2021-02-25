@@ -1,9 +1,9 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/constants": "^5.0.4",
-    "@confluxproject/logger": "^5.0.5"
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/constants": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30"
   },
   "description": "String utility functions.",
   "ethereum": "donations.ethers.eth",
@@ -41,5 +41,5 @@
   "sideEffects": false,
   "tarballHash": "0x42ffa49083b4547b2b55ac72ff5149dda38f5eac3ecbd1a1456713f418f9a04c",
   "types": "./lib/index.d.ts",
-  "version": "5.0.7"
+  "version": "5.0.30"
 }

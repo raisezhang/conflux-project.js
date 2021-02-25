@@ -1,11 +1,11 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bignumber": "^5.0.10",
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/keccak256": "^5.0.3",
-    "@confluxproject/logger": "^5.0.5",
-    "@confluxproject/rlp": "^5.0.3"
+    "@confluxproject/bignumber": "^5.0.30",
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/keccak256": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/rlp": "^5.0.30"
   },
   "description": "Utilities for handling Ethereum Addresses for conflux.",
   "keywords": [
@@ -29,5 +29,5 @@
   "sideEffects": false,
   "tarballHash": "0xf6189bba1f1db944f730756c375fe0a198f97aa1a6993ed69b1069b68b3b127e",
   "types": "./lib/index.d.ts",
-  "version": "5.0.8"
+  "version": "5.0.30"
 }

@@ -4,9 +4,9 @@
   },
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/logger": "^5.0.5",
-    "@confluxproject/properties": "^5.0.3",
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/properties": "^5.0.30",
     "elliptic": "6.5.3"
   },
   "description": "Elliptic curve library functions for the secp256k1 curve.",
@@ -31,5 +31,5 @@
   "sideEffects": false,
   "tarballHash": "0xaec083b8dfc51cc0e1b79437e605b47762c22de76019e15df5daa3662e173f04",
   "types": "./lib/index.d.ts",
-  "version": "5.0.7"
+  "version": "5.0.30"
 }

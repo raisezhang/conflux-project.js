@@ -1,17 +1,17 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/abstract-signer": "^5.0.4",
-    "@confluxproject/address": "^5.0.4",
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/hdnode": "^5.0.4",
-    "@confluxproject/keccak256": "^5.0.3",
-    "@confluxproject/logger": "^5.0.5",
-    "@confluxproject/pbkdf2": "^5.0.3",
-    "@confluxproject/properties": "^5.0.3",
-    "@confluxproject/random": "^5.0.3",
-    "@confluxproject/strings": "^5.0.4",
-    "@confluxproject/transactions": "^5.0.5",
+    "@confluxproject/abstract-signer": "^5.0.30",
+    "@confluxproject/address": "^5.0.30",
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/hdnode": "^5.0.30",
+    "@confluxproject/keccak256": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/pbkdf2": "^5.0.30",
+    "@confluxproject/properties": "^5.0.30",
+    "@confluxproject/random": "^5.0.30",
+    "@confluxproject/strings": "^5.0.30",
+    "@confluxproject/transactions": "^5.0.30",
     "aes-js": "3.0.0",
     "scrypt-js": "3.0.1"
   },
@@ -37,5 +37,5 @@
   "sideEffects": false,
   "tarballHash": "0xedee0adfa5943550e36bcf5123c329d91db7edf6a9bfe2f654e4d252ef127651",
   "types": "./lib/index.d.ts",
-  "version": "5.0.9"
+  "version": "5.0.30"
 }

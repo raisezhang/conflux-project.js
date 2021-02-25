@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "ethers": "^5.0.0",
+    "conflux-main": "^5.0.30",
     "@confluxproject/shims": "^5.0.0",
     "react": "16.13.1",
     "react-native": "0.63.2",

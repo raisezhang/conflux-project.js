@@ -2,7 +2,7 @@
 
 import assert from 'assert';
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 import { loadTests, TestCase } from "@confluxproject/testcases";
 
 

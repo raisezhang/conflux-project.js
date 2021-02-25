@@ -2,7 +2,7 @@
 
 "use strict";
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 
 import { ContractCode } from "./solc";
 

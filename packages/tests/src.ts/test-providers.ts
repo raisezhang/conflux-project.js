@@ -4,7 +4,7 @@ import assert from "assert";
 
 //import Web3HttpProvider from "web3-providers-http";
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 
 const bnify = ethers.BigNumber.from;
 

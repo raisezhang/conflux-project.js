@@ -9,9 +9,9 @@
   "dependencies": {
     "@babel/parser": "7.8.4",
     "@babel/types": "7.8.3",
-    "@confluxproject/asm": "^5.0.5",
-    "@confluxproject/basex": "^5.0.3",
-    "ethers": "^5.0.13",
+    "@confluxproject/asm": "^5.0.30",
+    "@confluxproject/basex": "^5.0.30",
+    "conflux-main": "^5.0.30",
     "scrypt-js": "3.0.1",
     "solc": "0.7.1"
   },
@@ -50,5 +50,5 @@
   "sideEffects": false,
   "tarballHash": "0x2e19e09a91c3169955c6dc7562d2f87d666f1abe9f79485a3a95f17b4f123a2a",
   "types": "./lib/index.d.ts",
-  "version": "5.0.7"
+  "version": "5.0.30"
 }

@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 import Eth from "@ledgerhq/hw-app-eth";
 export declare class LedgerSigner extends ethers.Signer {
     readonly type: string;

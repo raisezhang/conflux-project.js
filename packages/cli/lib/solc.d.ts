@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 export interface ContractCode {
     interface: ethers.utils.Interface;
     name: string;

@@ -1,15 +1,15 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/abi": "^5.0.5",
-    "@confluxproject/abstract-provider": "^5.0.4",
-    "@confluxproject/abstract-signer": "^5.0.4",
-    "@confluxproject/address": "^5.0.4",
-    "@confluxproject/bignumber": "^5.0.7",
-    "@confluxproject/bytes": "^5.0.4",
-    "@confluxproject/constants": "^5.0.4",
-    "@confluxproject/logger": "^5.0.5",
-    "@confluxproject/properties": "^5.0.3"
+    "@confluxproject/abi": "^5.0.30",
+    "@confluxproject/abstract-provider": "^5.0.30",
+    "@confluxproject/abstract-signer": "^5.0.30",
+    "@confluxproject/address": "^5.0.30",
+    "@confluxproject/bignumber": "^5.0.30",
+    "@confluxproject/bytes": "^5.0.30",
+    "@confluxproject/constants": "^5.0.30",
+    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/properties": "^5.0.30"
   },
   "description": "Contract abstraction meta-class for conflux.",
   "keywords": [
@@ -33,5 +33,5 @@
   "sideEffects": false,
   "tarballHash": "0xce5f076317986cd03fab0e8ca2eaf969ec5c05f4d4b89d89e05542c24249caa3",
   "types": "./lib/index.d.ts",
-  "version": "5.0.8"
+  "version": "5.0.30"
 }

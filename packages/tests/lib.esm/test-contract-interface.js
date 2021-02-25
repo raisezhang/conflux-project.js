@@ -1,6 +1,6 @@
 'use strict';
 import assert from "assert";
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 import { loadTests } from "@confluxproject/testcases";
 const bnify = ethers.BigNumber.from;
 function equals(actual, expected) {

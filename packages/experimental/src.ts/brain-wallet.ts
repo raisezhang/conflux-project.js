@@ -1,6 +1,6 @@
 "use strict";
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 
 import scrypt from "scrypt-js";
 

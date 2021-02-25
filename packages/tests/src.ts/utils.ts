@@ -2,7 +2,7 @@
 
 'use strict';
 
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 
 function randomBytes(seed: string, lower: number, upper?: number): Uint8Array {
     if (!upper) { upper = lower; }

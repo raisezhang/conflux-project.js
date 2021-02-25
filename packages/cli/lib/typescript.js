@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ethers_1 = require("ethers");
+var conflux_main_1 = require("conflux-main");
 function getType(param, flexible) {
     if (param.type === "address" || param.type === "string") {
         return "string";
@@ -119,7 +119,7 @@ function generate(contract, bytecode) {
     lines.push("    static ABI(): Array<string> {");
     lines.push("        return [");
     contract.interface.fragments.forEach(function (fragment) {
-        lines.push("            \"" + fragment.format(ethers_1.ethers.utils.FormatTypes.full) + "\",");
+        lines.push("            \"" + fragment.format(conflux_main_1.ethers.utils.FormatTypes.full) + "\",");
     });
     lines.push("        ];");
     lines.push("    }");

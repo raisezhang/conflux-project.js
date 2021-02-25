@@ -1,10 +1,10 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/cli": "^5.0.4",
-    "@confluxproject/testcases": "^5.0.5",
+    "@confluxproject/cli": "^5.0.30",
+    "@confluxproject/testcases": "^5.0.30",
     "@types/mocha": "^5.2.0",
-    "ethers": "^5.0.13"
+    "conflux-main": "^5.0.30"
   },
   "description": "Testing package for conflux.",
   "keywords": [
@@ -27,5 +27,5 @@
   },
   "tarballHash": "0xfe392b338988484b70479f3c89ba233cba024292deeecbae1ea66aa2aa4546b1",
   "types": "./lib/index.d.ts",
-  "version": "5.0.15"
+  "version": "5.0.30"
 }

@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "conflux-main";
 export declare class MetamaskProvider extends ethers.providers.Web3Provider {
     _pollingAccount: any;
     _pollAccountFunc: () => void;

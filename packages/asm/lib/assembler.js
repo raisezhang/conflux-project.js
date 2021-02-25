@@ -58,20 +58,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // - When checking name collisions, verify no collision in javascript
 var path_1 = require("path");
 var vm_1 = __importDefault(require("vm"));
-var ethers_1 = require("ethers");
+var conflux_main_1 = require("conflux-main");
 var opcodes_1 = require("./opcodes");
 var _parser_1 = require("./_parser");
 var _version_1 = require("./_version");
-var logger = new ethers_1.ethers.utils.Logger(_version_1.version);
+var logger = new conflux_main_1.ethers.utils.Logger(_version_1.version);
 var Guard = {};
 function hexConcat(values) {
-    return ethers_1.ethers.utils.hexlify(ethers_1.ethers.utils.concat(values.map(function (v) {
+    return conflux_main_1.ethers.utils.hexlify(conflux_main_1.ethers.utils.concat(values.map(function (v) {
         if (v instanceof opcodes_1.Opcode) {
             return [v.value];
         }
         if (typeof (v) === "number") {
             if (v >= 0 && v <= 255 && !(v % 1)) {
-                return ethers_1.ethers.utils.hexlify(v);
+                return conflux_main_1.ethers.utils.hexlify(v);
             }
             else {
                 throw new Error("invalid number: " + v);
@@ -89,9 +89,9 @@ function repeat(char, length) {
 }
 var Script = /** @class */ (function () {
     function Script(filename, callback) {
-        ethers_1.ethers.utils.defineReadOnly(this, "filename", filename);
-        ethers_1.ethers.utils.defineReadOnly(this, "contextObject", this._baseContext(callback));
-        ethers_1.ethers.utils.defineReadOnly(this, "context", vm_1.default.createContext(this.contextObject));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "filename", filename);
+        conflux_main_1.ethers.utils.defineReadOnly(this, "contextObject", this._baseContext(callback));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "context", vm_1.default.createContext(this.contextObject));
     }
     Script.prototype._baseContext = function (callback) {
         var _this = this;
@@ -100,36 +100,36 @@ var Script = /** @class */ (function () {
             __dirname: path_1.dirname(this.filename),
             console: console,
             Uint8Array: Uint8Array,
-            ethers: ethers_1.ethers,
-            utils: ethers_1.ethers.utils,
-            BigNumber: ethers_1.ethers.BigNumber,
-            arrayify: ethers_1.ethers.utils.arrayify,
+            ethers: conflux_main_1.ethers,
+            utils: conflux_main_1.ethers.utils,
+            BigNumber: conflux_main_1.ethers.BigNumber,
+            arrayify: conflux_main_1.ethers.utils.arrayify,
             concat: hexConcat,
-            hexlify: ethers_1.ethers.utils.hexlify,
+            hexlify: conflux_main_1.ethers.utils.hexlify,
             zeroPad: function (value, length) {
-                return ethers_1.ethers.utils.hexlify(ethers_1.ethers.utils.zeroPad(value, length));
+                return conflux_main_1.ethers.utils.hexlify(conflux_main_1.ethers.utils.zeroPad(value, length));
             },
-            id: ethers_1.ethers.utils.id,
-            keccak256: ethers_1.ethers.utils.keccak256,
-            namehash: ethers_1.ethers.utils.namehash,
-            sha256: ethers_1.ethers.utils.sha256,
-            parseEther: ethers_1.ethers.utils.parseEther,
-            formatEther: ethers_1.ethers.utils.formatEther,
-            parseUnits: ethers_1.ethers.utils.parseUnits,
-            formatUnits: ethers_1.ethers.utils.formatUnits,
+            id: conflux_main_1.ethers.utils.id,
+            keccak256: conflux_main_1.ethers.utils.keccak256,
+            namehash: conflux_main_1.ethers.utils.namehash,
+            sha256: conflux_main_1.ethers.utils.sha256,
+            parseEther: conflux_main_1.ethers.utils.parseEther,
+            formatEther: conflux_main_1.ethers.utils.formatEther,
+            parseUnits: conflux_main_1.ethers.utils.parseUnits,
+            formatUnits: conflux_main_1.ethers.utils.formatUnits,
             randomBytes: function (length) {
-                return ethers_1.ethers.utils.hexlify(ethers_1.ethers.utils.randomBytes(length));
+                return conflux_main_1.ethers.utils.hexlify(conflux_main_1.ethers.utils.randomBytes(length));
             },
-            toUtf8Bytes: ethers_1.ethers.utils.toUtf8Bytes,
-            toUtf8String: ethers_1.ethers.utils.toUtf8String,
-            formatBytes32String: ethers_1.ethers.utils.formatBytes32String,
-            parseBytes32String: ethers_1.ethers.utils.parseBytes32String,
+            toUtf8Bytes: conflux_main_1.ethers.utils.toUtf8Bytes,
+            toUtf8String: conflux_main_1.ethers.utils.toUtf8String,
+            formatBytes32String: conflux_main_1.ethers.utils.formatBytes32String,
+            parseBytes32String: conflux_main_1.ethers.utils.parseBytes32String,
             Opcode: opcodes_1.Opcode,
             sighash: function (signature) {
-                return ethers_1.ethers.utils.id(ethers_1.ethers.utils.FunctionFragment.from(signature).format()).substring(0, 10);
+                return conflux_main_1.ethers.utils.id(conflux_main_1.ethers.utils.FunctionFragment.from(signature).format()).substring(0, 10);
             },
             topichash: function (signature) {
-                return ethers_1.ethers.utils.id(ethers_1.ethers.utils.EventFragment.from(signature).format());
+                return conflux_main_1.ethers.utils.id(conflux_main_1.ethers.utils.EventFragment.from(signature).format());
             },
             assemble: assemble,
             disassemble: disassemble,
@@ -185,10 +185,10 @@ var Node = /** @class */ (function () {
             throwError("cannot instantiate class", location);
         }
         logger.checkAbstract(_newTarget, Node);
-        ethers_1.ethers.utils.defineReadOnly(this, "location", Object.freeze(location));
-        ethers_1.ethers.utils.defineReadOnly(this, "tag", "node-" + nextTag++ + "-" + this.constructor.name);
+        conflux_main_1.ethers.utils.defineReadOnly(this, "location", Object.freeze(location));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "tag", "node-" + nextTag++ + "-" + this.constructor.name);
         for (var key in options) {
-            ethers_1.ethers.utils.defineReadOnly(this, key, options[key]);
+            conflux_main_1.ethers.utils.defineReadOnly(this, key, options[key]);
         }
     }
     // Note: EVERY node must call assemble with `this`, even if only with
@@ -246,12 +246,12 @@ var ValueNode = /** @class */ (function (_super) {
     }
     ValueNode.prototype.getPushLiteral = function (value) {
         // Convert value into a hexstring
-        var hex = ethers_1.ethers.utils.hexlify(value);
+        var hex = conflux_main_1.ethers.utils.hexlify(value);
         if (hex === "0x") {
             throwError("invalid literal: 0x", this.location);
         }
         // Make sure it will fit into a push
-        var length = ethers_1.ethers.utils.hexDataLength(hex);
+        var length = conflux_main_1.ethers.utils.hexDataLength(hex);
         if (length === 0 || length > 32) {
             throwError("literal out of range: " + hex, this.location);
         }
@@ -274,11 +274,11 @@ var LiteralNode = /** @class */ (function (_super) {
                         visit(this, this.value);
                     }
                     else {
-                        visit(this, ethers_1.ethers.BigNumber.from(this.value).toHexString());
+                        visit(this, conflux_main_1.ethers.BigNumber.from(this.value).toHexString());
                     }
                 }
                 else {
-                    visit(this, this.getPushLiteral(ethers_1.ethers.BigNumber.from(this.value)));
+                    visit(this, this.getPushLiteral(conflux_main_1.ethers.BigNumber.from(this.value)));
                 }
                 assembler.end(this);
                 return [2 /*return*/];
@@ -357,8 +357,8 @@ var LinkNode = /** @class */ (function (_super) {
                                 throwError("jump too large!", this.location);
                             }
                             literal = this.getPushLiteral(here - value + w);
-                            if (ethers_1.ethers.utils.hexDataLength(literal) <= w) {
-                                literal = ethers_1.ethers.utils.hexZeroPad(literal, w);
+                            if (conflux_main_1.ethers.utils.hexDataLength(literal) <= w) {
+                                literal = conflux_main_1.ethers.utils.hexZeroPad(literal, w);
                                 break;
                             }
                         }
@@ -420,7 +420,7 @@ var OpcodeNode = /** @class */ (function (_super) {
                         return [3 /*break*/, 1];
                     case 4:
                         // Append this opcode
-                        visit(this, ethers_1.ethers.utils.hexlify(this.opcode.value));
+                        visit(this, conflux_main_1.ethers.utils.hexlify(this.opcode.value));
                         assembler.end(this);
                         return [2 /*return*/];
                 }
@@ -462,7 +462,7 @@ var LabelledNode = /** @class */ (function (_super) {
         var _newTarget = this.constructor;
         var _this = this;
         logger.checkAbstract(_newTarget, LabelledNode);
-        values = ethers_1.ethers.utils.shallowCopy(values || {});
+        values = conflux_main_1.ethers.utils.shallowCopy(values || {});
         values.name = name;
         _this = _super.call(this, guard, location, values) || this;
         return _this;
@@ -479,7 +479,7 @@ var LabelNode = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 assembler.start(this);
-                visit(this, ethers_1.ethers.utils.hexlify(opcodes_1.Opcode.from("JUMPDEST").value));
+                visit(this, conflux_main_1.ethers.utils.hexlify(opcodes_1.Opcode.from("JUMPDEST").value));
                 assembler.end(this);
                 return [2 /*return*/];
             });
@@ -511,7 +511,7 @@ var PaddingNode = /** @class */ (function (_super) {
                 assembler.start(this);
                 padding = new Uint8Array(this._length);
                 padding.fill(0);
-                visit(this, ethers_1.ethers.utils.hexlify(padding));
+                visit(this, conflux_main_1.ethers.utils.hexlify(padding));
                 assembler.end(this);
                 return [2 /*return*/];
             });
@@ -524,7 +524,7 @@ var DataNode = /** @class */ (function (_super) {
     __extends(DataNode, _super);
     function DataNode(guard, location, name, data) {
         var _this = _super.call(this, guard, location, name, { data: data }) || this;
-        ethers_1.ethers.utils.defineReadOnly(_this, "padding", new PaddingNode(Guard, _this.location));
+        conflux_main_1.ethers.utils.defineReadOnly(_this, "padding", new PaddingNode(Guard, _this.location));
         return _this;
     }
     DataNode.prototype.assemble = function (assembler, visit) {
@@ -549,7 +549,7 @@ var DataNode = /** @class */ (function (_super) {
                         i_1++;
                         return [3 /*break*/, 1];
                     case 4:
-                        bytecode = ethers_1.ethers.utils.concat(this.data.map(function (d) { return assembler.getBytecode(d); }));
+                        bytecode = conflux_main_1.ethers.utils.concat(this.data.map(function (d) { return assembler.getBytecode(d); }));
                         i = 0;
                         while (i < bytecode.length) {
                             opcode = opcodes_1.Opcode.from(bytecode[i++]);
@@ -599,10 +599,10 @@ var EvaluationNode = /** @class */ (function (_super) {
                         result = _a.sent();
                         if (this.verbatim) {
                             if (typeof (result) === "number") {
-                                visit(this, ethers_1.ethers.BigNumber.from(result).toHexString());
+                                visit(this, conflux_main_1.ethers.BigNumber.from(result).toHexString());
                             }
                             else {
-                                visit(this, ethers_1.ethers.utils.hexlify(result));
+                                visit(this, conflux_main_1.ethers.utils.hexlify(result));
                             }
                         }
                         else {
@@ -698,13 +698,13 @@ exports.ScopeNode = ScopeNode;
 function disassemble(bytecode) {
     var ops = [];
     var offsets = {};
-    var bytes = ethers_1.ethers.utils.arrayify(bytecode, { allowMissingPrefix: true });
+    var bytes = conflux_main_1.ethers.utils.arrayify(bytecode, { allowMissingPrefix: true });
     var i = 0;
     var oob = false;
     while (i < bytes.length) {
         var opcode = opcodes_1.Opcode.from(bytes[i]);
         if (!opcode) {
-            opcode = new opcodes_1.Opcode("unknown (" + ethers_1.ethers.utils.hexlify(bytes[i]) + ")", bytes[i], 0, 0);
+            opcode = new opcodes_1.Opcode("unknown (" + conflux_main_1.ethers.utils.hexlify(bytes[i]) + ")", bytes[i], 0, 0);
         }
         else if (oob && opcode.mnemonic === "JUMPDEST") {
             opcode = new opcodes_1.Opcode("JUMPDEST (invalid; OOB!!)", bytes[i], 0, 0);
@@ -719,8 +719,8 @@ function disassemble(bytecode) {
         i++;
         var push = opcode.isPush();
         if (push) {
-            var data = ethers_1.ethers.utils.hexlify(bytes.slice(i, i + push));
-            if (ethers_1.ethers.utils.hexDataLength(data) === push) {
+            var data = conflux_main_1.ethers.utils.hexlify(bytes.slice(i, i + push));
+            if (conflux_main_1.ethers.utils.hexDataLength(data) === push) {
                 op.pushValue = data;
                 op.length += push;
                 i += push;
@@ -752,7 +752,7 @@ function disassemble(bytecode) {
         if (offset < bytes.length) {
             result.set(bytes.slice(offset));
         }
-        return ethers_1.ethers.utils.arrayify(result);
+        return conflux_main_1.ethers.utils.arrayify(result);
     };
     ops.byteLength = bytes.length;
     return ops;
@@ -762,7 +762,7 @@ function formatBytecode(bytecode) {
     var lines = [];
     bytecode.forEach(function (op) {
         var opcode = op.opcode;
-        var offset = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(op.offset), 2);
+        var offset = conflux_main_1.ethers.utils.hexZeroPad(conflux_main_1.ethers.utils.hexlify(op.offset), 2);
         if (opcode.isValidJumpDest()) {
             offset += "*";
         }
@@ -786,8 +786,8 @@ function formatBytecode(bytecode) {
 exports.formatBytecode = formatBytecode;
 var Assembler = /** @class */ (function () {
     function Assembler(root, positionIndependentCode) {
-        ethers_1.ethers.utils.defineReadOnly(this, "root", root);
-        ethers_1.ethers.utils.defineReadOnly(this, "positionIndependentCode", !!positionIndependentCode);
+        conflux_main_1.ethers.utils.defineReadOnly(this, "root", root);
+        conflux_main_1.ethers.utils.defineReadOnly(this, "positionIndependentCode", !!positionIndependentCode);
         var nodes = {};
         var labels = {};
         var parents = {};
@@ -801,7 +801,7 @@ var Assembler = /** @class */ (function () {
             if (node instanceof LabelledNode) {
                 // Check for duplicate labels
                 if (labels[node.name]) {
-                    logger.throwError(("duplicate label: " + node.name), ethers_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {});
+                    logger.throwError(("duplicate label: " + node.name), conflux_main_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {});
                 }
                 labels[node.name] = node;
             }
@@ -811,7 +811,7 @@ var Assembler = /** @class */ (function () {
             if (node instanceof LinkNode) {
                 var target = labels[node.label];
                 if (!target) {
-                    logger.throwError(("missing label: " + node.label), ethers_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {});
+                    logger.throwError(("missing label: " + node.label), conflux_main_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {});
                 }
             }
             // Build the parent structure
@@ -819,9 +819,9 @@ var Assembler = /** @class */ (function () {
                 parents[child.tag] = node;
             });
         });
-        ethers_1.ethers.utils.defineReadOnly(this, "labels", Object.freeze(labels));
-        ethers_1.ethers.utils.defineReadOnly(this, "nodes", Object.freeze(nodes));
-        ethers_1.ethers.utils.defineReadOnly(this, "_parents", Object.freeze(parents));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "labels", Object.freeze(labels));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "nodes", Object.freeze(nodes));
+        conflux_main_1.ethers.utils.defineReadOnly(this, "_parents", Object.freeze(parents));
     }
     // Link operations
     Assembler.prototype.getTarget = function (label) {
@@ -872,9 +872,9 @@ var Assembler = /** @class */ (function () {
         }
         var info = this.nodes[target.tag];
         // Return the offset is relative to its scope
-        var bytes = Array.prototype.slice.call(ethers_1.ethers.utils.arrayify(info.bytecode));
-        ethers_1.ethers.utils.defineReadOnly(bytes, "ast", target);
-        ethers_1.ethers.utils.defineReadOnly(bytes, "source", target.location.source);
+        var bytes = Array.prototype.slice.call(conflux_main_1.ethers.utils.arrayify(info.bytecode));
+        conflux_main_1.ethers.utils.defineReadOnly(bytes, "ast", target);
+        conflux_main_1.ethers.utils.defineReadOnly(bytes, "source", target.location.source);
         if (!((target instanceof DataNode) || (target instanceof ScopeNode))) {
             throwError("invalid link value lookup", source.location);
         }
@@ -892,19 +892,19 @@ var Assembler = /** @class */ (function () {
             Object.defineProperty(bytes, "offset", {
                 get: function () { throwError("cannot access " + target.name + ".offset from " + source.tag, this.location); }
             });
-            ethers_1.ethers.utils.defineReadOnly(bytes, "_freeze", function () { });
+            conflux_main_1.ethers.utils.defineReadOnly(bytes, "_freeze", function () { });
         }
         // Add the offset relative to the scope; unless the offset has
         // been marked as invalid, in which case accessing it will fail
         if (safeOffset) {
             bytes.offset = info.offset - this.nodes[sourceScope.tag].offset;
             var frozen_1 = false;
-            ethers_1.ethers.utils.defineReadOnly(bytes, "_freeze", function () {
+            conflux_main_1.ethers.utils.defineReadOnly(bytes, "_freeze", function () {
                 if (frozen_1) {
                     return;
                 }
                 frozen_1 = true;
-                ethers_1.ethers.utils.defineReadOnly(bytes, "offset", bytes.offset);
+                conflux_main_1.ethers.utils.defineReadOnly(bytes, "offset", bytes.offset);
             });
         }
         return bytes;
@@ -1056,10 +1056,10 @@ var CodeGenerationAssembler = /** @class */ (function (_super) {
     __extends(CodeGenerationAssembler, _super);
     function CodeGenerationAssembler(root, options) {
         var _this = _super.call(this, root, !!options.positionIndependentCode) || this;
-        ethers_1.ethers.utils.defineReadOnly(_this, "retry", ((options.retry != null) ? options.retry : 512));
-        ethers_1.ethers.utils.defineReadOnly(_this, "filename", path_1.resolve(options.filename || "./contract.asm"));
-        ethers_1.ethers.utils.defineReadOnly(_this, "defines", Object.freeze(options.defines || {}));
-        ethers_1.ethers.utils.defineReadOnly(_this, "_stack", []);
+        conflux_main_1.ethers.utils.defineReadOnly(_this, "retry", ((options.retry != null) ? options.retry : 512));
+        conflux_main_1.ethers.utils.defineReadOnly(_this, "filename", path_1.resolve(options.filename || "./contract.asm"));
+        conflux_main_1.ethers.utils.defineReadOnly(_this, "defines", Object.freeze(options.defines || {}));
+        conflux_main_1.ethers.utils.defineReadOnly(_this, "_stack", []);
         _this.reset();
         return _this;
     }
@@ -1123,7 +1123,7 @@ var CodeGenerationAssembler = /** @class */ (function (_super) {
             else {
                 this._checks.push(function () {
                     var check = _super.prototype.getLinkValue.call(_this, target, source);
-                    if (check.offset === result.offset && ethers_1.ethers.utils.hexlify(check) === ethers_1.ethers.utils.hexlify(result)) {
+                    if (check.offset === result.offset && conflux_main_1.ethers.utils.hexlify(check) === conflux_main_1.ethers.utils.hexlify(result)) {
                         return true;
                     }
                     return false;
@@ -1133,7 +1133,7 @@ var CodeGenerationAssembler = /** @class */ (function (_super) {
         catch (error) {
             this._checks.push(function () {
                 var check = _super.prototype.getLinkValue.call(_this, target, source);
-                return (ethers_1.ethers.utils.hexlify(check) === ethers_1.ethers.utils.hexlify(result));
+                return (conflux_main_1.ethers.utils.hexlify(check) === conflux_main_1.ethers.utils.hexlify(result));
             });
         }
         return result;
@@ -1207,7 +1207,7 @@ var CodeGenerationAssembler = /** @class */ (function (_super) {
                                         bytecode
                                     ]);
                                 });
-                                offset += ethers_1.ethers.utils.hexDataLength(bytecode);
+                                offset += conflux_main_1.ethers.utils.hexDataLength(bytecode);
                             })];
                     case 1:
                         _a.sent();
@@ -1263,7 +1263,7 @@ var CodeGenerationAssembler = /** @class */ (function (_super) {
                     case 4:
                         i++;
                         return [3 /*break*/, 2];
-                    case 5: return [2 /*return*/, logger.throwError("unable to assemble; " + this.retry + " attempts failed to generate stable bytecode", ethers_1.ethers.utils.Logger.errors.UNKNOWN_ERROR, {})];
+                    case 5: return [2 /*return*/, logger.throwError("unable to assemble; " + this.retry + " attempts failed to generate stable bytecode", conflux_main_1.ethers.utils.Logger.errors.UNKNOWN_ERROR, {})];
                 }
             });
         });
