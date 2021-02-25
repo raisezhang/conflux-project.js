@@ -33,7 +33,7 @@ _code: Importing @lang<script>
 import "@confluxproject/shims"
 
 // Import the ethers library
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 
 _subsection: Security @<cookbook-reactnative-security>
@@ -57,4 +57,4 @@ import "react-native-get-random-values"
 import "@confluxproject/shims"
 
 // Import the ethers library
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";

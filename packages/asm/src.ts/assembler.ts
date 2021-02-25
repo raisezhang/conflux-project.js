@@ -9,7 +9,7 @@ import { dirname, resolve } from "path";
 import _module from "module";
 import vm from "vm";
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 import { Opcode } from "./opcodes";
 

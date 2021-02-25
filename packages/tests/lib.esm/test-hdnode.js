@@ -1,6 +1,6 @@
 'use strict';
 import assert from "assert";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 import { loadTests, randomNumber } from "@confluxproject/testcases";
 function randomCase(seed, text) {
     return text.split("").map(function (c, index) {

@@ -1,4 +1,4 @@
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 export declare function dump(header: string, info: any): void;
 declare class WrappedSigner extends ethers.Signer {
     readonly addressPromise: Promise<string>;

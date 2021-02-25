@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import assert from "assert";
 //import Web3HttpProvider from "web3-providers-http";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 const bnify = ethers.BigNumber.from;
 const blockchainData = {
     homestead: {

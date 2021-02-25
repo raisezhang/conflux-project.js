@@ -2,7 +2,7 @@
 
 import EventEmitter from "events";
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 import { version } from "./_version";
 

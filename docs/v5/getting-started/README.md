@@ -20,11 +20,11 @@ Importing
 ### Node.js
 
 ```
-const { ethers } = require("@confluxproject/conflux");
+const { ethers } = require("ethers");
 ```
 
 ```
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 ```
 
 ### Web Browser

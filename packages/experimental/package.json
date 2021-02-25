@@ -2,7 +2,7 @@
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
     "@confluxproject/web": "^5.0.6",
-    "@confluxproject/conflux": "^5.0.24",
+    "ethers": "^5.0.13",
     "scrypt-js": "3.0.1"
   },
   "description": "Experimental libraries for conflux. These should not be considered stable.",
@@ -27,5 +27,5 @@
   "sideEffects": false,
   "tarballHash": "0x1dae55c33ec27af2df99f78f786587e79bf6c10c528a27ee9f346ecb368ee1b5",
   "types": "./lib/index.d.ts",
-  "version": "5.0.8"
+  "version": "5.0.7"
 }

@@ -23,7 +23,7 @@ const { ethers } = require("ethers");
 
 _code: ES6 or TypeScript @lang<script>
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 
 _heading: Web Browser

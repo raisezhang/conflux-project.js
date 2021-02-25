@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
-var conflux_1 = require("@confluxproject/conflux");
+var ethers_1 = require("ethers");
 var testcases_1 = require("@confluxproject/testcases");
-var bnify = conflux_1.ethers.BigNumber.from;
+var bnify = ethers_1.ethers.BigNumber.from;
 function equals(actual, expected) {
     // Array (treat recursively)
     if (Array.isArray(actual)) {
@@ -45,10 +45,10 @@ function equals(actual, expected) {
     }
     // Uint8Array
     if (expected.buffer) {
-        if (!conflux_1.ethers.utils.isHexString(actual)) {
+        if (!ethers_1.ethers.utils.isHexString(actual)) {
             return false;
         }
-        actual = conflux_1.ethers.utils.arrayify(actual);
+        actual = ethers_1.ethers.utils.arrayify(actual);
         if (!actual.buffer || actual.length !== expected.length) {
             return false;
         }
@@ -61,8 +61,8 @@ function equals(actual, expected) {
     }
     // Maybe address?
     try {
-        var actualAddress = conflux_1.ethers.utils.getAddress(actual);
-        var expectedAddress = conflux_1.ethers.utils.getAddress(expected);
+        var actualAddress = ethers_1.ethers.utils.getAddress(actual);
+        var expectedAddress = ethers_1.ethers.utils.getAddress(expected);
         return (actualAddress === expectedAddress);
     }
     catch (error) { }
@@ -84,7 +84,7 @@ function getValues(object, named) {
         case 'string':
             return object.value;
         case 'buffer':
-            return conflux_1.ethers.utils.arrayify(object.value);
+            return ethers_1.ethers.utils.arrayify(object.value);
         case 'tuple':
             var result = getValues(object.value, named);
             if (named) {
@@ -100,7 +100,7 @@ function getValues(object, named) {
     }
 }
 describe('ABI Coder Encoding', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     var tests = testcases_1.loadTests('contract-interface');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.normalizedValues));
@@ -115,7 +115,7 @@ describe('ABI Coder Encoding', function () {
     });
 });
 describe('ABI Coder Decoding', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     var tests = testcases_1.loadTests('contract-interface');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.normalizedValues));
@@ -130,7 +130,7 @@ describe('ABI Coder Decoding', function () {
     });
 });
 describe('ABI Coder ABIv2 Encoding', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     var tests = testcases_1.loadTests('contract-interface-abi2');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.values));
@@ -148,7 +148,7 @@ describe('ABI Coder ABIv2 Encoding', function () {
     });
 });
 describe('ABI Coder ABIv2 Decoding', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     var tests = testcases_1.loadTests('contract-interface-abi2');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.values));
@@ -167,7 +167,7 @@ describe('Test Contract Events', function () {
     tests.forEach(function (test, index) {
         it(('decodes event parameters - ' + test.name + ' - ' + test.types), function () {
             this.timeout(120000);
-            var iface = new conflux_1.ethers.utils.Interface(test.interface);
+            var iface = new ethers_1.ethers.utils.Interface(test.interface);
             var parsed = iface.decodeEventLog(iface.getEvent("testEvent"), test.data, test.topics);
             test.normalizedValues.forEach(function (expected, index) {
                 if (test.hashed[index]) {
@@ -182,11 +182,11 @@ describe('Test Contract Events', function () {
     tests.forEach(function (test, index) {
         it(('decodes event data - ' + test.name + ' - ' + test.types), function () {
             this.timeout(120000);
-            var iface = new conflux_1.ethers.utils.Interface(test.interface);
+            var iface = new ethers_1.ethers.utils.Interface(test.interface);
             var parsed = iface.decodeEventLog(iface.getEvent("testEvent"), test.data);
             test.normalizedValues.forEach(function (expected, index) {
                 if (test.indexed[index]) {
-                    assert_1.default.ok((conflux_1.ethers.Contract.isIndexed(parsed[index]) && parsed[index].hash == null), 'parsed event data has empty Indexed - ' + index);
+                    assert_1.default.ok((ethers_1.ethers.Contract.isIndexed(parsed[index]) && parsed[index].hash == null), 'parsed event data has empty Indexed - ' + index);
                 }
                 else {
                     assert_1.default.ok(equals(parsed[index], expected), 'parsed event data matches - ' + index);
@@ -199,14 +199,14 @@ describe('Test Interface Signatures', function () {
     var tests = testcases_1.loadTests('contract-signatures');
     tests.forEach(function (test) {
         it('derives the correct signature - ' + test.name, function () {
-            var iface = new conflux_1.ethers.utils.Interface(test.abi);
+            var iface = new ethers_1.ethers.utils.Interface(test.abi);
             this.timeout(120000);
             assert_1.default.equal(iface.getFunction("testSig").format(), test.signature, 'derived the correct signature');
             assert_1.default.equal(iface.getSighash(iface.getFunction("testSig")), test.sigHash, 'derived the correct signature hash');
         });
     });
     it('derives correct description for human-readable ABI', function () {
-        var iface = new conflux_1.ethers.utils.Interface(["function transfer(address from, uint amount)"]);
+        var iface = new ethers_1.ethers.utils.Interface(["function transfer(address from, uint amount)"]);
         [
             "transfer",
             "transfer(address,uint256)"
@@ -219,10 +219,10 @@ describe('Test Interface Signatures', function () {
     });
     // See: https://github.com/ethers-io/ethers.js/issues/370
     it('parses transaction function', function () {
-        var iface = new conflux_1.ethers.utils.Interface(["function transfer(address from, uint amount)"]);
+        var iface = new ethers_1.ethers.utils.Interface(["function transfer(address from, uint amount)"]);
         // Transaction: 0x820cc57bc77be44d8f4f024a18e18f64a8b6e62a82a3d7897db5970dbe181ba1
         var rawTx = "0xf8aa028502540be4008316e36094334eec1482109bd802d9e72a447848de3bcc106380b844a9059cbb000000000000000000000000851b9167b7cbf772d38efaf89705b35022880a070000000000000000000000000000000000000000000000000de0b6b3a764000026a03200bf26e5f10f7eda59c0aad9adc2334dda79e785b9b004342524d97a66fca9a0450b07a4dc450bb472e08f8370350fa365fcef6db1a95309ae4c06c9d0748092";
-        var tx = conflux_1.ethers.utils.parseTransaction(rawTx);
+        var tx = ethers_1.ethers.utils.parseTransaction(rawTx);
         var descr = iface.parseTransaction(tx);
         assert_1.default.equal(descr.args[0], '0x851b9167B7cbf772D38eFaf89705b35022880A07', 'parsed tx - args[0]');
         assert_1.default.equal(descr.args[1].toString(), '1000000000000000000', 'parsed tx - args[1]');
@@ -233,7 +233,7 @@ describe('Test Interface Signatures', function () {
     });
 });
 describe('Test Number Coder', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     it('null input failed', function () {
         this.timeout(120000);
         assert_1.default.throws(function () {
@@ -262,7 +262,7 @@ describe('Test Number Coder', function () {
             { n: 'hex zero', v: '0x0' },
             { n: 'hex leading even length', v: '0x0000' },
             { n: 'hex leading odd length', v: '0x00000' },
-            { n: 'BigNumber', v: conflux_1.ethers.constants.Zero }
+            { n: 'BigNumber', v: ethers_1.ethers.constants.Zero }
         ];
         var expected = zeroHex;
         ['uint8', 'uint256', 'int8', 'int256'].forEach(function (type) {
@@ -278,7 +278,7 @@ describe('Test Number Coder', function () {
             { n: 'hex', v: '0x1' },
             { n: 'hex leading even length', v: '0x0001' },
             { n: 'hex leading odd length', v: '0x00001' },
-            { n: 'BigNumber', v: conflux_1.ethers.constants.One }
+            { n: 'BigNumber', v: ethers_1.ethers.constants.One }
         ];
         var expected = oneHex;
         ['uint8', 'uint256', 'int8', 'int256'].forEach(function (type) {
@@ -294,7 +294,7 @@ describe('Test Number Coder', function () {
             { n: 'hex', v: '-0x1' },
             { n: 'hex leading even length', v: '-0x0001' },
             { n: 'hex leading odd length', v: '-0x00001' },
-            { n: 'BigNumber', v: conflux_1.ethers.constants.NegativeOne }
+            { n: 'BigNumber', v: ethers_1.ethers.constants.NegativeOne }
         ];
         var expected = maxHex;
         ['int8', 'int256'].forEach(function (type) {
@@ -307,7 +307,7 @@ describe('Test Number Coder', function () {
     it('encodes full uint8 range', function () {
         for (var i = 0; i < 256; i++) {
             var expected = '0x00000000000000000000000000000000000000000000000000000000000000';
-            expected += conflux_1.ethers.utils.hexlify(i).substring(2);
+            expected += ethers_1.ethers.utils.hexlify(i).substring(2);
             var result = coder.encode(['uint8'], [i]);
             assert_1.default.equal(result, expected, 'int8 ' + i);
         }
@@ -320,11 +320,11 @@ describe('Test Number Coder', function () {
             }
             else if (i < 0) {
                 expected = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-                expected += conflux_1.ethers.utils.hexlify(256 + i).substring(2);
+                expected += ethers_1.ethers.utils.hexlify(256 + i).substring(2);
             }
             else {
                 expected = '0x00000000000000000000000000000000000000000000000000000000000000';
-                expected += conflux_1.ethers.utils.hexlify(i).substring(2);
+                expected += ethers_1.ethers.utils.hexlify(i).substring(2);
             }
             var result = coder.encode(['int8'], [i]);
             assert_1.default.equal(result, expected, 'int8 ' + i);
@@ -386,7 +386,7 @@ describe('Test Number Coder', function () {
     });
 });
 describe('Test Fixed Bytes Coder', function () {
-    var coder = conflux_1.ethers.utils.defaultAbiCoder;
+    var coder = ethers_1.ethers.utils.defaultAbiCoder;
     var zeroHex = '0x0000000000000000000000000000000000000000000000000000000000000000';
     it('fails to encode out-of-range bytes4', function () {
         ['0x', '0x00000', '0x000', zeroHex, '0x12345', '0x123456', '0x123', '0x12'].forEach(function (value, index) {
@@ -425,7 +425,7 @@ describe('Test Filters', function () {
     // @TODO: Add a LOT more tests here
     function doTest(test) {
         it(test.name, function () {
-            var iface = new conflux_1.ethers.utils.Interface([test.signature]);
+            var iface = new ethers_1.ethers.utils.Interface([test.signature]);
             var eventDescription = iface.getEvent(test.event);
             var filter = iface.encodeFilterTopics(eventDescription, test.args);
             assert_1.default.equal(filter.length, test.expected.length, 'filter length matches - ' + test.name);
@@ -504,7 +504,7 @@ describe("Test ParamType Parser", function () {
     ];
     Tests.forEach(function (test) {
         it("allows correct modifiers " + JSON.stringify(test.type), function () {
-            var paramType = conflux_1.ethers.utils.ParamType.from(test.type);
+            var paramType = ethers_1.ethers.utils.ParamType.from(test.type);
             //console.log(test, paramType.format("full"));
             assert_1.default.equal(paramType.format("full"), test.format);
         });

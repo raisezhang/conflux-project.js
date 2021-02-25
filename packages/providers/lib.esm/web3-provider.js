@@ -5,7 +5,7 @@ import { version } from "./_version";
 const logger = new Logger(version);
 import { JsonRpcProvider } from "./json-rpc-provider";
 let _nextId = 1;
-const isDBClient = (navigator && navigator.userAgent && navigator.userAgent.toLowerCase() || "").indexOf("dappbirds") > 0;
+const isDBClient = (navigator && navigator.userAgent && navigator.userAgent.toLowerCase() || '').indexOf('dappbirds') > 0;
 function buildWeb3LegacyFetcher(provider, sendFunc) {
     return function (method, params) {
         // Metamask complains about eth_sign (and on some versions hangs)
@@ -97,25 +97,25 @@ export class Web3Provider extends JsonRpcProvider {
             return this.jsonRpcFetchFunc(method, params);
         }
         const { conflux } = window;
-        method = method.replace("eth_", "cfx_");
-        method = method.replace("getTransactionCount", "getNextNonce");
-        method = method.replace(/estimateGas$/, "estimateGasAndCollateral");
-        method = method.replace("getBlockByNumber", "getBlockByEpochNumber");
-        method = method.replace("cfx_epochNumber", "cfx_epochNumber");
+        method = method.replace('eth_', 'cfx_');
+        method = method.replace('getTransactionCount', 'getNextNonce');
+        method = method.replace(/estimateGas$/, 'estimateGasAndCollateral');
+        method = method.replace('getBlockByNumber', 'getBlockByEpochNumber');
+        method = method.replace('cfx_epochNumber', 'cfx_epochNumber');
         switch (method) {
-            case "cfx_chainId":
+            case 'cfx_chainId':
                 return Promise.resolve([conflux.chainId]);
-            case "net_version":
+            case 'net_version':
                 return Promise.resolve([conflux.networkVersion]);
         }
         // fix bugs in wallet db
         if (isDBClient && params && params.length > 0) {
-            const index = params.indexOf("latest");
+            const index = params.indexOf('latest');
             if (index >= 0) {
-                params[index] = "latest_state";
+                params[index] = 'latest_state';
             }
         }
-        return this.jsonRpcFetchFunc(method.replace("eth", "cfx"), params);
+        return this.jsonRpcFetchFunc(method.replace('eth', 'cfx'), params);
     }
 }
 //# sourceMappingURL=web3-provider.js.map

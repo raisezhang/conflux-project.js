@@ -3,7 +3,7 @@
 import fs from "fs";
 import _module from "module";
 import { dirname, resolve } from "path";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 ;
 function populateOptions(options) {
     options = ethers.utils.shallowCopy(options || {});

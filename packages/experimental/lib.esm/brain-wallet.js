@@ -1,5 +1,5 @@
 "use strict";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 import scrypt from "scrypt-js";
 import { version } from "./_version";
 const logger = new ethers.utils.Logger(version);

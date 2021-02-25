@@ -6,7 +6,7 @@ import fs from "fs";
 import _module from "module";
 import { dirname, resolve } from "path";
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 export interface ContractCode {
     interface: ethers.utils.Interface;

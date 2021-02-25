@@ -36,7 +36,7 @@
 </span>import "@confluxproject/shims"
 
 <span class="comment">// Import the ethers library
-</span>import { ethers } from "@confluxproject/conflux";
+</span>import { ethers } from "ethers";
 </div><a name="cookbook-reactnative-security"></a><a name="cookbook-reactnative--cookbook-reactnative-security"></a><h2 class="show-anchors"><div>Security<div class="anchors"><a class="self" href="/v5/cookbook/react-native/#cookbook-reactnative-security"></a></div></div></h2><p>The React Native environment does not contain a secure random source, which is used when computing random private keys. This could result in private keys that others could possibly guess, allowing funds to be stolen and assets manipulated.</p>
 
 <p>For this reason, it is <b>HIGHLY RECOMMENDED</b> to also install the <a href="https://www.npmjs.com/package/react-native-get-random-values">React Native get-random-values</a>, which <b>must</b> be included before the shims. If it worked correctly you should not receive any warning in the console regarding missing secure random sources.</p>
@@ -48,7 +48,7 @@
 </span>import "@confluxproject/shims"
 
 <span class="comment">// Import the ethers library
-</span>import { ethers } from "@confluxproject/conflux";
+</span>import { ethers } from "ethers";
 </div>
 
       <div class="footer">

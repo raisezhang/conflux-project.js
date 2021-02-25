@@ -1,4 +1,4 @@
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 import { Opcode } from "./opcodes";
 export declare type Location = {
     offset: number;

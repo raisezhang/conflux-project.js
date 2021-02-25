@@ -5,7 +5,7 @@
 import fs from "fs";
 import { basename } from "path";
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 import * as scrypt from "scrypt-js";
 
 import { getChoice, getPassword, getProgressBar } from "./prompt";

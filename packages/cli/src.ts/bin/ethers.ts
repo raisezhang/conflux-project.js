@@ -8,7 +8,7 @@ import { dirname, resolve } from "path";
 import REPL from "repl";
 import vm from "vm";
 
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 
 import { parseExpression as babelParseExpression } from "@babel/parser";
 

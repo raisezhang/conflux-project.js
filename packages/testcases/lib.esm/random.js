@@ -1,5 +1,5 @@
 "use strict";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 export function randomBytes(seed, lower, upper) {
     if (!upper) {
         upper = lower;

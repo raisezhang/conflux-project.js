@@ -77,9 +77,9 @@ function getUmdConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/conflux/lib/index.js`,
+        input: `packages/ethers/lib/index.js`,
         output: {
-            file: `packages/conflux/dist/ethers.umd.js`,
+            file: `packages/ethers/dist/ethers.umd.js`,
             format: "umd",
             name: "ethers",
             sourcemap: true
@@ -104,9 +104,9 @@ function getEsmConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/conflux/lib.esm/index.js`,
+        input: `packages/ethers/lib.esm/index.js`,
         output: {
-            file: `packages/conflux/dist/ethers.esm.js`,
+            file: `packages/ethers/dist/ethers.esm.js`,
             format: "esm",
             sourcemap: true
         },
@@ -132,9 +132,9 @@ function getConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/conflux/lib.esm/index.js`,
+        input: `packages/ethers/lib.esm/index.js`,
         output: {
-            file: `packages/conflux/dist/test-esm.js`,
+            file: `packages/ethers/dist/test-esm.js`,
             //preserveModules: true,
             format: "esm",
             //name: `ethers`,

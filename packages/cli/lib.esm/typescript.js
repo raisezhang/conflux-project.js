@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 "use strict";
-import { ethers } from "@confluxproject/conflux";
+import { ethers } from "ethers";
 function getType(param, flexible) {
     if (param.type === "address" || param.type === "string") {
         return "string";

@@ -14,7 +14,6 @@ const run_1 = require("./run");
 function getGitTag(filename) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield run_1.run("git", ["log", "-n", "1", "--", filename]);
-        console.log(result)
         if (!result.ok) {
             throw new Error(`git log error`);
         }

@@ -95,9 +95,9 @@ exports.invalidate = invalidate;
         for (let i = 0; i < dirnames.length; i++) {
             progressUpdate(i / dirnames.length);
             let dirname = dirnames[i];
-            // if (dirname !== 'ethers') {
-            //     continue;
-            // }
+            if (dirname === 'ethers') {
+                continue;
+            }
             let info = local.getPackage(dirname);
             let npmInfo;
             try {
@@ -111,7 +111,6 @@ exports.invalidate = invalidate;
             const path = path_1.resolve("packages", dirname);
             const gitHead = yield git_1.getGitTag(path);
             if (gitHead == null) {
-                console.log(path);
                 throw new Error("hmmm...");
             }
             publish[dirname] = {
@@ -171,8 +170,7 @@ exports.invalidate = invalidate;
             yield exec('npm publish ' + path);
             local.updateJson(pathJson, { gitHead: undefined }, true);
         }
-        // if (publishNames.indexOf("ethers") >= 0 || forcePublish) {
-        if (forcePublish) {
+        if (publishNames.indexOf("ethers") >= 0 || forcePublish) {
             const change = changelog_1.getLatestChange();
             const awsAccessId = yield config_1.config.get("aws-upload-scripts-accesskey");
             const awsSecretKey = yield config_1.config.get("aws-upload-scripts-secretkey");
@@ -181,7 +179,7 @@ exports.invalidate = invalidate;
                 // The password above already succeeded
                 const username = yield config_1.config.get("github-user");
                 const password = yield config_1.config.get("github-release");
-                const hash = createHash("sha384").update(fs_1.default.readFileSync(path_1.resolve("packages/conflux/dist/ethers.umd.min.js"))).digest("base64");
+                const hash = createHash("sha384").update(fs_1.default.readFileSync(path_1.resolve("packages/ethers/dist/ethers.umd.min.js"))).digest("base64");
                 const gitCommit = yield git_1.getGitTag(path_1.resolve("CHANGELOG.md"));
                 let content = change.content.trim();
                 content += '\n\n----\n\n';
@@ -216,39 +214,39 @@ exports.invalidate = invalidate;
                         bucketName: bucketNameCors,
                         originRoot: originRootCors,
                         suffix: "-cors",
-                        filename: "packages/conflux/dist/ethers.esm.min.js",
+                        filename: "packages/ethers/dist/ethers.esm.min.js",
                         key: `ethers-${change.version.substring(1)}.esm.min.js`
                     },
                     {
                         bucketName: bucketNameCors,
                         originRoot: originRootCors,
                         suffix: "-cors",
-                        filename: "packages/conflux/dist/ethers.umd.min.js",
+                        filename: "packages/ethers/dist/ethers.umd.min.js",
                         key: `ethers-${change.version.substring(1)}.umd.min.js`
                     },
                     // The non-CORS-enabled versions on cdn.ethers.io
                     {
                         bucketName: bucketNameLib,
                         originRoot: originRootLib,
-                        filename: "packages/conflux/dist/ethers.esm.min.js",
+                        filename: "packages/ethers/dist/ethers.esm.min.js",
                         key: `ethers-${change.version.substring(1)}.esm.min.js`
                     },
                     {
                         bucketName: bucketNameLib,
                         originRoot: originRootLib,
-                        filename: "packages/conflux/dist/ethers.umd.min.js",
+                        filename: "packages/ethers/dist/ethers.umd.min.js",
                         key: `ethers-${change.version.substring(1)}.umd.min.js`
                     },
                     {
                         bucketName: bucketNameLib,
                         originRoot: originRootLib,
-                        filename: "packages/conflux/dist/ethers.esm.min.js",
+                        filename: "packages/ethers/dist/ethers.esm.min.js",
                         key: "ethers-5.0.esm.min.js"
                     },
                     {
                         bucketName: bucketNameLib,
                         originRoot: originRootLib,
-                        filename: "packages/conflux/dist/ethers.umd.min.js",
+                        filename: "packages/ethers/dist/ethers.umd.min.js",
                         key: "ethers-5.0.umd.min.js"
                     },
                 ];

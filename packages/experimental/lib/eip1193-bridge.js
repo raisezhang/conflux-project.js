@@ -53,9 +53,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var events_1 = __importDefault(require("events"));
-var conflux_1 = require("@confluxproject/conflux");
+var ethers_1 = require("ethers");
 var _version_1 = require("./_version");
-var logger = new conflux_1.ethers.utils.Logger(_version_1.version);
+var logger = new ethers_1.ethers.utils.Logger(_version_1.version);
 /*
 function getBlockTag(tag) {
     if (tag == null) { return "latest"; }
@@ -69,14 +69,14 @@ var _Eip1193Bridge = /** @class */ (function (_super) {
     __extends(_Eip1193Bridge, _super);
     function _Eip1193Bridge(signer, provider) {
         var _this = _super.call(this) || this;
-        conflux_1.ethers.utils.defineReadOnly(_this, "signer", signer);
-        conflux_1.ethers.utils.defineReadOnly(_this, "provider", provider || null);
+        ethers_1.ethers.utils.defineReadOnly(_this, "signer", signer);
+        ethers_1.ethers.utils.defineReadOnly(_this, "provider", provider || null);
         return _this;
     }
     _Eip1193Bridge.prototype.send = function (method, params) {
         return __awaiter(this, void 0, void 0, function () {
             function throwUnsupported(message) {
-                return logger.throwError("eth_sign requires a signer", conflux_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {
+                return logger.throwError("eth_sign requires a signer", ethers_1.ethers.utils.Logger.errors.UNSUPPORTED_OPERATION, {
                     method: method,
                     params: params
                 });
@@ -153,11 +153,11 @@ var _Eip1193Bridge = /** @class */ (function (_super) {
                     case 13: return [4 /*yield*/, this.provider.getTransactionCount(params[0], params[1])];
                     case 14:
                         result = _b.sent();
-                        return [2 /*return*/, conflux_1.ethers.utils.hexValue(result)];
+                        return [2 /*return*/, ethers_1.ethers.utils.hexValue(result)];
                     case 15: return [4 /*yield*/, this.provider.getBlock(params[0])];
                     case 16:
                         result = _b.sent();
-                        return [2 /*return*/, conflux_1.ethers.utils.hexValue(result.transactions.length)];
+                        return [2 /*return*/, ethers_1.ethers.utils.hexValue(result.transactions.length)];
                     case 17: return [4 /*yield*/, this.provider.getBlock(params[0])];
                     case 18:
                         result = _b.sent();
@@ -165,14 +165,14 @@ var _Eip1193Bridge = /** @class */ (function (_super) {
                     case 19: return [4 /*yield*/, this.provider.sendTransaction(params[0])];
                     case 20: return [2 /*return*/, _b.sent()];
                     case 21:
-                        req = conflux_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
+                        req = ethers_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
                         return [4 /*yield*/, this.provider.call(req, params[1])];
                     case 22: return [2 /*return*/, _b.sent()];
                     case 23:
                         if (params[1] && params[1] !== "latest") {
                             throwUnsupported("estimateGas does not support blockTag");
                         }
-                        req = conflux_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
+                        req = ethers_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
                         return [4 /*yield*/, this.provider.estimateGas(req)];
                     case 24:
                         result = _b.sent();
@@ -195,22 +195,22 @@ var _Eip1193Bridge = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.signer.getAddress()];
                     case 34:
                         address = _b.sent();
-                        if (address !== conflux_1.ethers.utils.getAddress(params[0])) {
+                        if (address !== ethers_1.ethers.utils.getAddress(params[0])) {
                             logger.throwArgumentError("account mismatch or account not found", "params[0]", params[0]);
                         }
-                        return [2 /*return*/, this.signer.signMessage(conflux_1.ethers.utils.arrayify(params[1]))];
+                        return [2 /*return*/, this.signer.signMessage(ethers_1.ethers.utils.arrayify(params[1]))];
                     case 35:
                         if (!this.signer) {
                             return [2 /*return*/, throwUnsupported("eth_sign requires an account")];
                         }
-                        req = conflux_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
+                        req = ethers_1.ethers.providers.JsonRpcProvider.hexlifyTransaction(params[0]);
                         return [4 /*yield*/, this.signer.sendTransaction(req)];
                     case 36:
                         tx = _b.sent();
                         return [2 /*return*/, tx.hash];
                     case 37:
                         {
-                            coerce = conflux_1.ethers.utils.hexValue;
+                            coerce = ethers_1.ethers.utils.hexValue;
                             return [3 /*break*/, 39];
                         }
                         _b.label = 38;
