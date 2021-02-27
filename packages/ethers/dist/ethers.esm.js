@@ -3490,7 +3490,7 @@ var bn = createCommonjsModule(function (module) {
 })('object' === 'undefined' || module, commonjsGlobal);
 });
 
-const version = "logger/5.0.8";
+const version = "logger/5.0.30";
 
 "use strict";
 let _permanentCensorErrors = false;
@@ -3788,7 +3788,7 @@ class Logger {
 Logger.errors = ErrorCode;
 Logger.levels = LogLevel;
 
-const version$1 = "bytes/5.0.8";
+const version$1 = "bytes/5.0.30";
 
 "use strict";
 const logger = new Logger(version$1);
@@ -4168,7 +4168,7 @@ function joinSignature(signature) {
     ]));
 }
 
-const version$2 = "bignumber/5.0.12";
+const version$2 = "bignumber/5.0.30";
 
 "use strict";
 var BN = bn.BN;
@@ -4791,7 +4791,7 @@ class FixedNumber {
 const ONE = FixedNumber.from(1);
 const BUMP = FixedNumber.from("0.5");
 
-const version$3 = "properties/5.0.6";
+const version$3 = "properties/5.0.30";
 
 "use strict";
 var __awaiter = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -4908,7 +4908,7 @@ class Description {
     }
 }
 
-const version$4 = "abi/5.0.9";
+const version$4 = "abi/5.0.30";
 
 "use strict";
 const logger$4 = new Logger(version$4);
@@ -6316,7 +6316,7 @@ function keccak256(data) {
     return '0x' + sha3.keccak_256(arrayify(data));
 }
 
-const version$5 = "rlp/5.0.6";
+const version$5 = "rlp/5.0.30";
 
 "use strict";
 const logger$6 = new Logger(version$5);
@@ -6440,7 +6440,7 @@ var index = /*#__PURE__*/Object.freeze({
 	decode: decode
 });
 
-const version$6 = "address/5.0.8";
+const version$6 = "address/5.0.30";
 
 "use strict";
 const logger$7 = new Logger(version$6);
@@ -6957,7 +6957,7 @@ class NumberCoder extends Coder {
     }
 }
 
-const version$7 = "strings/5.0.7";
+const version$7 = "strings/5.0.30";
 
 "use strict";
 const logger$9 = new Logger(version$7);
@@ -7578,7 +7578,7 @@ function id(text) {
     return keccak256(toUtf8Bytes(text));
 }
 
-const version$8 = "hash/5.0.9";
+const version$8 = "hash/5.0.30";
 
 const logger$b = new Logger(version$8);
 const Zeros = new Uint8Array(32);
@@ -8550,7 +8550,7 @@ class Interface {
 
 "use strict";
 
-const version$9 = "abstract-provider/5.0.7";
+const version$9 = "abstract-provider/5.0.30";
 
 "use strict";
 const logger$e = new Logger(version$9);
@@ -8627,7 +8627,7 @@ class Provider {
     }
 }
 
-const version$a = "abstract-signer/5.0.9";
+const version$a = "abstract-signer/5.0.30";
 
 "use strict";
 var __awaiter$2 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -8836,7 +8836,7 @@ class VoidSigner extends Signer {
     }
 }
 
-const version$b = "contracts/5.0.8";
+const version$b = "contracts/5.0.30";
 
 "use strict";
 var __awaiter$3 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -11225,7 +11225,7 @@ var SupportedAlgorithm;
 })(SupportedAlgorithm || (SupportedAlgorithm = {}));
 ;
 
-const version$c = "sha2/5.0.6";
+const version$c = "sha2/5.0.30";
 
 "use strict";
 const logger$h = new Logger(version$c);
@@ -13752,7 +13752,7 @@ elliptic.eddsa = /*RicMoo:ethers:require(./elliptic/eddsa)*/(null);
 
 var EC$1 = elliptic_1.ec;
 
-const version$d = "signing-key/5.0.7";
+const version$d = "signing-key/5.0.30";
 
 "use strict";
 const logger$i = new Logger(version$d);
@@ -13824,7 +13824,7 @@ function computePublicKey(key, compressed) {
     return logger$i.throwArgumentError("invalid public or private key", "key", "[REDACTED]");
 }
 
-const version$e = "transactions/5.0.8";
+const version$e = "transactions/5.0.30";
 
 "use strict";
 const logger$j = new Logger(version$e);
@@ -13985,7 +13985,7 @@ function parse(rawTransaction) {
     return tx;
 }
 
-const version$f = "wordlists/5.0.7";
+const version$f = "wordlists/5.0.30";
 
 "use strict";
 // This gets overridden by rollup
@@ -14514,7 +14514,7 @@ const wordlists = {
 
 "use strict";
 
-const version$g = "hdnode/5.0.7";
+const version$g = "hdnode/5.0.30";
 
 "use strict";
 const logger$l = new Logger(version$g);
@@ -14829,7 +14829,7 @@ function isValidMnemonic(mnemonic, wordlist) {
     return false;
 }
 
-const version$h = "random/5.0.6";
+const version$h = "random/5.0.30";
 
 "use strict";
 const logger$m = new Logger(version$h);
@@ -15687,7 +15687,7 @@ var aesJs = createCommonjsModule(function (module, exports) {
 })(commonjsGlobal);
 });
 
-const version$i = "json-wallets/5.0.9";
+const version$i = "json-wallets/5.0.30";
 
 "use strict";
 function looseArrayify(hexString) {
@@ -16657,7 +16657,7 @@ function decryptJsonWalletSync(json, password) {
     throw new Error("invalid JSON wallet");
 }
 
-const version$j = "wallet/5.0.9";
+const version$j = "wallet/5.0.30";
 
 "use strict";
 var __awaiter$5 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -16822,7 +16822,7 @@ function verifyTypedData(domain, types, value, signature) {
     return recoverAddress(TypedDataEncoder.hash(domain, types, value), signature);
 }
 
-const version$k = "networks/5.0.6";
+const version$k = "networks/5.0.30";
 
 "use strict";
 const logger$q = new Logger(version$k);
@@ -17055,7 +17055,7 @@ var index$2 = /*#__PURE__*/Object.freeze({
 	encode: encode$1
 });
 
-const version$l = "web/5.0.11";
+const version$l = "web/5.0.30";
 
 "use strict";
 var __awaiter$6 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -17636,7 +17636,7 @@ var bech32 = {
   fromWords: fromWords
 };
 
-const version$m = "providers/5.0.17";
+const version$m = "providers/5.0.30";
 
 "use strict";
 const logger$s = new Logger(version$m);
@@ -21787,7 +21787,7 @@ function sha256$2(types, values) {
     return sha256$1(pack$1(types, values));
 }
 
-const version$n = "units/5.0.8";
+const version$n = "units/5.0.30";
 
 "use strict";
 const logger$G = new Logger(version$n);
@@ -21969,7 +21969,7 @@ var utils$1 = /*#__PURE__*/Object.freeze({
 	Indexed: Indexed
 });
 
-const version$o = "ethers/5.0.24";
+const version$o = "conflux-main/5.0.30";
 
 "use strict";
 const logger$H = new Logger(version$o);

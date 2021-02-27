@@ -147,6 +147,10 @@ export function invalidate(cloudfront: AWS.CloudFront, distributionId: string): 
         local.updateJson(pathJson, { gitHead: undefined }, true);
     }
 
+
+    console.log('Publish Done.')
+    return;
+
     if (publishNames.indexOf("ethers") >= 0 || forcePublish) {
         const change = getLatestChange();
 

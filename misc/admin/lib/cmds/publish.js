@@ -95,9 +95,6 @@ exports.invalidate = invalidate;
         for (let i = 0; i < dirnames.length; i++) {
             progressUpdate(i / dirnames.length);
             let dirname = dirnames[i];
-            if (dirname === 'ethers') {
-                continue;
-            }
             let info = local.getPackage(dirname);
             let npmInfo;
             try {
@@ -170,6 +167,8 @@ exports.invalidate = invalidate;
             yield exec('npm publish ' + path);
             local.updateJson(pathJson, { gitHead: undefined }, true);
         }
+        console.log('Publish Done.')
+        return;
         if (publishNames.indexOf("ethers") >= 0 || forcePublish) {
             const change = changelog_1.getLatestChange();
             const awsAccessId = yield config_1.config.get("aws-upload-scripts-accesskey");

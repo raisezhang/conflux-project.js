@@ -1,1 +1,1 @@
-export const version = "ethers/5.0.24";
+export const version = "conflux-main/5.0.30";
