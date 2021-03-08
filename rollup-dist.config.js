@@ -6,6 +6,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolveNode from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import json from "@rollup/plugin-json";
 
 import sourcemaps from 'rollup-plugin-sourcemaps';
 
@@ -66,6 +67,7 @@ function addEllipticReplace(plugins) {
 function getUmdConfig() {
     const plugins = [ ];
 
+    plugins.push(json());
     plugins.push(sourcemaps());
 
     addUtilsReplace(plugins);
@@ -93,6 +95,7 @@ function getUmdConfig() {
 function getEsmConfig() {
     const plugins = [ ];
 
+    plugins.push(json());
     plugins.push(sourcemaps());
 
     addUtilsReplace(plugins);

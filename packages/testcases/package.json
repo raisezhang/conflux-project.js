@@ -1,6 +1,6 @@
 {
   "_devDependencies": {
-    "@confluxproject/cli": "^5.0.30",
+    "@confluxproject/cli": "^5.0.37",
     "@types/bip39": "2.4.1",
     "@types/bitcoinjs-lib": "3.3.2",
     "bip39": "2.5.0",
@@ -16,11 +16,11 @@
     "./lib/disk-utils": "./lib/browser-disk-utils.js"
   },
   "dependencies": {
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/keccak256": "^5.0.30",
-    "@confluxproject/strings": "^5.0.30",
-    "conflux-main": "^5.0.30",
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/keccak256": "^5.0.37",
+    "@confluxproject/strings": "^5.0.37",
+    "conflux-main": "^5.0.37",
     "tiny-inflate": "1.0.3"
   },
   "description": "Testcases for Ethereum and scripts to generate testcases.",
@@ -44,5 +44,5 @@
   },
   "tarballHash": "0xf6be1d8706aaaa5dc99e651c117a9927224f5cc16105443e450e6cfd85bfecac",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

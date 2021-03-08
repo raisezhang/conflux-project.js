@@ -4,10 +4,38 @@ import { arrayify, BytesLike, concat, hexDataLength, hexDataSlice, isHexString, 
 import { BigNumber, BigNumberish, _base16To36, _base36To16 } from "@confluxproject/bignumber";
 import { keccak256 } from "@confluxproject/keccak256";
 import { encode } from "@confluxproject/rlp";
+// @ts-ignore
+import { decode as confluxAddressDecode, encode as confluxAddressEncode } from 'conflux-address-js';
 
 import { Logger } from "@confluxproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
+
+export function isLikeHex40Address(address: string): boolean {
+    return /^0x[0-9a-fA-F]{40}$/.test(address)
+}
+
+export function isLikeBase32Address(address: string): boolean {
+    // this won't return false when there's net1029, net1
+    return /^(cfx(test)?|net\d+):(type\.(null|user|contract|builtin):)?[0123456789abcdefghjkmnprstuvwxyz]{42}$/i.test(
+      address
+    )
+}
+
+export function getBase32AddressFromHex40(address: string, chainId: number | undefined): string {
+    if (isLikeBase32Address(address)) {
+        return address
+    }
+    const hexBuffer = Buffer.from(address.slice(2), 'hex');
+    return confluxAddressEncode(hexBuffer, chainId)
+}
+
+export function getHex40AddressFromBase32(address: string): string {
+    if (isLikeHex40Address(address)) {
+        return address
+    }
+    return getChecksumAddress(`0x${confluxAddressDecode(address).hexAddress.toString('hex')}`)
+}
 
 function getChecksumAddress(address: string): string {
     if (!isHexString(address, 20)) {
@@ -93,10 +121,10 @@ export function getAddress(address: string): string {
         // if (address.match(/([A-F].*[a-f])|([a-f].*[A-F])/) && result !== address) {
         //     logger.throwArgumentError("bad address checksum", "address", address);
         // }
-
-    // Maybe ICAP? (we only support direct mode)
+    } else if (isLikeBase32Address(address)) {
+        result = getHex40AddressFromBase32(address)
     } else if (address.match(/^XE[0-9]{2}[0-9A-Za-z]{30,31}$/)) {
-
+        // Maybe ICAP? (we only support direct mode)
         // It is an ICAP address with a bad checksum
         if (address.substring(2, 4) !== ibanChecksum(address)) {
             logger.throwArgumentError("bad icap checksum", "address", address);

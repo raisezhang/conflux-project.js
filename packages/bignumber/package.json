@@ -1,8 +1,8 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
     "bn.js": "^4.4.0"
   },
   "description": "BigNumber library used in ethers.js.",
@@ -40,5 +40,5 @@
   "sideEffects": false,
   "tarballHash": "0x988db7b6fa319a70ba68f176e674bee80e0e7f85d82109153bb8f7cd8957f2e3",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

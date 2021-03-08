@@ -10,7 +10,7 @@
     "@ledgerhq/hw-app-eth": "5.27.2",
     "@ledgerhq/hw-transport": "5.26.0",
     "@ledgerhq/hw-transport-u2f": "5.26.0",
-    "conflux-main": "^5.0.30"
+    "conflux-main": "^5.0.37"
   },
   "description": "Hardware Wallet support for conflux.",
   "ethereum": "donations.ethers.eth",
@@ -50,5 +50,5 @@
   "sideEffects": false,
   "tarballHash": "0xa0aa3a1b351d2c457227777643bfc25e24e5ebb5f5d06f539bfd8326eb15a8f4",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

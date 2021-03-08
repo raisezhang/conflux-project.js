@@ -1,9 +1,9 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/constants": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30"
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/constants": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37"
   },
   "description": "Unit conversion functions for Ethereum.",
   "ethereum": "donations.ethers.eth",
@@ -41,5 +41,5 @@
   "sideEffects": false,
   "tarballHash": "0x0e97134b16933789136b7597531d2facd2cdbbaf79f25452a6fdac3d72d65b3a",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

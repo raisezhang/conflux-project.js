@@ -1,14 +1,14 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/abstract-signer": "^5.0.30",
-    "@confluxproject/address": "^5.0.30",
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/keccak256": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/strings": "^5.0.30"
+    "@confluxproject/abstract-signer": "^5.0.37",
+    "@confluxproject/address": "^5.0.37",
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/keccak256": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/strings": "^5.0.37"
   },
   "description": "Hash utility functions for Ethereum.",
   "keywords": [
@@ -32,5 +32,5 @@
   "sideEffects": false,
   "tarballHash": "0x72b13ce70dea4b43cf8a67527084e8947d2a0d73db1d76178986e4eaa0196774",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

@@ -1,8 +1,8 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30"
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37"
   },
   "description": "Base-X without Buffer.",
   "keywords": [
@@ -26,5 +26,5 @@
   "sideEffects": false,
   "tarballHash": "0x329cc06e27c00836bfbfbb871fe2f601e1532b2a85a3ef79aa48706338264b84",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

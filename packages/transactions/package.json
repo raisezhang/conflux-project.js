@@ -1,15 +1,15 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/address": "^5.0.30",
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/constants": "^5.0.30",
-    "@confluxproject/keccak256": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/rlp": "^5.0.30",
-    "@confluxproject/signing-key": "^5.0.30"
+    "@confluxproject/address": "^5.0.37",
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/constants": "^5.0.37",
+    "@confluxproject/keccak256": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/rlp": "^5.0.37",
+    "@confluxproject/signing-key": "^5.0.37"
   },
   "description": "Utilities for decoding and encoding Ethereum transaction for conflux.",
   "keywords": [
@@ -33,5 +33,5 @@
   "sideEffects": false,
   "tarballHash": "0x37e396bcba1ca2e17cb4b7344ab63f282e3732affda2f9528e11ea62187af0da",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

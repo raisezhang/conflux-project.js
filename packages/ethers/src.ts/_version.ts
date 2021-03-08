@@ -1,1 +1,1 @@
-export const version = "conflux-main/5.0.30";
+export const version = "conflux-main/5.0.37";

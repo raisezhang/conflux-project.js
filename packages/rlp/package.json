@@ -1,8 +1,8 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30"
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37"
   },
   "description": "Recursive-Length Prefix (RLP) coder.",
   "ethereum": "donations.ethers.eth",
@@ -39,5 +39,5 @@
   "sideEffects": false,
   "tarballHash": "0x44314b6d4a44956662d022b90027f4947102d565702d7172f0aa9dc068fb86c0",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

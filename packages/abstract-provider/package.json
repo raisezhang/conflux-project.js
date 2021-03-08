@@ -1,13 +1,13 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/networks": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/transactions": "^5.0.30",
-    "@confluxproject/web": "^5.0.30"
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/networks": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/transactions": "^5.0.37",
+    "@confluxproject/web": "^5.0.37"
   },
   "description": "An Abstract Class for describing an Ethereum Provider for conflux.",
   "keywords": [
@@ -31,5 +31,5 @@
   "sideEffects": false,
   "tarballHash": "0x3b3b910e4ef4f0b9361ff266b98e1fa415387e1d349122d215ee5ffe8110e397",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

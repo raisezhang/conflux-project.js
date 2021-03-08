@@ -7,11 +7,11 @@
     "./lib/geturl": "./lib/browser-geturl.js"
   },
   "dependencies": {
-    "@confluxproject/base64": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/strings": "^5.0.30"
+    "@confluxproject/base64": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/strings": "^5.0.37"
   },
   "description": "Utility fucntions for managing web requests for conflux.",
   "keywords": [
@@ -35,5 +35,5 @@
   "sideEffects": false,
   "tarballHash": "0x7de77f0ace641d8867db27d73e04c9166fa9ff1517dab66393b9e00aeed720a2",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

@@ -1,7 +1,7 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/logger": "^5.0.30"
+    "@confluxproject/logger": "^5.0.37"
   },
   "description": "Properties utility functions for conflux.",
   "keywords": [
@@ -27,5 +27,5 @@
   "sideEffects": false,
   "tarballHash": "0x5ba1d6f10ec9f22f5390fb18112ed02612628c5fea67991a40e106d94503b935",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

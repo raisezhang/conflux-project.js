@@ -7,8 +7,8 @@
     "./lib/random": "./lib/browser-random.js"
   },
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30"
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37"
   },
   "description": "Random utility functions for conflux.",
   "ethereum": "donations.ethers.eth",
@@ -45,5 +45,5 @@
   "sideEffects": false,
   "tarballHash": "0x25597a4c4e6b33b6f7b7da1604e5eab48d5ad9cecb6ec1baf713e2af890f9b63",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

@@ -1,1 +1,1 @@
-export const version = "hash/5.0.30";
+export const version = "hash/5.0.37";

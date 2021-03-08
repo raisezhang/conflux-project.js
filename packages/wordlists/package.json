@@ -7,11 +7,11 @@
   },
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/hash": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/strings": "^5.0.30"
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/hash": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/strings": "^5.0.37"
   },
   "description": "Word lists for BIP39 wallets.",
   "keywords": [
@@ -35,5 +35,5 @@
   "sideEffects": false,
   "tarballHash": "0x24ff13ad968fa0820463de3ca244565d674295ae12e20370ecd1d4b835dbc322",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

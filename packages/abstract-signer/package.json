@@ -1,11 +1,11 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/abstract-provider": "^5.0.30",
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30"
+    "@confluxproject/abstract-provider": "^5.0.37",
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37"
   },
   "description": "An Abstract Class for desribing an Ethereum Signer for conflux.",
   "keywords": [
@@ -29,5 +29,5 @@
   "sideEffects": false,
   "tarballHash": "0xf30b173e3bee012c273e09ae94387f410714faa640b9dc27213a192db77a0303",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

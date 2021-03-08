@@ -7,7 +7,7 @@
     "./lib/base64": "./lib/browser-base64.js"
   },
   "dependencies": {
-    "@confluxproject/bytes": "^5.0.30"
+    "@confluxproject/bytes": "^5.0.37"
   },
   "description": "Base64 coder.",
   "keywords": [
@@ -31,5 +31,5 @@
   "sideEffects": false,
   "tarballHash": "0x0b21de3d1f836a61564b43b95d9272c0034c20b70eae82bbe99538676a1f9780",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }

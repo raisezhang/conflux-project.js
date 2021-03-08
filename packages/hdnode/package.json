@@ -1,18 +1,18 @@
 {
   "author": "Richard Moore <me@ricmoo.com>",
   "dependencies": {
-    "@confluxproject/abstract-signer": "^5.0.30",
-    "@confluxproject/basex": "^5.0.30",
-    "@confluxproject/bignumber": "^5.0.30",
-    "@confluxproject/bytes": "^5.0.30",
-    "@confluxproject/logger": "^5.0.30",
-    "@confluxproject/pbkdf2": "^5.0.30",
-    "@confluxproject/properties": "^5.0.30",
-    "@confluxproject/sha2": "^5.0.30",
-    "@confluxproject/signing-key": "^5.0.30",
-    "@confluxproject/strings": "^5.0.30",
-    "@confluxproject/transactions": "^5.0.30",
-    "@confluxproject/wordlists": "^5.0.30"
+    "@confluxproject/abstract-signer": "^5.0.37",
+    "@confluxproject/basex": "^5.0.37",
+    "@confluxproject/bignumber": "^5.0.37",
+    "@confluxproject/bytes": "^5.0.37",
+    "@confluxproject/logger": "^5.0.37",
+    "@confluxproject/pbkdf2": "^5.0.37",
+    "@confluxproject/properties": "^5.0.37",
+    "@confluxproject/sha2": "^5.0.37",
+    "@confluxproject/signing-key": "^5.0.37",
+    "@confluxproject/strings": "^5.0.37",
+    "@confluxproject/transactions": "^5.0.37",
+    "@confluxproject/wordlists": "^5.0.37"
   },
   "description": "BIP32 Hierarchal Deterministic Node operations.",
   "keywords": [
@@ -36,5 +36,5 @@
   "sideEffects": false,
   "tarballHash": "0xe1c03cc121b1d3f9b231bcd8543141bf5d905aacbc793d435f792fbcc47ac972",
   "types": "./lib/index.d.ts",
-  "version": "5.0.30"
+  "version": "5.0.37"
 }
